@@ -1,4 +1,4 @@
-application: uchicago-marketplace
+application: hosted-caravel
 runtime: python2.7
 api_version: 1
 version: 1
