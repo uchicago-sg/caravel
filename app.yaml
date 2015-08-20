@@ -1,0 +1,9 @@
+application: uchicago-marketplace
+runtime: python2.7
+api_version: 1
+version: 1
+threadsafe: yes
+
+handlers:
+- url: /
+  script: main.app

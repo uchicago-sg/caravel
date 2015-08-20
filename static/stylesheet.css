@@ -1,0 +1,14 @@
+body {
+  background-color: #f8f8f8;
+}
+
+h1 {
+  font: bold 4em Helvetica,Arial,sans-serif;
+  text-align: center;
+  top: 50%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: -0.5em 0 0 0;
+  padding: 0;
+}
