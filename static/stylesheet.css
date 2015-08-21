@@ -12,3 +12,17 @@ h1 {
   margin: -0.5em 0 0 0;
   padding: 0;
 }
+
+.session-bar {
+  font: 0.9em sans-serif;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 0.8em;
+  text-align: right;
+  background-color: #39c;
+  color: #fff;
+  border-bottom: 1px solid #000;
+  outline: 1px solid #ccc;
+}
