@@ -1,11 +1,7 @@
 import os
-import urllib2
-import json
-import re
-import datetime
 
-from google.appengine.ext import ndb
-from google.appengine.api import deferred, taskqueue
+from google.appengine.ext import ndb, deferred
+from google.appengine.api import taskqueue
 
 class Listing(ndb.Model):
     seller = ndb.StringProperty() # an email address
@@ -25,5 +21,5 @@ def run_later(task, *vargs, **kwargs):
     Runs the given deferrable function asynchronously.
     """
 
-    deferred.defer(task, *vargs, **kwards,
-        _retry_options=taskqueue.TaskRetryOptions(task_retry_limit=5))
+    kwargs["_retry_options"] = taskqueue.TaskRetryOptions(task_retry_limit=5)
+    deferred.defer(task, *vargs, **kwargs)

@@ -1,6 +1,7 @@
-import state
-
 from google.appengine.api import mail
+import re, traceback, json, urllib2, datetime
+
+import state
 
 def pull_from_listing(permalink):
     """
@@ -34,11 +35,11 @@ def pull_from_listing(permalink):
             price=(int(float(json_data["price"]) * 100))
         ).put()
 
-    except Exception:
+    except Exception, e:
         mail.send_mail(
             "noreply@hosted-caravel.appspotmail.com",
             "open-source@fatlotus.com",
             "Automatic Parsing Failed",
-            permalink
+            repr(locals()) + "\n\n" + traceback.format_exc()
         )
         raise
