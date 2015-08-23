@@ -9,3 +9,6 @@ handlers:
   static_dir: static
 - url: /.*
   script: main.app
+
+builtins:
+- deferred: on
