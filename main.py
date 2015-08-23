@@ -1,7 +1,7 @@
 # Pull packages from vendor/ directory.
 import sys; sys.path.insert(0, "vendor")
 
-import state
+import state, live_migration
 from flask import Flask, request, render_template, session
 
 app = Flask(__name__)
@@ -20,9 +20,12 @@ def home_page():
 
 @app.route("/_pull")
 def pull_from_legacy_site():
-    state.pull_from_listing(request.args.get("permalink", ""))
+    state.run_later(
+        live_migration.pull_from_listing,
+        permalink=request.args.get("permalink", "")
+    )
     return "ok"
 
-# Run a debug server if running locally.
+# TODO(fatlotus): add App-Engine-less version of the "state" module.
 if __name__ == "__main__":
     app.run(debug=True)

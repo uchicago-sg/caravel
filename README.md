@@ -7,7 +7,7 @@ maintenance operation.
 
 To run a server locally:
 
-    $ python main.py
+    $ dev_appserver.py .
 
 If you want to upgrade the version of Flask:
 
