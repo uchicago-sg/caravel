@@ -1,7 +1,7 @@
 from google.appengine.api import mail
 import re, traceback, json, urllib2, datetime
 
-import state
+import models
 
 def pull_from_listing(permalink):
     """
@@ -26,7 +26,7 @@ def pull_from_listing(permalink):
         )
 
         # (Idempotently) save this entity into the datastore.
-        state.Listing(
+        models.Listing(
             id=json_data["permalink"],
             seller=json_data["seller"]["email"],
             posted_at=posted_at.replace(tzinfo=None),
