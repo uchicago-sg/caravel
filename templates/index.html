@@ -1,0 +1,108 @@
+{% extends "layout.html" %}
+{% block title %}Listings{% endblock %}
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="/static/index.css">
+  <script src="/static/index.js"></script>
+{% endblock %}
+{% block content %}
+  {% include "search.html" %}
+  <div class="container" style="margin-top:10px;">
+    <div class="row form-group">
+      <div class="col-xs-6 col-md-3">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title"> Tall Buildings </h3>
+          </div>
+          <div class="panel-image hide-panel-body">
+            <img
+                src="http://666a658c624a3c03a6b2-25cda059d975d2f318c03e90bcf17c40.r92.cf1.rackcdn.com/unsplash_52d09387ae003_1.JPG"
+                class="panel-image-preview"/>
+          </div>
+          <div class="panel-body">
+            <h4>Title of Image</h4>
+
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in lobortis nisl, vitae iaculis sapien.
+              Phasellus ultrices gravida massa luctus ornare. Suspendisse blandit quam elit, eu imperdiet neque semper
+              et.</p>
+          </div>
+          <div class="panel-footer text-center">
+            <p> $234.63 </p>
+            <a href="#" class="btn btn-link"> Show </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-6 col-md-3">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Street Lamps</h3>
+          </div>
+          <div class="panel-image hide-panel-body">
+            <img
+                src="http://666a658c624a3c03a6b2-25cda059d975d2f318c03e90bcf17c40.r92.cf1.rackcdn.com/unsplash_52cf9489095e8_1.JPG"
+                class="panel-image-preview"/>
+          </div>
+          <div class="panel-body">
+            <h4>Title of Image</h4>
+
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in lobortis nisl, vitae iaculis sapien.
+              Phasellus ultrices gravida massa luctus ornare. Suspendisse blandit quam elit, eu imperdiet neque semper
+              et.</p>
+          </div>
+          <div class="panel-footer text-center">
+            <p> $1234567.89 </p>
+            <a href="#" class="btn btn-link"> Show </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-6 col-md-3">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Bike</h3>
+          </div>
+          <div class="panel-image hide-panel-body">
+            <img
+                src="http://666a658c624a3c03a6b2-25cda059d975d2f318c03e90bcf17c40.r92.cf1.rackcdn.com/unsplash_52c470899a2e1_1.JPG"
+                class="panel-image-preview"/>
+          </div>
+          <div class="panel-body">
+            <h4>Title of Image</h4>
+
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in lobortis nisl, vitae iaculis sapien.
+              Phasellus ultrices gravida massa luctus ornare. Suspendisse blandit quam elit, eu imperdiet neque semper
+              et.</p>
+          </div>
+          <div class="panel-footer text-center">
+            <p> $1000.00 </p>
+            <a href="#" class="btn btn-link"> Show </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-6 col-md-3">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Broken Bridge</h3>
+          </div>
+          <div class="panel-image hide-panel-body">
+            <img
+                src="http://666a658c624a3c03a6b2-25cda059d975d2f318c03e90bcf17c40.r92.cf1.rackcdn.com/unsplash_52cd36aac6bed_1.JPG"
+                class="panel-image-preview"/>
+          </div>
+          <div class="panel-body ">
+            <h4>Show the Description by default!</h4>
+
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in lobortis nisl, vitae iaculis sapien.
+              Phasellus ultrices gravida massa luctus ornare. Suspendisse blandit quam elit, eu imperdiet neque semper
+              et.</p>
+          </div>
+          <div class="panel-footer text-center">
+            <p> $0.00 </p>
+            <a href="#" class="btn btn-link"> Show </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# TODO (georgeteo): infinite scroll     #}
+{% endblock %}

@@ -8,15 +8,8 @@ app = Flask(__name__)
 app.secret_key = state.SECRET_KEY
 
 @app.route("/")
-def home_page():
-    if not 'hits' in session:
-        session['hits'] = 0
-    session['hits'] += 1
-    return render_template(
-        "home_page.html",
-        name="App Engine",
-        hits=session['hits']
-    )
+def index():
+    return render_template("index.html")
 
 @app.route("/_pull")
 def pull_from_legacy_site():
