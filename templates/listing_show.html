@@ -14,13 +14,9 @@
       </div>
     </div>
     <div class="col-md-6">
-      <h3> Listing Name</h3>
-
-      <p> 0.00 </p>
-
-      <p> Description. Bla bla bla. I am a cow and I like to eat grass. If there isn't any grass, I will eat other green
-        stuff. I am also tasty, but I don't want to be eaten.
-        Moooooooooooo. </p>
+      <h3>{{ listing.description }}</h3>
+      <p>{{ '$%0.2f'|format(listing.price / 100) }}</p>
+      <p>{{ listing.details }}</p>
     </div>
   </div>
 {% endblock %}
