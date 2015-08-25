@@ -24,6 +24,10 @@ def show(permalink):
     listing = state.Listing.get_by_id(permalink)
     return render_template("listing_show.html")
 
+@app.route("/edit/")
+def form():
+    return render_template("listing_form.html")
+
 # Run a debug server if running locally.
 if __name__ == "__main__":
     app.run(debug=True)
