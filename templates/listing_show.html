@@ -1,0 +1,26 @@
+<!-- Make into macro -->
+{% extends "layout.html" %}
+{% block title %} {% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+  <h2> View Listing </h2>
+  <a href="/" class="btn btn-link"> Back to listings </a>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="thumbnail">
+        <img src="https://goo.gl/T5tiQf">
+      </div>
+    </div>
+    <div class="col-md-6">
+      <h3> Listing Name</h3>
+
+      <p> 0.00 </p>
+
+      <p> Description. Bla bla bla. I am a cow and I like to eat grass. If there isn't any grass, I will eat other green
+        stuff. I am also tasty, but I don't want to be eaten.
+        Moooooooooooo. </p>
+    </div>
+  </div>
+{% endblock %}

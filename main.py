@@ -8,15 +8,8 @@ app = Flask(__name__)
 app.secret_key = state.SECRET_KEY
 
 @app.route("/")
-def home_page():
-    if not 'hits' in session:
-        session['hits'] = 0
-    session['hits'] += 1
-    return render_template(
-        "home_page.html",
-        name="App Engine",
-        hits=session['hits']
-    )
+def index():
+    return render_template("index.html")
 
 @app.route("/_pull")
 def pull_from_legacy_site():
@@ -26,11 +19,15 @@ def pull_from_legacy_site():
     )
     return "ok"
 
-# Stub for load test.
 @app.route("/<permalink>")
-def view_listing(permalink):
-    return jsonify(state.Listing.get_by_id(permalink))
+def show(permalink):
+    listing = state.Listing.get_by_id(permalink)
+    return render_template("listing_show.html")
 
-# TODO(fatlotus): add App-Engine-less version of the "state" module.
+@app.route("/edit/")
+def form():
+    return render_template("listing_form.html")
+
+# Run a debug server if running locally.
 if __name__ == "__main__":
     app.run(debug=True)
