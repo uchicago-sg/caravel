@@ -9,8 +9,8 @@
   {% include "search.html" %}
   <div class="container" style="margin-top:10px;">
     <div class="row form-group">
+      {% for listing in listings %}
       <div class="col-xs-6 col-md-3">
-        {% for listing in listings %}
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">{{ listing.description }}</h3>
@@ -26,8 +26,8 @@
             <p>{{ '$%0.2f'|format(listing.price / 100) }}</p>
           </div>
         </div>
-        {% endfor %}
       </div>
+      {% endfor %}
     </div>
   </div>
 

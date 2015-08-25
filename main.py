@@ -4,6 +4,7 @@ import sys; sys.path.insert(0, "vendor")
 import models
 import search
 import live_migration
+import itertools
 
 from flask import Flask, request, render_template, session, jsonify
 app = Flask(__name__)
@@ -11,7 +12,7 @@ app.secret_key = models.SECRET_KEY
 
 @app.route("/")
 def index():
-    listings = search.run_query(request.args.get("q"))
+    listings = itertools.islice(search.run_query(request.args.get("q")), 0, 40)
     return render_template("index.html", listings=listings)
 
 @app.route("/<permalink>")
