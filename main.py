@@ -19,11 +19,11 @@ def pull_from_legacy_site():
     )
     return "ok"
 
-# Stub for load test.
 @app.route("/<permalink>")
-def view_listing(permalink):
-    return jsonify(state.Listing.get_by_id(permalink))
+def show(permalink):
+    listing = state.Listing.get_by_id(permalink)
+    return render_template("listing_show.html")
 
-# TODO(fatlotus): add App-Engine-less version of the "state" module.
+# Run a debug server if running locally.
 if __name__ == "__main__":
     app.run(debug=True)
