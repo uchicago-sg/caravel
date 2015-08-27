@@ -10,6 +10,9 @@
   <div class="container" style="margin-top:10px;">
     <div class="row form-group">
       {% for listing in listings %}
+      {% if loop.index is divisibleby(4) %}
+        <div class="row">
+      {%  endif %}
       <div class="col-xs-6 col-md-3">
         <div class="panel panel-default">
           <div class="panel-heading">
@@ -27,6 +30,9 @@
           </div>
         </div>
       </div>
+      {% if loop.index is divisibleby(4) %}
+        </div>
+      {%  endif %}
       {% endfor %}
     </div>
   </div>
