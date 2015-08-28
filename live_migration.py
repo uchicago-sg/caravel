@@ -2,6 +2,7 @@ from google.appengine.api import mail
 import re, traceback, json, urllib2, datetime, time
 
 import models
+import search
 
 def pull_from_listing(permalink):
     """
@@ -11,8 +12,12 @@ def pull_from_listing(permalink):
     # Retrieve existing listing by the permalink.
     if not re.match(r"^[a-zA-Z\-0-9]+$", permalink):
         raise ValueError("Invalid permalink: {!r}".format(permalink))
-    url = "http://marketplace.uchicago.edu/{}.json".format(permalink)
-    json_data = json.load(urllib2.urlopen(url))
+    url = "http://marketplace.uchicago.edu/{}".format(permalink)
+    data = urllib2.urlopen(url + ".json").read()
+    if not data:
+        return
+
+    json_data = json.loads(data)
 
     # Parse the listing date from not-quite-ISO8601 to App Engine UTC.
     posting_time = time.mktime((datetime.datetime.strptime(
@@ -31,3 +36,6 @@ def pull_from_listing(permalink):
         details=json_data["details"],
         price=(int(float(json_data["price"]) * 100))
     ).put()
+    
+    # Invalidate the cache.
+    search.invalidate_listing(json_data["permalink"])
