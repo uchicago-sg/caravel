@@ -33,6 +33,10 @@ def pull_from_legacy_site():
     )
     return "ok"
 
+@app.route("/favicon.ico")
+def block_favicons():
+    return "go away"
+
 # Run a debug server if running locally.
 if __name__ == "__main__":
     app.run(debug=True)
