@@ -17,13 +17,19 @@ def index():
 
 @app.route("/<permalink>")
 def show(permalink):
-    listing = models.Listing.get_by_id(permalink)
-    return render_template("listing_show.html", listing=listing)
+    listing = search.lookup_listing(permalink)
+    if listing:
+        return render_template("listing_show.html", listing=listing)
+    else:
+        return "404"
 
 @app.route("/<permalink>/edit")
 def form(permalink):
-    listing = models.Listing.get_by_id(permalink)
-    return render_template("listing_form.html", listing=listing)
+    listing = search.lookup_listing(permalink)
+    if listing:
+        return render_template("listing_form.html", listing=listing)
+    else:
+        return "404"
 
 @app.route("/_pull")
 def pull_from_legacy_site():
