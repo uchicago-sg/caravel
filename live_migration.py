@@ -1,5 +1,5 @@
 from google.appengine.api import mail
-import re, traceback, json, urllib2, datetime
+import re, traceback, json, urllib2, datetime, time
 
 import models
 
@@ -15,18 +15,18 @@ def pull_from_listing(permalink):
     json_data = json.load(urllib2.urlopen(url))
 
     # Parse the listing date from not-quite-ISO8601 to App Engine UTC.
-    posted_at = datetime.datetime.strptime(
+    posting_time = time.mktime((datetime.datetime.strptime(
         json_data["renewed_at"][:-6], "%Y-%m-%dT%H:%M:%S"
     ) - datetime.timedelta(
         hours=float(json_data["renewed_at"][-6:-3]),
         minutes=float(json_data["renewed_at"][-2:])
-    )
+    )).timetuple())
 
     # (Idempotently) save this entity into the datastore.
     models.Listing(
-        id=json_data["permalink"],
+        key_name=json_data["permalink"],
         seller=json_data["seller"]["email"],
-        posted_at=posted_at.replace(tzinfo=None),
+        posting_time=posting_time,
         description=json_data["description"],
         details=json_data["details"],
         price=(int(float(json_data["price"]) * 100))
