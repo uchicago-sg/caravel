@@ -1,19 +1,19 @@
 import os
 
-from google.appengine.ext import ndb, deferred
+from google.appengine.ext import db, deferred
 from google.appengine.api import taskqueue
 
-class Listing(ndb.Model):
-    seller = ndb.StringProperty() # an email address
-    description = ndb.StringProperty()
-    details = ndb.TextProperty()
-    price = ndb.IntegerProperty() # in cents of a U.S. dollar
-    posted_at = ndb.DateTimeProperty() # set to None iff not yet published
+class Listing(db.Model):
+    seller = db.StringProperty() # an email address
+    description = db.StringProperty()
+    details = db.TextProperty()
+    price = db.IntegerProperty() # in cents of a U.S. dollar
+    posting_time = db.FloatProperty() # set to 0 iff not yet published
 
-class SharedSecret(ndb.Model):
-    value = ndb.BlobProperty()
+class SharedSecret(db.Model):
+    value = db.BlobProperty()
 
-SECRET_KEY = SharedSecret.get_or_insert('session_key',
+SECRET_KEY = SharedSecret.get_or_insert(key_name='session_key',
                  value=os.urandom(256)).value
 
 def run_later(task, *vargs, **kwargs):
