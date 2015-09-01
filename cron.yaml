@@ -1,0 +1,4 @@
+cron:
+- description: delete old photos
+  url: /_internal/collect_garbage
+  schedule: every 24 hours

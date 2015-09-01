@@ -1,4 +1,4 @@
-import time, traceback, uuid, os
+import time, uuid, os, logging
 
 import cloudstorage
 from google.appengine.api import images
@@ -7,6 +7,33 @@ import re
 PHOTO_LIFETIME = 60 * 24 * 60 * 60 # 60 days
 GCS_BUCKET = "hosted-caravel.appspot.com"
 SIZES = {'small': (300, 300, True), 'large': (600, 600, False)}
+
+def collect_garbage(environ, start_response):
+    """
+    Removes all uploaded photos that should have since expired.
+    
+    This function is meant to be called from cron.
+    """
+
+    for photo in cloudstorage.listbucket("/" + GCS_BUCKET):
+        should_delete = False
+        try:
+            posted_at, uuid = photo.filename.split("/")[2].split("-", 1)
+            posted_at = int(posted_at)
+            if (time.time() - posted_at) > PHOTO_LIFETIME:
+                should_delete = True
+        except ValueError, exc:
+            should_delete = True
+            logging.exception(exc)
+
+        if should_delete:
+            try:
+                cloudstorage.delete(photo.filename)
+            except cloudstorage.NotFoundError:
+                pass # ignore concurrent removals.
+
+    start_response('200 Okay', [])
+    return []
 
 def upload(file_object, size='medium'):
     """
