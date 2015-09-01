@@ -19,11 +19,18 @@
             <h3 class="panel-title">{{ listing.description }}</h3>
           </div>
           <div class="panel-image hide-panel-body">
+            
+            {% if listing.thumbnail_url %}
             <a href="/{{ listing.key }}">
               <img
-                src="http://666a658c624a3c03a6b2-25cda059d975d2f318c03e90bcf17c40.r92.cf1.rackcdn.com/unsplash_52d09387ae003_1.JPG"
+                src="{{ listing.thumbnail_url | public_url }}"
                 class="panel-image-preview"/>
             </a>
+            {% else %}
+            <a href="/{{ listing.key }}" class="small-image-placeholder">
+              {{ listing.description[:1].upper() }}
+            </a>
+            {% endif %}
           </div>
           <div class="panel-footer text-center">
             <p>{{ '$%0.2f'|format(listing.price / 100) }}</p>
