@@ -36,8 +36,7 @@ def pull_from_listing(permalink):
         key_name=json_data["permalink"],
         seller=json_data["seller"]["email"],
         posting_time=posting_time,
-        description=re.sub(r'(<a.*>\n*)', '', json_data["description"].replace("<p>", "").replace("</p>", ""))
-        .replace,
+        description=re.sub(r'(<a.*>\n*)', '', json_data["description"].replace("<p>", "").replace("</p>", "")),
         details=json_data["details"],
         price=(int(float(json_data["price"]) * 100))
     )
