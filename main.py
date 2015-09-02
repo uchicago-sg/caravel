@@ -1,14 +1,14 @@
 # Pull packages from vendor/ directory.
 import sys; sys.path.insert(0, "vendor")
 
-import models
-import search
-import live_migration
+import models, search, live_migration, photos
 import itertools
 
 from flask import Flask, request, render_template, session, jsonify
 app = Flask(__name__)
 app.secret_key = models.SECRET_KEY
+
+app.jinja_env.filters['public_url'] = photos.public_url
 
 @app.route("/")
 def index():

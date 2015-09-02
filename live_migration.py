@@ -3,6 +3,7 @@ import re, traceback, json, urllib2, datetime, time
 
 import models
 import search
+import photos
 
 def pull_from_listing(permalink):
     """
@@ -17,7 +18,10 @@ def pull_from_listing(permalink):
     if not data:
         return
 
-    json_data = json.loads(data)
+    try:
+        json_data = json.loads(data)
+    except ValueError:
+        return
 
     # Parse the listing date from not-quite-ISO8601 to App Engine UTC.
     posting_time = time.mktime((datetime.datetime.strptime(
@@ -27,8 +31,8 @@ def pull_from_listing(permalink):
         minutes=float(json_data["renewed_at"][-2:])
     )).timetuple())
 
-    # (Idempotently) save this entity into the datastore.
-    models.Listing(
+    # Prepare a listing to update.
+    listing = models.Listing(
         key_name=json_data["permalink"],
         seller=json_data["seller"]["email"],
         posting_time=posting_time,
@@ -36,7 +40,17 @@ def pull_from_listing(permalink):
         .replace,
         details=json_data["details"],
         price=(int(float(json_data["price"]) * 100))
-    ).put()
-    
+    )
+
+    # Download all original photos for this listing.
+    html = urllib2.urlopen(url).read()
+    images = re.finditer(r"<a class='fancybox-image' href='([^']*)'", html)
+    prefix = "http://marketplace.uchicago.edu"
+
+    listing.photo_urls = [urllib2.urlopen(prefix + m.group(1)) for m in images]
+
+    # (Idempotently) save this entity into the datastore.
+    listing.put()
+
     # Invalidate the cache.
     search.invalidate_listing(json_data["permalink"])

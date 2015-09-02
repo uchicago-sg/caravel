@@ -75,3 +75,19 @@ body {
         min-width: 500px;
     }
 }
+
+.small-image-placeholder, .large-image-placeholder {
+    display: block;
+    font: bold 150px sans-serif;
+    color: #fcfcfc !important;
+    text-align: center;
+    text-decoration: none !important;
+}
+
+.small-image-placeholder {
+    font-size: 150px;
+}
+
+.large-image-placeholder {
+    font-size: 300px;
+}

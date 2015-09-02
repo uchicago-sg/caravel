@@ -10,7 +10,13 @@
   <div class="row">
     <div class="col-md-6">
       <div class="thumbnail">
-        <img src="https://goo.gl/T5tiQf">
+        {% if listing.photo_urls[0] %}
+        <img src="{{ listing.photo_urls[0] | public_url }}">
+        {% else %}
+        <div class="large-image-placeholder">
+          {{ listing.description[:1].upper() }}
+        </div>
+        {% endif %}
       </div>
     </div>
     <div class="col-md-6">

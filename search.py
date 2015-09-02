@@ -54,6 +54,7 @@ def lookup_listing(permalink):
         return None
     json_dict = db.to_dict(ent)
     json_dict["key"] = permalink
+    json_dict["photo_urls"] = ent.photo_urls # FIXME: handle getters better
     return json_dict
 
 def invalidate_listing(permalink):
