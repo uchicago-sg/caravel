@@ -1,0 +1,10 @@
+dependencies:
+  pre:
+    - curl -o $HOME/google_appengine_1.9.25.zip https://storage.googleapis.com/appengine-sdks/featured/google_appengine_1.9.25.zip
+    - unzip -q -d $HOME $HOME/google_appengine_1.9.25.zip
+
+deployment:
+  appengine:
+    branch: master
+    commands:
+      - appcfg.py update . --oauth2_refresh_token=$OAUTH2_REFRESH_TOKEN
