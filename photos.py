@@ -59,7 +59,7 @@ def upload(file_object, size='medium'):
         filename="/{}/{}".format(GCS_BUCKET, photo_id),
         mode="w",
         content_type="image/jpg",
-        options={"x-goog-acl": "public"}
+        options={"x-goog-acl": "public-read"}
     )
     output_file.write(result_data)
     output_file.close()
