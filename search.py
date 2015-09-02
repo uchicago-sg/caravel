@@ -71,7 +71,7 @@ def fetch_shard(shard=""):
     Retrieves the permalinks of all listings to appear on the home page.
     """
 
-    query = models.Listing.all(keys_only=True).order("posting_time")
+    query = models.Listing.all(keys_only=True).order("-posting_time")
     return [k.name() for k in query.fetch(30)]
 
 def run_query(query=""):
