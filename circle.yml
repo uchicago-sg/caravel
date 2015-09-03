@@ -5,6 +5,6 @@ dependencies:
 
 deployment:
   appengine:
-    branch: master
+    branch: /.*/
     commands:
-      - google_appengine*/appcfg.py update . --oauth2_refresh_token=$OAUTH2_REFRESH_TOKEN
+      - $HOME/google_appengine*/appcfg.py update . --version=$(git rev-parse --abbrev-ref HEAD) --oauth2_refresh_token=$OAUTH2_REFRESH_TOKEN
