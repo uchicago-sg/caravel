@@ -7,4 +7,4 @@ deployment:
   appengine:
     branch: master
     commands:
-      - appcfg.py update . --oauth2_refresh_token=$OAUTH2_REFRESH_TOKEN
+      - google_appengine*/appcfg.py update . --oauth2_refresh_token=$OAUTH2_REFRESH_TOKEN
