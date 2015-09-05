@@ -7,4 +7,5 @@ deployment:
   appengine:
     branch: /.*/
     commands:
+      - rm -Rf venv/
       - $HOME/google_appengine*/appcfg.py update . --version=$(git rev-parse --abbrev-ref HEAD) --oauth2_refresh_token=$OAUTH2_REFRESH_TOKEN

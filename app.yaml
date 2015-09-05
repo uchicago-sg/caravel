@@ -6,12 +6,12 @@ threadsafe: yes
 
 handlers:
 - url: /static
-  static_dir: static
-- url: /_internal/collect_garbage
-  script: photos.collect_garbage
+  static_dir: caravel/static
+- url: /_internal/.*
+  script: caravel.app
   login: admin
 - url: /.*
-  script: main.app
+  script: caravel.app
 
 builtins:
 - deferred: on

@@ -1,8 +1,9 @@
-import os, StringIO
-import photos
-
-from google.appengine.ext import db, deferred
-from google.appengine.api import taskqueue
+"""
+This module defines the mapping between Datastore and Python objects.
+"""
+import StringIO
+from caravel.storage import photos
+from google.appengine.ext import db
 
 class Listing(db.Model):
     seller = db.StringProperty() # an email address
@@ -37,18 +38,4 @@ class Listing(db.Model):
 
         # Actually set the property on the backend.
         self.photos_ = [(photos.upload(u, 'large') if hasattr(u, 'read') else u)
-                           for u in url_or_fps]
-
-class SharedSecret(db.Model):
-    value = db.BlobProperty()
-
-SECRET_KEY = SharedSecret.get_or_insert(key_name='session_key',
-                 value=os.urandom(256)).value
-
-def run_later(task, *vargs, **kwargs):
-    """
-    Runs the given deferrable function asynchronously.
-    """
-
-    kwargs["_retry_options"] = taskqueue.TaskRetryOptions(task_retry_limit=5)
-    deferred.defer(task, *vargs, **kwargs)
+                        for u in url_or_fps]
