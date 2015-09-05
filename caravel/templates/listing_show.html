@@ -14,15 +14,15 @@
         <img src="{{ listing.photo_urls[0] | public_url }}">
         {% else %}
         <div class="large-image-placeholder">
-          {{ listing.description[:1].upper() }}
+          {{ listing.body[:1].upper() }}
         </div>
         {% endif %}
       </div>
     </div>
     <div class="col-md-6">
-      <h3>{{ listing.description }}</h3>
+      <h3>{{ listing.title }}</h3>
       <p>{{ '$%0.2f'|format(listing.price / 100) }}</p>
-      <p>{{ listing.details }}</p>
+      <p>{{ listing.body }}</p>
     </div>
   </div>
 {% endblock %}

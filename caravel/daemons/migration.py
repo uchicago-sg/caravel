@@ -1,14 +1,30 @@
-from google.appengine.api import mail
-import re, traceback, json, urllib2, datetime, time
+"""
+The migration daemon automatically pulls the latest listings from the old site.
+"""
 
-import models
-import search
-import photos
+import json, time, datetime, re, urllib2
+from flask import request
+from caravel import app
+from caravel.storage import entities, helpers
+from google.appengine.ext import deferred
+from google.appengine.api import taskqueue, urlfetch
+
+@app.route("/_pull")
+def pull_from_legacy_site():
+    """A webhook triggered by the old site that pulls that site."""
+    deferred.defer(
+        pull_from_listing,
+        permalink=request.args.get("permalink", ""),
+        _retry_options=taskqueue.TaskRetryOptions(task_retry_limit=5)
+    ) # need to defer to prevent the prod site from deadlocking
+    return "ok"
 
 def pull_from_listing(permalink):
     """
     Retrieves the listing from the old Marketplace, and save it to the database.
     """
+
+    urlfetch.set_default_fetch_deadline(30)
 
     # Retrieve existing listing by the permalink.
     if not re.match(r"^[a-zA-Z\-0-9]+$", permalink):
@@ -31,13 +47,16 @@ def pull_from_listing(permalink):
         minutes=float(json_data["renewed_at"][-2:])
     )).timetuple())
 
+    # Remove HTML tags from body.
+    cleaned_body = re.sub(r'<[^>]+>', '', json_data["details"])
+
     # Prepare a listing to update.
-    listing = models.Listing(
+    listing = entities.Listing(
         key_name=json_data["permalink"],
         seller=json_data["seller"]["email"],
         posting_time=posting_time,
-        description=re.sub(r'(<a.*>\n*)', '', json_data["description"].replace("<p>", "").replace("</p>", "")),
-        details=json_data["details"],
+        title=json_data["description"],
+        body=cleaned_body,
         price=(int(float(json_data["price"]) * 100))
     )
 
@@ -52,4 +71,4 @@ def pull_from_listing(permalink):
     listing.put()
 
     # Invalidate the cache.
-    search.invalidate_listing(json_data["permalink"])
+    helpers.invalidate_listing(json_data["permalink"])
