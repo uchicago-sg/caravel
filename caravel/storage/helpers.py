@@ -14,6 +14,13 @@ def lookup_listing(permalink):
     json_dict = db.to_dict(ent)
     json_dict["key"] = permalink
     json_dict["photo_urls"] = ent.photo_urls # FIXME: handle getters better
+
+    # FIXME: remove below once all listings are migrated to new schema
+    if not json_dict.get("title"):
+        json_dict["title"] = json_dict.get("description")
+    if not json_dict.get("body"):
+        json_dict["body"] = json_dict.get("details")
+
     return json_dict
 
 def invalidate_listing(permalink):

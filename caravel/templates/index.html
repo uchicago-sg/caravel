@@ -16,7 +16,7 @@
       <div class="col-xs-12 col-md-3">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title">{{ listing.description }}</h3>
+            <h3 class="panel-title">{{ listing.title }}</h3>
           </div>
           <div class="panel-image hide-panel-body">
             
@@ -28,7 +28,7 @@
             </a>
             {% else %}
             <a href="/{{ listing.key }}" class="small-image-placeholder">
-              {{ listing.description[:1].upper() }}
+              {{ listing.title[:1].upper() }}
             </a>
             {% endif %}
           </div>

@@ -5,10 +5,10 @@ import StringIO
 from caravel.storage import photos
 from google.appengine.ext import db
 
-class Listing(db.Model):
+class Listing(db.Expando):
     seller = db.StringProperty() # an email address
-    description = db.StringProperty()
-    details = db.TextProperty()
+    title = db.StringProperty()
+    body = db.TextProperty()
     price = db.IntegerProperty() # in cents of a U.S. dollar
     posting_time = db.FloatProperty() # set to 0 iff not yet published
 

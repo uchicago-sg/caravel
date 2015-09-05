@@ -48,15 +48,15 @@ def pull_from_listing(permalink):
     )).timetuple())
 
     # Remove HTML tags from body.
-    cleaned_details = re.sub(r'<[^>]+>', '', json_data["details"])
+    cleaned_body = re.sub(r'<[^>]+>', '', json_data["details"])
 
     # Prepare a listing to update.
     listing = entities.Listing(
         key_name=json_data["permalink"],
         seller=json_data["seller"]["email"],
         posting_time=posting_time,
-        description=json_data["description"],
-        details=cleaned_details,
+        title=json_data["description"],
+        body=cleaned_body,
         price=(int(float(json_data["price"]) * 100))
     )
 
