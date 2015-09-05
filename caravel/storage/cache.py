@@ -2,7 +2,7 @@
 The cache uses memcached to dramatically reduce the number of database queries.
 """
 
-import functools, logging, json
+import functools, logging, json, os
 from google.appengine.api import memcache
 
 def cache(function):
@@ -17,7 +17,8 @@ def cache(function):
         """
 
         # Generate a memcache key from the arguments and function name.
-        key = json.dumps([function.__name__, vargs, kwargs])
+        app_version = os.environ["CURRENT_VERSION_ID"]
+        key = json.dumps([app_version, function.__name__, vargs, kwargs])
 
         # Retrieve from cache.
         serialized = memcache.get(key)
