@@ -19,7 +19,7 @@ def pull_from_legacy_site():
     ) # need to defer to prevent the prod site from deadlocking
     return "ok"
 
-def pull_from_listing(permalink):
+def pull_from_listing(permalink, _urlopen=urllib2.urlopen):
     """
     Retrieves the listing from the old Marketplace, and save it to the database.
     """
@@ -30,13 +30,13 @@ def pull_from_listing(permalink):
     if not re.match(r"^[a-zA-Z\-0-9]+$", permalink):
         raise ValueError("Invalid permalink: {!r}".format(permalink))
     url = "http://marketplace.uchicago.edu/{}".format(permalink)
-    data = urllib2.urlopen(url + ".json").read()
+    data = _urlopen(url + ".json").read()
     if not data:
         return
 
     try:
         json_data = json.loads(data)
-    except ValueError:
+    except ValueError, e:
         return
 
     # Parse the listing date from not-quite-ISO8601 to App Engine UTC.
@@ -61,11 +61,11 @@ def pull_from_listing(permalink):
     )
 
     # Download all original photos for this listing.
-    html = urllib2.urlopen(url).read()
+    html = _urlopen(url).read()
     images = re.finditer(r"<a class='fancybox-image' href='([^']*)'", html)
     prefix = "http://marketplace.uchicago.edu"
 
-    listing.photo_urls = [urllib2.urlopen(prefix + m.group(1)) for m in images]
+    listing.photo_urls = [_urlopen(prefix + m.group(1)) for m in images]
 
     # (Idempotently) save this entity into the datastore.
     listing.put()

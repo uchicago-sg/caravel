@@ -3,6 +3,10 @@ dependencies:
     - curl -o $HOME/google_appengine_1.9.25.zip https://storage.googleapis.com/appengine-sdks/featured/google_appengine_1.9.25.zip
     - unzip -q -d $HOME $HOME/google_appengine_1.9.25.zip
 
+test:
+  override:
+    - ./smoke_test.py
+
 deployment:
   appengine:
     branch: /.*/
