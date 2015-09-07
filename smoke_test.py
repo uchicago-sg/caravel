@@ -13,6 +13,7 @@ dev_appserver = subprocess.Popen([
     "--admin_port", "4142",
     "--clear_datastore", "true",
     "--require_indexes", "true",
+    "--skip_sdk_update_check", "true",
     "."])
 
 try:
