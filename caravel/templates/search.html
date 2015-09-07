@@ -1,8 +1,8 @@
 <div class="container" style="margin-bottom: 1em;">
   <div class="row">
-    <div class="col-md-12">
+    <form class="col-md-12" method="GET" action="/">
       <div class="input-group" id="adv-search">
-        <input type="text" class="form-control" placeholder="Search for snippets"/>
+        <input type="text" class="form-control" name="q" value="{{ request.args['q'] }}" placeholder="Search for listings..."/>
 
         <div class="input-group-btn">
           <div class="btn-group" role="group">
@@ -17,7 +17,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </form>
   </div>
 </div>
 </div>

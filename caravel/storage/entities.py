@@ -4,6 +4,28 @@ This module defines the mapping between Datastore and Python objects.
 import StringIO
 from caravel.storage import photos
 from google.appengine.ext import db
+import re
+
+class DerivedProperty(db.Property):
+    """
+    A DerivedProperty allows one to create a property that is computed on
+    demand when saving a property.
+    """
+
+    def __init__(self, derive_func, *args, **kwargs):
+        """Initialize this property given a derivation function."""
+        super(DerivedProperty, self).__init__(*args, **kwargs)
+        self.derive_func = derive_func
+
+    def __get__(self, model_instance, model_class):
+        """Override when this property is read from an entity."""
+        if model_instance is None:
+            return self
+        return self.derive_func(model_instance)
+
+    def __set__(self, model_instance, value):
+        """Block assignment to entity.prop."""
+        raise db.DerivedPropertyError("cannot assign to a DerivedProperty")
 
 class Listing(db.Expando):
     seller = db.StringProperty() # an email address
@@ -14,6 +36,17 @@ class Listing(db.Expando):
 
     photos_ = db.StringListProperty(indexed=False, name="photos")
     thumbnail_url = db.StringProperty(indexed=False)
+
+    @DerivedProperty
+    def keywords(self):
+        """Generates keywords based on the alphanumeric words in the string."""
+
+        # Tokenize title and body (ranking them equally)
+        words = self.title.split() + self.body.split()
+        alphanums = [re.sub(r'[^a-z0-9]', '', word.lower()) for word in words]
+
+        # Return a uniqified list of words.
+        return sorted(set(alphanums[:500]))
 
     @property
     def photo_urls(self):
