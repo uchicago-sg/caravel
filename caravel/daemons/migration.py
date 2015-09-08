@@ -71,4 +71,4 @@ def pull_from_listing(permalink, _urlopen=urllib2.urlopen):
     listing.put()
 
     # Invalidate the cache.
-    helpers.invalidate_listing(json_data["permalink"])
+    helpers.invalidate_listing(permalink, listing.keywords)

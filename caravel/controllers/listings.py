@@ -10,7 +10,7 @@ from google.appengine.api import mail
 @app.route("/")
 def index():
     """Display a list of listings that match the given query."""
-    listings = helpers.run_query(request.args.get("q"))
+    listings = helpers.run_query(request.args.get("q", ""))
     return render_template("index.html", listings=listings)
 
 @app.route("/<permalink>")
