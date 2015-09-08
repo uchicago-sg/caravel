@@ -65,4 +65,4 @@ def run_query(query=""):
     listings = [lookup_listing(key) for key in keys]
     listings.sort(key=lambda x: -x["posting_time"])
 
-    return listing
+    return listings
