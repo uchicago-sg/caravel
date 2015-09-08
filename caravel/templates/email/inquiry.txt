@@ -1,0 +1,13 @@
+Hello again!
+
+We've received a new inquiry for LISTINGNAME:
+
+  Name: Bobby Jones (jones@uchicago.edu, IP: 1.2.3.4)
+  
+  Message goes here, wrapped to 60 chars.
+
+Simply reply to this email if you'd like to get in contact.
+
+Cheers,
+Sarah, on behalf of the
+Magic Marketplace Monkeys
