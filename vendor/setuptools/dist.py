@@ -115,24 +115,26 @@ def check_extras(dist, attr, value):
 def assert_bool(dist, attr, value):
     """Verify that value is True, False, 0, or 1"""
     if bool(value) != value:
-        raise DistutilsSetupError(
-            "%r must be a boolean value (got %r)" % (attr,value)
-        )
+        tmpl = "{attr!r} must be a boolean value (got {value!r})"
+        raise DistutilsSetupError(tmpl.format(attr=attr, value=value))
+
+
 def check_requirements(dist, attr, value):
     """Verify that install_requires is a valid requirements list"""
     try:
         list(pkg_resources.parse_requirements(value))
-    except (TypeError,ValueError):
-        raise DistutilsSetupError(
-            "%r must be a string or list of strings "
-            "containing valid project/version requirement specifiers" % (attr,)
+    except (TypeError, ValueError) as error:
+        tmpl = (
+            "{attr!r} must be a string or list of strings "
+            "containing valid project/version requirement specifiers; {error}"
         )
+        raise DistutilsSetupError(tmpl.format(attr=attr, error=error))
+
 def check_entry_points(dist, attr, value):
     """Verify that entry_points map is parseable"""
     try:
         pkg_resources.EntryPoint.parse_map(value)
-    except ValueError:
-        e = sys.exc_info()[1]
+    except ValueError as e:
         raise DistutilsSetupError(e)
 
 def check_test_suite(dist, attr, value):
@@ -278,10 +280,9 @@ class Distribution(_Distribution):
                 normalized_version = str(ver)
                 if self.metadata.version != normalized_version:
                     warnings.warn(
-                        "The version specified requires normalization, "
-                        "consider using '%s' instead of '%s'." % (
-                            normalized_version,
+                        "Normalizing '%s' to '%s'" % (
                             self.metadata.version,
+                            normalized_version,
                         )
                     )
                     self.metadata.version = normalized_version
@@ -435,7 +436,7 @@ class Distribution(_Distribution):
         for ep in pkg_resources.iter_entry_points('distutils.commands'):
             if ep.name not in self.cmdclass:
                 # don't require extras as the commands won't be invoked
-                cmdclass = ep._load()
+                cmdclass = ep.resolve()
                 self.cmdclass[ep.name] = cmdclass
         return _Distribution.print_commands(self)
 
