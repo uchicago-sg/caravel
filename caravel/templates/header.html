@@ -1,5 +1,19 @@
-<div class="row user-dropdown">
-  <div class="dropdown pull-right">
+<div class="masthead row">
+  <h1 class="branding col-md-3">
+    <a href="/">UChicago Marketplace</a>
+  </h1>
+  <form class="search-form col-md-6" method="GET" action="/">
+    <div class="input-group">
+      <input type="text" class="form-control" name="q"
+        value="{{ request.args['q'] }}" placeholder="Search for listings..."/>
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-primary">
+          <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+        </button>
+      </span>
+    </div>
+  </form>
+  <p class="user-info col-md-3">
     {% if session.get('email') %}
       {%  if session.get('validated') %}
         <button class="btn btn-default dropdown-toggle btn-validated" type="button" id="dropdown_menu_user" data-toggle="dropdown"
@@ -25,11 +39,5 @@
         Not Registered
       </button>
     {% endif %}
-  </div>
+  </p>
 </div>
-<div class="row">
-  <h1 class="title"> Marketplace </h1>
-</div>
-<img
-    src="https://upload.wikimedia.org/wikipedia/en/thumb/8/8a/University_of_Chicago_Modern_Etched_Seal_1.svg/1024px-University_of_Chicago_Modern_Etched_Seal_1.svg.png"
-    class="logo-pic">

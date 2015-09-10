@@ -6,7 +6,7 @@
 {% endblock %}
 {% block content %}
   <h2> View Listing </h2>
-  <a href="/" class="btn btn-link"> Back to listings </a>
+  <a href="/?q={{ request.args['q'] }}">Back to listings</a>
   <div class="row">
     <div class="col-md-6">
       <div class="thumbnail">
