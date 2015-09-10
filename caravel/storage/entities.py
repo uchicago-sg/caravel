@@ -5,6 +5,8 @@ import StringIO
 from caravel.storage import photos
 from google.appengine.ext import db
 import re
+import inflect
+INFLECT_ENGINE = inflect.engine()
 
 class DerivedProperty(db.Property):
     """
@@ -27,6 +29,15 @@ class DerivedProperty(db.Property):
         """Block assignment to entity.prop."""
         raise db.DerivedPropertyError("cannot assign to a DerivedProperty")
 
+def fold_query_term(word):
+    """
+    Returns the canonical representation of the given query word.
+    """
+
+    stripped = re.sub(r'[^a-z0-9]', '', word.lower())
+    singularized = INFLECT_ENGINE.singular_noun(stripped) or stripped
+    return singularized
+
 class Listing(db.Expando):
     seller = db.StringProperty() # an email address
     title = db.StringProperty()
@@ -43,10 +54,10 @@ class Listing(db.Expando):
 
         # Tokenize title and body (ranking them equally)
         words = self.title.split() + self.body.split()
-        alphanums = [re.sub(r'[^a-z0-9]', '', word.lower()) for word in words]
+        singularized = [fold_query_term(word) for word in words]
 
         # Return a uniqified list of words.
-        return sorted(set(alphanums[:500]))
+        return sorted(set(singularized[:500]) - set(['']))
 
     @property
     def photo_urls(self):
