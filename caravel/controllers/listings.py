@@ -4,8 +4,9 @@ Listings are placed by sellers when they want to sell things.
 
 from caravel import app, policy
 from caravel.storage import helpers
-from flask import render_template, request, abort, redirect, url_for
+from flask import render_template, request, abort, redirect, url_for, session
 from google.appengine.api import mail
+from forms import BuyerForm
 
 @app.route("/")
 def index():
@@ -19,7 +20,12 @@ def show(permalink):
     listing = helpers.lookup_listing(permalink)
     if not listing:
         abort(404)
-    return render_template("listing_show.html", listing=listing)
+    buyer_form = BuyerForm()
+    if buyer_form.validate_on_submit():
+        return redirect(url_for("place_inquiry"), permalink=permalink)
+    if session.get("email") and session.get("validated"):
+        buyer_form.email.data = session.get("email")
+    return render_template("listing_show.html", listing=listing, buyer_form=buyer_form)
 
 @app.route("/<permalink>/edit")
 def edit(permalink):
