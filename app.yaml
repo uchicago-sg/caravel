@@ -7,11 +7,14 @@ threadsafe: yes
 handlers:
 - url: /static
   static_dir: caravel/static
+  secure: always
 - url: /_internal/.*
   script: caravel.app
   login: admin
+  secure: always
 - url: /.*
   script: caravel.app
+  secure: always
 
 builtins:
 - deferred: on
