@@ -6,30 +6,28 @@
   <script src="/static/index.js"></script>
 {% endblock %}
 {% block content %}
-  <div class="container">
-    <div class="row">
-      {% for listing in listings %}
-      <div class="listing col-xs-12 col-md-3">
-        <h3 class="title">
-          <a href="/{{ listing.key }}?q={{ request.args['q']}}">
-            {{ listing.title }}
-          </a>
-        </h3>
-        <p class="price">{{ '${:,.2f}'.format(listing.price / 100) }}</p>
+  <div class="row">
+    {% for listing in listings %}
+    <div class="listing col-xs-12 col-md-3">
+      <h3 class="title">
         <a href="/{{ listing.key }}?q={{ request.args['q']}}">
-          {% if listing.thumbnail_url %}
-          <img
-              src="{{ listing.thumbnail_url | public_url }}"
-              class="panel-image-preview"/>
-          {% else %}
-          <span class="small-image-placeholder">
-            {{ listing.title[:1].upper() }}
-          </span>
-          {% endif %}
+          {{ listing.title }}
         </a>
-      </div>
-      {% endfor %}
+      </h3>
+      <p class="price">{{ '${:,.2f}'.format(listing.price / 100) }}</p>
+      <a href="/{{ listing.key }}?q={{ request.args['q']}}">
+        {% if listing.thumbnail_url %}
+        <img
+            src="{{ listing.thumbnail_url | public_url }}"
+            class="panel-image-preview"/>
+        {% else %}
+        <span class="small-image-placeholder">
+          {{ listing.title[:1].upper() }}
+        </span>
+        {% endif %}
+      </a>
     </div>
+    {% endfor %}
   </div>
 
   {# TODO (georgeteo): infinite scroll     #}
