@@ -34,21 +34,29 @@ body {
 
 /* For search results */
 .listing {
-    margin-bottom: 1em;
+    margin-bottom: 4em;
 }
 
 .listing img {
     width: 100%;
+    border-radius: 5px 5px 0 0;
 }
 
 .listing h3 {
     position: absolute;
-    bottom: 0;
-    font: bold 2em/1 Roboto,sans-serif;
+    bottom: -40px;
+    left: 15px;
+    right: 15px;
+    padding: 5px 10px;
+    font: bold 1.5em/30px Roboto,sans-serif;
+    margin: 0;
+    background-color: #fff;
+    border-radius: 0 0 5px 5px;
+    overflow: hidden;
+    z-index: 10;
 }
 
 .listing h3 a {
-    background-color: #fff;
     color: #000;
 }
 
@@ -59,6 +67,9 @@ body {
     text-align: right;
     background-color: #090;
     color: #fff;
+    padding: 3px 5px;
+    border-radius: 5px 0 0 5px;
+    z-index: 15;
 }
 
 /* For listings without images */
