@@ -40,7 +40,8 @@ def cache(function):
         """
 
         # Generate a memcache key from the arguments and function name.
-        key = json.dumps([function.__name__, vargs, kwargs])
+        app_version = os.environ["CURRENT_VERSION_ID"]
+        key = json.dumps([app_version, function.__name__, vargs, kwargs])
         memcache.delete(key)
 
     inner.invalidate = invalidate
