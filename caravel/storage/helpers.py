@@ -56,7 +56,7 @@ def run_query(query=""):
     words = words[:5] # TODO: Raise once we know the approximate cost.
 
     # Retrieve the keys for entities that match all terms.
-    shards = [set(fetch_shard(word)) for word in words]
+    shards = [set(fetch_shard(entities.fold_query_term(w))) for w in words]
     if not shards:
         return []
     keys = shards[0].intersection(*shards[1:])
