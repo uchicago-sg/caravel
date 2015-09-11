@@ -19,12 +19,23 @@ body {
 }
 
 .search-form {
-    padding: 3em 0;
+    padding: 0 1em;
 }
 
 .user-info {
-    line-height: 8em;
-    text-indent: 1em;
+    padding: 1em 1em;
+}
+
+@media (min-width: 992px) {
+    .search-form {
+        padding: 3em 0;
+    }
+
+    .user-info {
+        line-height: 8em;
+        text-indent: 1em;
+        padding: 0;
+    }
 }
 
 .user-info a {
