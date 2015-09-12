@@ -22,7 +22,7 @@ def show(permalink):
         abort(404)
     buyer_form = BuyerForm()
     if buyer_form.validate_on_submit():
-        return redirect(url_for("place_inquiry"), permalink=permalink)
+        return redirect(url_for("place_inquiry", permalink=permalink))
     if session.get("email") and session.get("validated"):
         buyer_form.email.data = session.get("email")
     return render_template("listing_show.html", listing=listing,
@@ -47,7 +47,7 @@ def edit(permalink):
                 pass
         else:
             if seller_form.validate_on_submit():
-                return redirect(url_for("create"), keyword="updated")
+                return redirect(url_for("create", keyword="updated"))
 
     seller_form.title.data = listing.title
     seller_form.description = listing.body
@@ -67,7 +67,7 @@ def new():
                 """ TODO (georgete): POST directly for validated emails"""
                 pass
         else:
-            return redirect(url_for("create"), keyword="created")
+            return redirect(url_for("create", keyword="created"))
     return render_template("listing_form.html", type="New",
                            seller_form=seller_form)
 
