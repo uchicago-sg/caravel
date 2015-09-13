@@ -65,6 +65,7 @@ body {
     border-radius: 0 0 5px 5px;
     overflow: hidden;
     z-index: 10;
+    text-align: center;
 }
 
 .listing h3 a {
@@ -76,7 +77,7 @@ body {
     top: 1em;
     right: 15px;
     text-align: right;
-    background-color: #090;
+    background-color: #900;
     color: #fff;
     padding: 3px 5px;
     border-radius: 5px 0 0 5px;
