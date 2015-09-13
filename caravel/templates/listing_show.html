@@ -1,4 +1,4 @@
-<!-- Make into macro -->
+{% import "bootstrap/wtf.html" as wtf %}
 {% extends "layout.html" %}
 {% block title %} {% endblock %}
 {% block head %}
@@ -23,6 +23,21 @@
       <h3>{{ listing.title }}</h3>
       <p>{{ '$%0.2f'|format(listing.price / 100) }}</p>
       <p>{{ listing.body }}</p>
+      <hr>
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdown_menu_user" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="true">
+        Make an Inquiry
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu dropdown-form-buyer">
+        <li>
+          <div class="row">
+            <div class="col-md-12">
+              {{ wtf.quick_form(buyer_form) }}
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 {% endblock %}

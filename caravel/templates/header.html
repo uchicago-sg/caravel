@@ -1,15 +1,30 @@
 <div class="row user-dropdown">
   <div class="dropdown pull-right">
-    <button class="btn btn-default dropdown-toggle " type="button" id="dropdownMenu1" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="true">
-      username@uchicago.edu
-      <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-      <li><a href="#">Manage Listings</a></li>
-      <li><a href="#"> Verify Profile </a></li>
-      <li><a href="#"> Logout of all instances </a></li>
-    </ul>
+    {% if session.get('email') %}
+      {%  if session.get('validated') %}
+        <button class="btn btn-default dropdown-toggle btn-validated" type="button" id="dropdown_menu_user" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="true">
+          {{ session.get('email') }}
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="#">Manage Listings</a></li>
+            <li><a href={{ url_for('logout') }}>Logout</a></li>
+      {% else %}
+        <button class="btn btn-default dropdown-toggle btn-not-validated" type="button" id="dropdown_menu_user" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="true">
+          User {{ session.get('email') }} not verified
+        </button>
+        <ul class="dropdown-menu">
+          <li><a href={{ url_for('logout') }}>Logout</a></li>
+        </ul>
+      {%  endif %}
+      </ul>
+    {% else %}
+      <button class="btn btn-default btn-not-logged-in">
+        Not Registered
+      </button>
+    {% endif %}
   </div>
 </div>
 <div class="row">

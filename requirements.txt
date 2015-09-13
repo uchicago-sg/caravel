@@ -1,3 +1,6 @@
+flask_bootstrap
+flask-wtf==0.9.2
+wtforms
 Flask==0.10.1
 GoogleAppEngineCloudStorageClient==1.9.22.1
 inflect==0.2.5

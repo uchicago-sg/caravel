@@ -138,10 +138,9 @@ def interpret_distro_name(
     # versions in distribution archive names (sdist and bdist).
 
     parts = basename.split('-')
-    if not py_version:
-        for i,p in enumerate(parts[2:]):
-            if len(p)==5 and p.startswith('py2.'):
-                return # It's a bdist_dumb, not an sdist -- bail out
+    if not py_version and any(re.match('py\d\.\d$', p) for p in parts[2:]):
+        # it is a bdist_dumb, not an sdist -- bail out
+        return
 
     for p in range(1,len(parts)+1):
         yield Distribution(
@@ -699,25 +698,21 @@ class PackageIndex(Environment):
             return local_open(url)
         try:
             return open_with_auth(url, self.opener)
-        except (ValueError, httplib.InvalidURL):
-            v = sys.exc_info()[1]
+        except (ValueError, httplib.InvalidURL) as v:
             msg = ' '.join([str(arg) for arg in v.args])
             if warning:
                 self.warn(warning, msg)
             else:
                 raise DistutilsError('%s %s' % (url, msg))
-        except urllib2.HTTPError:
-            v = sys.exc_info()[1]
+        except urllib2.HTTPError as v:
             return v
-        except urllib2.URLError:
-            v = sys.exc_info()[1]
+        except urllib2.URLError as v:
             if warning:
                 self.warn(warning, v.reason)
             else:
                 raise DistutilsError("Download error for %s: %s"
                                      % (url, v.reason))
-        except httplib.BadStatusLine:
-            v = sys.exc_info()[1]
+        except httplib.BadStatusLine as v:
             if warning:
                 self.warn(warning, v.line)
             else:
@@ -726,8 +721,7 @@ class PackageIndex(Environment):
                     'down, %s' %
                     (url, v.line)
                 )
-        except httplib.HTTPException:
-            v = sys.exc_info()[1]
+        except httplib.HTTPException as v:
             if warning:
                 self.warn(warning, v)
             else:

@@ -1,37 +1,20 @@
-<!-- Make into macro -->
+{% import "bootstrap/wtf.html" as wtf %}
 {% extends "layout.html" %}
 {% block title %} {% endblock %}
 {% block head %}
   {{ super() }}
 {% endblock %}
 {% block content %}
-  <h2> New/Edit Listing </h2>
+  <h2> {{ type }} Listing </h2>
   <a href="/" class="btn btn-link"> Back to listings </a>
-  <form>
-    <div class="form-group">
-      <label> Title </label>
-      <input class="form-control" placeholder="Title">
-    </div>
-    <div class="form-group">
-      <label> Price </label>
-      <input type="number" class="form-control" placeholder="Price">
-    </div>
-    <div class="form-group">
-      <label> Description </label>
-      <textarea class="form-control" rows="3" placeholder="Description"></textarea>
-    </div>
-    <div class="form-group">
-      <label> Tags </label>
-      <textarea class="form-control" rows="3" placeholder="Tags"></textarea>
-
-      <p class="help-block"> Include #hashtags with keywords that describe the items you are selling.</p>
-    </div>
-    <div class="form-group">
-      <label for="Images"> Upload Images </label>
-      <input type="file">
-
-      <p class="help-block">You may upload up to 5 images.</p>
-    </div>
-    <button type="submit" class="btn btn-default">Submit</button>
+  <form class="form form-horizontal" method="post" role="form">
+    {{ wtf.form_field(seller_form.title) }}
+    {{ wtf.form_field(seller_form.email) }}
+    {{ wtf.form_field(seller_form.price) }}
+    {{ wtf.form_field(seller_form.description) }}
+    {% for image in seller_form.images %}
+      {{ wtf.form_field(image.image) }}
+    {% endfor %}
+    {{ wtf.form_field(seller_form.submit) }}
   </form>
 {% endblock %}
