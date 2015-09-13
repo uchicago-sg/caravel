@@ -16,7 +16,8 @@
   <p class="user-info col-md-3">
     {% if session.get('email') %}
       {%  if session.get('validated') %}
-        <button class="btn btn-default dropdown-toggle btn-validated" type="button" id="dropdown_menu_user" data-toggle="dropdown"
+        <button class="btn btn-default dropdown-toggle btn-validated"
+                type="button" id="dropdown_menu_user" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="true">
           {{ session.get('email') }}
           <span class="caret"></span>
@@ -25,7 +26,8 @@
             <li><a href="#">Manage Listings</a></li>
             <li><a href={{ url_for('logout') }}>Logout</a></li>
       {% else %}
-        <button class="btn btn-default dropdown-toggle btn-not-validated" type="button" id="dropdown_menu_user" data-toggle="dropdown"
+        <button class="btn btn-default dropdown-toggle btn-not-validated"
+                type="button" id="dropdown_menu_user" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="true">
           User {{ session.get('email') }} not verified
         </button>
