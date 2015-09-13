@@ -48,7 +48,7 @@ body {
     margin-bottom: 4em;
 }
 
-.listing img {
+.listing img, .listing .small-image-placeholder {
     width: 100%;
     border-radius: 5px 5px 0 0;
 }
@@ -92,12 +92,13 @@ body {
     background-color: #eee;
     text-align: center;
     text-decoration: none !important;
+    overflow: hidden;
 }
 
 .small-image-placeholder {
     font-size: 150px;
-    height: 263px;
-    line-height: 263px;
+    height: 213px;
+    line-height: 213px;
 }
 
 .large-image-placeholder {
