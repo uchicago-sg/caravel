@@ -2,90 +2,103 @@ body {
   background-color: #f8f8f8;
 }
 
-/* For user dropdown menu */
-.user-dropdown{
-    top-margin: 1em;
-}
-
 /* For header */
-.title{
-    font-family: "museo-sans";
-    font-size: 50px;
-    line-height: 1.6em;
-    text-transform: uppercase;
-    letter-spacing: 5px;
-    font-weight: 500;
-    font-style: normal;
-    margin: 0px 0 0;
-    color: #0f0f0f;
-    text-align: center;
-}
-
-.logo-pic{
-    margin-left: auto;
-    margin-right: auto;
-    width: 10em;
-    display: block;
+.masthead {
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
     margin-bottom: 1em;
 }
 
-/* For search bar */
-#bs-example-navbar-collapse-1{
-    height: 100px;
-    display: inline-block;
+.masthead a {
+    color: #000;
+    text-decoration: none;
 }
 
-.dropdown.dropdown-lg .dropdown-menu {
-    margin-top: -1px;
-    padding: 6px 20px;
-}
-.input-group-btn .btn-group {
-    display: flex !important;
-}
-.btn-group .btn {
-    border-radius: 0;
-    margin-left: -1px;
-}
-.btn-group .btn:last-child {
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-}
-.btn-group .form-horizontal .btn[type="submit"] {
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-}
-.form-horizontal .form-group {
-    margin-left: 0;
-    margin-right: 0;
-}
-.form-group .form-control:last-child {
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
+.branding {
+    font: bold 36px Roboto, sans-serif;
 }
 
-@media screen and (min-width: 768px) {
-    #adv-search {
-        width: 500px;
-        margin: 0 auto;
+.search-form {
+    padding: 0 1em;
+}
+
+.user-info {
+    padding: 1em 1em;
+}
+
+@media (min-width: 992px) {
+    .search-form {
+        padding: 3em 0;
     }
-    .dropdown.dropdown-lg {
-        position: static !important;
-    }
-    .dropdown.dropdown-lg .dropdown-menu {
-        min-width: 500px;
+
+    .user-info {
+        line-height: 8em;
+        text-indent: 1em;
+        padding: 0;
     }
 }
 
+.user-info a {
+    color: #000;
+    text-decoration: underline;
+}
+
+/* For search results */
+.listing {
+    margin-bottom: 4em;
+}
+
+.listing img, .listing .small-image-placeholder {
+    width: 100%;
+    border-radius: 5px 5px 0 0;
+}
+
+.listing h3 {
+    position: absolute;
+    bottom: -40px;
+    left: 15px;
+    right: 15px;
+    padding: 5px 10px;
+    font: bold 1.5em/30px Roboto,sans-serif;
+    margin: 0;
+    background-color: #fff;
+    border-radius: 0 0 5px 5px;
+    overflow: hidden;
+    z-index: 10;
+    text-align: center;
+}
+
+.listing h3 a {
+    color: #000;
+}
+
+.listing .price {
+    position: absolute;
+    top: 1em;
+    right: 15px;
+    text-align: right;
+    background-color: #900;
+    color: #fff;
+    padding: 3px 5px;
+    border-radius: 5px 0 0 5px;
+    z-index: 15;
+}
+
+/* For listings without images */
 .small-image-placeholder, .large-image-placeholder {
     display: block;
     font: bold 150px sans-serif;
-    color: #fcfcfc !important;
+    color: #fff !important;
+    background-color: #eee;
     text-align: center;
     text-decoration: none !important;
+    overflow: hidden;
 }
 
 .small-image-placeholder {
     font-size: 150px;
+    height: 213px;
+    line-height: 213px;
 }
 
 .large-image-placeholder {

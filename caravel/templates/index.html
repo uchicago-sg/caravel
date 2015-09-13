@@ -6,42 +6,28 @@
   <script src="/static/index.js"></script>
 {% endblock %}
 {% block content %}
-  {% include "search.html" %}
-  <div class="container" style="margin-top:10px;">
-    <div class="row form-group">
-      {% for listing in listings %}
-      {% if loop.index is divisibleby(4) %}
-        <div class="row">
-      {%  endif %}
-      <div class="col-xs-12 col-md-3">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">{{ listing.title }}</h3>
-          </div>
-          <div class="panel-image hide-panel-body">
-            
-            {% if listing.thumbnail_url %}
-            <a href="/{{ listing.key }}">
-              <img
-                src="{{ listing.thumbnail_url | public_url }}"
-                class="panel-image-preview"/>
-            </a>
-            {% else %}
-            <a href="/{{ listing.key }}" class="small-image-placeholder">
-              {{ listing.title[:1].upper() }}
-            </a>
-            {% endif %}
-          </div>
-          <div class="panel-footer text-center">
-            <p>{{ '$%0.2f'|format(listing.price / 100) }}</p>
-          </div>
-        </div>
-      </div>
-      {% if loop.index is divisibleby(4) %}
-        </div>
-      {%  endif %}
-      {% endfor %}
+  <div class="row">
+    {% for listing in listings %}
+    <div class="listing col-xs-12 col-md-3">
+      <h3 class="title">
+        <a href="/{{ listing.key }}?q={{ request.args['q']}}">
+          {{ listing.title }}
+        </a>
+      </h3>
+      <p class="price">{{ '${:,.2f}'.format(listing.price / 100) }}</p>
+      <a href="/{{ listing.key }}?q={{ request.args['q']}}">
+        {% if listing.thumbnail_url %}
+        <img
+            src="{{ listing.thumbnail_url | public_url }}"
+            class="panel-image-preview"/>
+        {% else %}
+        <span class="small-image-placeholder">
+          {{ listing.title[:1].upper() }}
+        </span>
+        {% endif %}
+      </a>
     </div>
+    {% endfor %}
   </div>
 
   {# TODO (georgeteo): infinite scroll     #}
