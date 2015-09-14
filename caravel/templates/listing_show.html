@@ -9,14 +9,37 @@
   <a href="/" class="btn btn-link"> Back to listings </a>
   <div class="row">
     <div class="col-md-6">
-      <div class="thumbnail">
-        {% if listing.photo_urls[0] %}
-        <img src="{{ listing.photo_urls[0] | public_url }}">
-        {% else %}
-        <div class="large-image-placeholder">
-          {{ listing.body[:1].upper() }}
+      <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner" role="listbox">
+        {% set i =0 %}
+        {% for photo in listing.photo_urls %}
+          {% if i == 0 %}
+            <div class="item active">
+          {% else %}
+            <div class="item">
+          {% endif %}
+
+          {% if photo %}
+            <img src="{{ photo | public_url }}">
+          {% else %}
+            <div class="large-image-placeholder">
+              {{ listing.body[:1].upper() }}
+            </div>
+          {% endif %}
+
+{#          Folloring div closes item active or item#}
+          </div>
+        {% set i = i + 1 %}
+        {% endfor %}
         </div>
-        {% endif %}
+        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+          <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+          <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
       </div>
     </div>
     <div class="col-md-6">
