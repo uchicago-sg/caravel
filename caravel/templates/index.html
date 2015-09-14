@@ -1,10 +1,5 @@
 {% extends "layout.html" %}
 {% block title %}Listings{% endblock %}
-{% block head %}
-  {{ super() }}
-  <link rel="stylesheet" href="/static/index.css">
-  <script src="/static/index.js"></script>
-{% endblock %}
 {% block content %}
   <div class="row">
     {% for listing in listings %}
