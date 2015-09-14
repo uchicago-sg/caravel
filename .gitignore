@@ -2,3 +2,4 @@
 *.pyo
 .idea
 *.so
+.DS_Store
