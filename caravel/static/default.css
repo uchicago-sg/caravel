@@ -15,7 +15,7 @@ body {
 }
 
 .branding {
-    font: bold 36px Roboto, sans-serif;
+    font: 400 36px Roboto, sans-serif;
 }
 
 .search-form {
@@ -59,7 +59,7 @@ body {
     left: 15px;
     right: 15px;
     padding: 5px 10px;
-    font: bold 1.5em/30px Roboto,sans-serif;
+    font: 400 1.5em/30px Roboto,sans-serif;
     margin: 0;
     background-color: #fff;
     border-radius: 0 0 5px 5px;
