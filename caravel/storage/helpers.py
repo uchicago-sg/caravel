@@ -11,6 +11,7 @@ def lookup_listing(permalink):
     ent = entities.Listing.get_by_key_name(permalink)
     if not ent:
         return None
+    ent.migrate()
     json_dict = db.to_dict(ent)
     json_dict["key"] = permalink
     json_dict["photo_urls"] = ent.photo_urls # FIXME: handle getters better

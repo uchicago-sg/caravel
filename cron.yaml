@@ -2,3 +2,6 @@ cron:
 - description: delete old photos
   url: /_internal/collect_garbage
   schedule: every 24 hours
+- description: migrate database schema
+  url: /_internal/migrate_schema
+  schedule: every 10 minutes

@@ -29,6 +29,23 @@ class DerivedProperty(db.Property):
         """Block assignment to entity.prop."""
         raise db.DerivedPropertyError("cannot assign to a DerivedProperty")
 
+class Versioned(db.Expando):
+    version = db.IntegerProperty(default=1)
+    migrations = {}
+    
+    @classmethod
+    def migration(kls, to_version):
+        def inner(func):
+            kls.migrations = dict(kls.migrations)
+            kls.migrations[to_version] = func
+            return func
+        return inner
+    
+    def migrate(self):
+        while self.version < self.SCHEMA_VERSION:
+            self.migrations.get(self.version, lambda _: None)(self)
+            self.version += 1
+
 def fold_query_term(word):
     """
     Returns the canonical representation of the given query word.
@@ -38,7 +55,9 @@ def fold_query_term(word):
     singularized = INFLECT_ENGINE.singular_noun(stripped) or stripped
     return singularized
 
-class Listing(db.Expando):
+class Listing(Versioned):
+    SCHEMA_VERSION = 1
+
     seller = db.StringProperty() # an email address
     title = db.StringProperty()
     body = db.TextProperty()
