@@ -72,16 +72,25 @@ body {
     color: #000;
 }
 
-.listing .price {
+.listing .price, .listing .age {
     position: absolute;
     top: 1em;
-    right: 15px;
-    text-align: right;
-    background-color: #900;
     color: #fff;
     padding: 3px 5px;
-    border-radius: 5px 0 0 5px;
     z-index: 15;
+}
+
+.listing .age {
+    background-color: #111;
+    left: 15px;
+    border-radius: 0 5px 5px 0;
+}
+
+.listing .price {
+    background-color: #900;
+    right: 15px;
+    text-align: right;
+    border-radius: 5px 0 0 5px;
 }
 
 /* For listings without images */

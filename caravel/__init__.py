@@ -13,6 +13,7 @@ app = Flask(__name__)
 from caravel.storage import config, photos
 from caravel.controllers import listings
 from caravel.daemons import replication, migration
+from caravel import utils
 
 # Import test modules iff running locally.
 if os.environ["SERVER_SOFTWARE"].startswith("Development/"):
