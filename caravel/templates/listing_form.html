@@ -8,8 +8,10 @@
   <h2> {{ type }} Listing </h2>
   <a href="/" class="btn btn-link"> Back to listings </a>
   <form class="form form-horizontal" method="post" role="form">
+    {{ seller_form.hidden_tag() }}
+    {{ wtf.form_errors(seller_form, hiddens="only") }}
     {{ wtf.form_field(seller_form.title) }}
-    {{ wtf.form_field(seller_form.email) }}
+    {{ wtf.form_field(seller_form.seller) }}
     {{ wtf.form_field(seller_form.price) }}
     {{ wtf.form_field(seller_form.description) }}
     {% for image in seller_form.images %}

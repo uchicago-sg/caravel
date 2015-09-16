@@ -63,10 +63,11 @@ class Listing(Versioned):
     SCHEMA_VERSION = 1
 
     seller = db.StringProperty() # an email address
-    title = db.StringProperty()
-    body = db.TextProperty()
-    price = db.IntegerProperty() # in cents of a U.S. dollar
-    posting_time = db.FloatProperty() # set to 0 iff not yet published
+    title = db.StringProperty(default="")
+    body = db.TextProperty(default="")
+    price = db.IntegerProperty(default=0) # in cents of a U.S. dollar
+    posting_time = db.FloatProperty(default=0) # set to 0 iff not yet published
+    admin_key = db.StringProperty() # how to administer this listing
 
     photos_ = db.StringListProperty(indexed=False, name="photos")
     thumbnail_url = db.StringProperty(indexed=False)

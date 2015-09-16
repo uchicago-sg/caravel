@@ -71,4 +71,4 @@ def pull_from_old_marketplace(permalink, _urlopen=urllib2.urlopen):
     listing.put()
 
     # Invalidate the cache.
-    helpers.invalidate_listing(permalink, listing.keywords)
+    helpers.invalidate_listing(listing)
