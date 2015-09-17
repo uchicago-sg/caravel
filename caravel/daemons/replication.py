@@ -9,7 +9,7 @@ from caravel.storage import entities, helpers
 from google.appengine.ext import deferred
 from google.appengine.api import taskqueue, urlfetch
 
-@app.route("/_pull")
+@app.route("/_pull", methods=["POST"])
 def pull_from_legacy_site():
     """A webhook triggered by the old site that pulls that site."""
     deferred.defer(
