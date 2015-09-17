@@ -10,6 +10,7 @@
         </a>
       </h3>
       <p class="price">{{ '${:,.2f}'.format(listing.price / 100) }}</p>
+      <p class="age">{{ listing.posting_time | as_duration }}</p>
       <a href="/{{ listing.key }}?q={{ request.args['q']}}">
         {% if listing.thumbnail_url %}
         <img
