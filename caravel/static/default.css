@@ -127,10 +127,10 @@ body {
  * --------------------------------------------------
  */
 .row-eq-height {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display:         flex;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:         flex;
 }
 
 .age {
@@ -139,9 +139,16 @@ body {
     border-radius: 0 5px 5px 0;
 }
 
-.price {
-    background-color: #900;
-    right: 15px;
-    text-align: right;
-    border-radius: 5px 0 0 5px;
+.category div {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    background: #900;
+    padding: 3px;
+    border-radius: 5px;
+    opacity: 0.8;
+}
+
+.category span {
+    color: white;
 }
