@@ -1,0 +1,20 @@
+<div class="listing col-xs-12 col-md-3">
+  <h3 class="title">
+    <a href="/{{ listing.permalink }}?q={{ request.args['q']}}">
+      {{ listing.title }}
+    </a>
+  </h3>
+  <p class="price">{{ '${:,.2f}'.format(listing.price / 100) }}</p>
+  <p class="age">{{ listing.posting_time | as_duration }}</p>
+  <a href="/{{ listing.permalink }}?q={{ request.args['q']}}">
+    {% if listing.thumbnail_url %}
+    <img
+        src="{{ listing.thumbnail_url | public_url }}"
+        class="panel-image-preview"/>
+    {% else %}
+    <span class="small-image-placeholder">
+      {{ listing.title[:1].upper() }}
+    </span>
+    {% endif %}
+  </a>
+</div>
