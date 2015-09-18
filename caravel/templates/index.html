@@ -1,28 +1,45 @@
 {% extends "layout.html" %}
 {% block title %}Listings{% endblock %}
 {% block content %}
-  <div class="row">
-    {% for listing in listings %}
-    <div class="listing col-xs-12 col-md-3">
-      <h3 class="title">
-        <a href="/{{ listing.key }}?q={{ request.args['q']}}">
-          {{ listing.title }}
-        </a>
-      </h3>
-      <p class="price">{{ '${:,.2f}'.format(listing.price / 100) }}</p>
+  {% set i = 0 %}
+  {% for listing in listings %}
+    {% set j = i + 1 %}
+    {%  if i%4 == 0 %}
+      <div class="row">
+      <div class="row-height">
+    {% endif %}
+    <div class="listing col-xs-12 col-md-3 col-height">
+    <div class="inside inside-full-height">
+{#      <h3 class="title">#}
+{#        <a href="/{{ listing.key }}?q={{ request.args['q']}}">#}
+{#          {{ listing.title }}#}
+{#        </a>#}
+{#      </h3>#}
+{#      <p class="price">{{ '${:,.2f}'.format(listing.price / 100) }}</p>#}
+    <div class="content">
       <a href="/{{ listing.key }}?q={{ request.args['q']}}">
         {% if listing.thumbnail_url %}
         <img
-            src="{{ listing.thumbnail_url | public_url }}"
-            class="panel-image-preview"/>
+            src="{{ listing.thumbnail_url | public_url }}"/>
         {% else %}
         <span class="small-image-placeholder">
           {{ listing.title[:1].upper() }}
         </span>
         {% endif %}
       </a>
+      <h3 class="title">
+          {{ listing.title }}
+      </h3>
     </div>
-    {% endfor %}
+
+    </div>
+    </div>
+    {% if j%4 == 0 %}
+      </div>
+      </div>
+    {% endif %}
+    {%  set i = i + 1 %}
+  {% endfor %}
   </div>
 
   {# TODO (georgeteo): infinite scroll     #}
