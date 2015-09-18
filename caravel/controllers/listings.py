@@ -106,3 +106,16 @@ def create(keyword):
 def logout():
     session.clear()
     return redirect(url_for('index'))
+
+@app.route('/test-validated')
+def test_validated():
+    session["email"] = "test@gmail.com"
+    session["validated"] = True
+    return redirect(url_for('index'))
+
+
+@app.route('/test-not-validated')
+def test_not_validated():
+    session["email"] = "test@gmail.com"
+    session["validated"] = False
+    return redirect(url_for('index'))

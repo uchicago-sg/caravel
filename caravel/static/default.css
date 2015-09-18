@@ -16,6 +16,12 @@ body {
 
 .branding {
     font: 400 36px Roboto, sans-serif;
+    width: 240px;
+}
+
+.logo-image{
+    height:112px;
+    display: inline;
 }
 
 .search-form {
@@ -113,3 +119,37 @@ body {
 .large-image-placeholder {
     font-size: 300px;
 }
+
+.email-validated{
+    text-align: center;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.email-validated-color{
+    color: green;
+}
+
+.email-not-validated{
+    text-align: center;
+    margin-top: 35px;
+    margin-bottom: 35px;
+}
+
+.email-not-validated-color{
+    color: orange;
+}
+
+.no-email{
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.no-email-color{
+    color: red;
+}
+.no-bottom-margin{
+    margin-bottom: 0px;
+}
+

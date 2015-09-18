@@ -1,5 +1,7 @@
 <div class="masthead row">
-  <h1 class="branding col-md-3">
+<div class="col-md-1">
+  <img src="/static/logo.jpg" class="logo-image"></div>
+  <h1 class="branding col-md-2">
     <a href="/">UChicago Marketplace</a>
   </h1>
   <form class="search-form col-md-6" method="GET" action="/">
@@ -13,33 +15,60 @@
       </span>
     </div>
   </form>
-  <p class="user-info col-md-3">
-    {% if session.get('email') %}
-      {%  if session.get('validated') %}
-        <button class="btn btn-default dropdown-toggle btn-validated"
-                type="button" id="dropdown_menu_user" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="true">
-          {{ session.get('email') }}
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-            <li><a href="#">Manage Listings</a></li>
-            <li><a href={{ url_for('logout') }}>Logout</a></li>
-      {% else %}
-        <button class="btn btn-default dropdown-toggle btn-not-validated"
-                type="button" id="dropdown_menu_user" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="true">
-          User {{ session.get('email') }} not verified
-        </button>
-        <ul class="dropdown-menu">
-          <li><a href={{ url_for('logout') }}>Logout</a></li>
-        </ul>
-      {%  endif %}
-      </ul>
+  {% if session.get("email") %}
+    {% if session.get("validated") %}
+      <div class="col-md-2 email-validated">
+        <p class="no-bottom-margin email-validated-color">{{ session.get("email") }}</p>
+        <p class="no-bottom-margin"><a href="#">Manage Listings</a></p>
+        <p class="no-bottom-margin"><a href="{{ url_for('logout') }}">Logout</a></p>
+      </div>
     {% else %}
-      <button class="btn btn-default btn-not-logged-in">
-        Not Registered
-      </button>
+      <div class="col-md-2 email-not-validated">
+        <p class="no-bottom-margin email-not-validated-color">{{ session.get("email") }}</p>
+        <p class="no-bottom-margin"><a href="{{ url_for('logout') }}">Logout</a></p>
+      </div>
     {% endif %}
-  </p>
+  {% else %}
+    <div class="col-md-2 no-email">
+      <p class="no-bottom-margin no-email-color"> No Email Registered</p>
+    </div>
+  {% endif %}
+
+
+{#  <div class="col-md-2" style="text-align:center; margin-top:50px; margin-bottom: 50px;">#}
+{#    <p>Not Registered</p>#}
+{#  </div>#}
+
+
+
+{#  <p class="user-info col-md-2">#}
+{#    {% if session.get('email') %}#}
+{#      {%  if session.get('validated') %}#}
+{#        <button class="btn btn-default dropdown-toggle btn-validated"#}
+{#                type="button" id="dropdown_menu_user" data-toggle="dropdown"#}
+{#                aria-haspopup="true" aria-expanded="true">#}
+{#          {{ session.get('email') }}#}
+{#          <span class="caret"></span>#}
+{#        </button>#}
+{#        <ul class="dropdown-menu">#}
+{#            <li><a href="#">Manage Listings</a></li>#}
+{#            <li><a href={{ url_for('logout') }}>Logout</a></li>#}
+{#      {% else %}#}
+{#        <button class="btn btn-default dropdown-toggle btn-not-validated"#}
+{#                type="button" id="dropdown_menu_user" data-toggle="dropdown"#}
+{#                aria-haspopup="true" aria-expanded="true">#}
+{#          User {{ session.get('email') }} not verified#}
+{#        </button>#}
+{#        <ul class="dropdown-menu">#}
+{#          <li><a href={{ url_for('logout') }}>Logout</a></li>#}
+{#        </ul>#}
+{#      {%  endif %}#}
+{#      </ul>#}
+{#    {% else %}#}
+{#      <button class="btn btn-default btn-not-logged-in">#}
+{#        Not Registered#}
+{#      </button>#}
+{#      <span ><p> Not Registered</p></span>#}
+{#    {% endif %}#}
+{#  </p>#}
 </div>
