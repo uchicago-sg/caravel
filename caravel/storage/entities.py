@@ -26,8 +26,7 @@ class DerivedProperty(db.Property):
         return self.derive_func(model_instance)
 
     def __set__(self, model_instance, value):
-        """Block assignment to entity.prop."""
-        raise db.DerivedPropertyError("cannot assign to a DerivedProperty")
+        """Ignore assignment to entity.prop."""
 
 class Versioned(db.Expando):
     version = db.IntegerProperty(default=1)
@@ -66,6 +65,10 @@ class Listing(Versioned):
 
     photos_ = db.StringListProperty(indexed=False, name="photos")
     thumbnail_url = db.StringProperty(indexed=False)
+
+    @property
+    def permalink(self):
+        return self.key().name()
 
     @DerivedProperty
     def keywords(self):
