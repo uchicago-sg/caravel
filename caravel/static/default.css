@@ -113,3 +113,15 @@ body {
 .large-image-placeholder {
     font-size: 300px;
 }
+
+/* For show page */
+.inquiry-dropdown{
+    margin: 10px;
+}
+
+.dropdown-form-buyer{
+    width: 90%;
+    margin-right: 10px;
+    margin-left: 10px;
+
+}
