@@ -18,28 +18,26 @@
           {% else %}
             <div class="item">
           {% endif %}
-
-          {% if photo %}
             <img src="{{ photo | public_url }}">
-          {% else %}
-            <div class="large-image-placeholder">
-              {{ listing.body[:1].upper() }}
-            </div>
-          {% endif %}
-
-{#          Folloring div closes item active or item#}
           </div>
         {% set i = i + 1 %}
         {% endfor %}
+        {% if i == 0 %}
+          <div class="item active">
+            <img src="/static/no-image.png">
+          </div>
+        {% endif %}
         </div>
-        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-          <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-          <span class="sr-only">Previous</span>
-        </a>
-        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-          <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-          <span class="sr-only">Next</span>
-        </a>
+        {% if i != 0 %}
+            <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+              <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+              <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+            </a>
+        {% endif %}
       </div>
     </div>
     <div class="col-md-6">
