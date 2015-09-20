@@ -106,3 +106,4 @@ def create(keyword):
 def logout():
     session.clear()
     return redirect(url_for('index'))
+

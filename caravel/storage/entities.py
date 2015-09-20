@@ -50,6 +50,11 @@ def fold_query_term(word):
     Returns the canonical representation of the given query word.
     """
 
+    # if email do nothing:
+    if "@" in word:
+        return word
+
+    # Else, singularize
     stripped = re.sub(r'[^a-z0-9]', '', word.lower())
     singularized = INFLECT_ENGINE.singular_noun(stripped) or stripped
     return singularized
@@ -75,7 +80,7 @@ class Listing(Versioned):
         """Generates keywords based on the alphanumeric words in the string."""
 
         # Tokenize title and body (ranking them equally)
-        words = self.title.split() + self.body.split()
+        words = [self.seller] + self.title.split() + self.body.split()
         singularized = [fold_query_term(word) for word in words]
 
         # Return a uniqified list of words.

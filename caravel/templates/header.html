@@ -14,6 +14,7 @@
     </div>
   </form>
   <p class="user-info col-md-3">
+  <div class="btn-group user-button-container">
     {% if session.get('email') %}
       {%  if session.get('validated') %}
         <button class="btn btn-default dropdown-toggle btn-validated"
@@ -23,7 +24,14 @@
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
-            <li><a href="#">Manage Listings</a></li>
+            <li>
+              <form method="GET" action="/">
+              <div class="input-group">
+                <button type="submit" class="btn btn-link" name="q" value="{{ session.get("email") }}">
+                  Manage Listings
+                </button>
+              </div></form>
+            </li>
             <li><a href={{ url_for('logout') }}>Logout</a></li>
       {% else %}
         <button class="btn btn-default dropdown-toggle btn-not-validated"
@@ -41,5 +49,6 @@
         Not Registered
       </button>
     {% endif %}
+</div>
   </p>
 </div>
