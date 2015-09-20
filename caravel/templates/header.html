@@ -1,6 +1,7 @@
 <div class="masthead row">
-<div class="col-md-1">
-  <img src="/static/logo.jpg" class="logo-image"></div>
+  <div class="col-md-1">
+    <img src="/static/logo.jpg" class="logo-image">
+  </div>
   <h1 class="branding col-md-2">
     <a href="/">UChicago Marketplace</a>
   </h1>
@@ -9,7 +10,7 @@
       <input type="text" class="form-control" name="q"
         value="{{ request.args['q'] }}" placeholder="Search for listings..."/>
       <span class="input-group-btn">
-        <button type="button" class="btn btn-primary">
+        <button type="submit" class="btn btn-primary">
           <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
         </button>
       </span>
@@ -26,7 +27,13 @@
         </button>
         <ul class="dropdown-menu">
           <li><a href="{{ url_for('new') }}">New Listing</a></li>
-          <li><a href="#">Manage Listings</a></li>
+          <li>
+            <form method="GET" action="/">
+                <button type="submit" class="btn btn-link btn-manage-listings" name="q" value="{{ session.get("email") }}">
+                  Manage Listings
+                </button>
+            </form>
+          </li>
           <li><a href={{ url_for('logout') }}>Logout</a></li>
         </ul>
       </div>

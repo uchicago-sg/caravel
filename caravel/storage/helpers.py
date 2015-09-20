@@ -8,21 +8,7 @@ def lookup_listing(permalink):
     Retrieves a listing by permalink.
     """
 
-    ent = entities.Listing.get_by_key_name(permalink)
-    if not ent:
-        return None
-    ent.migrate()
-    json_dict = db.to_dict(ent)
-    json_dict["key"] = permalink
-    json_dict["photo_urls"] = ent.photo_urls # FIXME: handle getters better
-
-    # FIXME: remove below once all listings are migrated to new schema
-    if not json_dict.get("title"):
-        json_dict["title"] = json_dict.get("description")
-    if not json_dict.get("body"):
-        json_dict["body"] = json_dict.get("details")
-
-    return json_dict
+    return entities.Listing.get_by_key_name(permalink)
 
 def invalidate_listing(permalink, keywords=[]):
     """
@@ -64,6 +50,6 @@ def run_query(query=""):
 
     # Find the listings for those keys.
     listings = [lookup_listing(key) for key in keys]
-    listings.sort(key=lambda x: -x["posting_time"])
+    listings.sort(key=lambda x: -x.posting_time)
 
     return listings

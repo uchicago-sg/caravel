@@ -22,13 +22,13 @@ def run_integration_test():
 
     # Verify that the listing was created.
     data = helpers.lookup_listing("listing-a")
-    if (data["key"] != "listing-a" or
-        data["title"] != "my fancy sublet" or
-        data["body"] != "description here" or
-        data["price"] != 123456 or
-        len(data["photos"]) != 2 or
-        data["posting_time"] != 1441609780.0 or
-        data["seller"] != "seller@uchicago.edu"):
+    if (data.key().name() != "listing-a" or
+        data.title != "my fancy sublet" or
+        data.body != "description here" or
+        data.price != 123456 or
+        len(data.photo_urls) != 2 or
+        data.posting_time != 1441609780.0 or
+        data.seller != "seller@uchicago.edu"):
 
         raise ValueError("migration failed")
 
