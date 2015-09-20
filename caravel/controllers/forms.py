@@ -18,8 +18,9 @@ class SellerForm(Form):
     title = StringField("Listing Title",
                 validators=[DataRequired()])
     seller = StringField("Email", description="UChicago Email Required",
-                 validators=[Email()])
-    price = DecimalField("Price", places=2)
+                validators=[Email()])
+    price = DecimalField("Price", places=2,
+                validators=[DataRequired()])
     description = TextAreaField("Description", validators=[DataRequired()])
     photos = FieldList(FormField(ImageEntry), min_entries=5)
     submit = SubmitField("Post")
