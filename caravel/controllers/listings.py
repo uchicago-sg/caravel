@@ -6,6 +6,7 @@ import uuid, time
 
 from flask import render_template, request, abort, redirect, url_for, session
 from forms import BuyerForm, SellerForm
+import itertools
 
 from google.appengine.api import mail
 
@@ -15,8 +16,20 @@ from caravel.storage import helpers, entities
 @app.route("/")
 def search_listings():
     """Display a list of listings that match the given query."""
-    listings = helpers.run_query(request.args.get("q", ""))
-    return render_template("index.html", listings=listings)
+
+    # Parse filtering options from query.
+    query = request.args.get("q", "")
+    offset = int(request.args.get("offset", "0"))
+    if offset < 0:
+        offset = 0
+
+    # Compute the results matching that query.
+    listings = helpers.run_query(query)
+    listings = itertools.islice(listings, offset, offset + 24)
+
+    # Render a chrome-less template for AJAH continuation.
+    template = ("" if "continuation" not in request.args else "_continuation")
+    return render_template("index{}.html".format(template), listings=listings)
 
 @app.route("/<permalink>", methods=['GET', 'POST'])
 def show_listing(permalink):

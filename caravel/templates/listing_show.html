@@ -1,4 +1,3 @@
-{% import "bootstrap/wtf.html" as wtf %}
 {% extends "layout.html" %}
 {% block title %} {% endblock %}
 {% block head %}
@@ -7,60 +6,5 @@
 {% block content %}
   <h2> View Listing </h2>
   <a href="/?q={{ request.args['q'] }}">Back to listings</a>
-  <div class="row">
-    <div class="col-md-6">
-      <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-        <div class="carousel-inner" role="listbox">
-        {% set i =0 %}
-        {% for photo in listing.photo_urls %}
-          {% if i == 0 %}
-            <div class="item active">
-          {% else %}
-            <div class="item">
-          {% endif %}
-
-          {% if photo %}
-            <img src="{{ photo | public_url }}">
-          {% else %}
-            <div class="large-image-placeholder">
-              {{ listing.body[:1].upper() }}
-            </div>
-          {% endif %}
-
-{#          Folloring div closes item active or item#}
-          </div>
-        {% set i = i + 1 %}
-        {% endfor %}
-        </div>
-        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-          <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-          <span class="sr-only">Previous</span>
-        </a>
-        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-          <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-          <span class="sr-only">Next</span>
-        </a>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <h3>{{ listing.title }}</h3>
-      <p>{{ '$%0.2f'|format(listing.price / 100) }}</p>
-      <p>{{ listing.body }}</p>
-      <hr>
-      <button class="btn btn-default dropdown-toggle" type="button" id="dropdown_menu_user" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="true">
-        Make an Inquiry
-        <span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu dropdown-form-buyer">
-        <li>
-          <div class="row">
-            <div class="col-md-12">
-              {{ wtf.quick_form(buyer_form) }}
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
+  {% include "listings/fullpage.html" %}
 {% endblock %}
