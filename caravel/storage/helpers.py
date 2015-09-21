@@ -10,13 +10,13 @@ def lookup_listing(permalink):
 
     return entities.Listing.get_by_key_name(permalink)
 
-def invalidate_listing(permalink, keywords=[]):
+def invalidate_listing(listing):
     """
     Marks the cache as having lost the given listing.
     """
 
-    lookup_listing.invalidate(permalink)
-    for keyword in keywords:
+    lookup_listing.invalidate(listing.permalink)
+    for keyword in listing.keywords:
         fetch_shard.invalidate(keyword)
     fetch_shard.invalidate("")
 
@@ -51,5 +51,6 @@ def run_query(query=""):
     # Find the listings for those keys.
     listings = [lookup_listing(key) for key in keys]
     listings.sort(key=lambda x: -x.posting_time)
+    listings = filter(lambda x: x.posting_time, listings)
 
     return listings

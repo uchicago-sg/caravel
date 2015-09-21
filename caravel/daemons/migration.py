@@ -13,3 +13,6 @@ def migrate_schema():
     for listing in q.fetch(100):
         db.transaction(lambda: (listing.migrate(), listing.put()))
         helpers.invalidate_listing(listing.permalink, listing.keywords)
+
+    # Invalidate the cache.
+    helpers.invalidate_listing(listing)
