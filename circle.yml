@@ -14,3 +14,4 @@ deployment:
     commands:
       - rm -Rf venv/
       - ~/google_appengine/appcfg.py update . --version=$(git rev-parse --abbrev-ref HEAD) --oauth2_refresh_token=$OAUTH2_REFRESH_TOKEN
+      - curl https://$(git rev-parse --abbrev-ref HEAD)-dot-hosted-caravel.appspot.com >/dev/null
