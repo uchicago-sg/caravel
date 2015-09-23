@@ -23,17 +23,18 @@
       <td style="font: 18px Arial, sans-serif;
                  padding: 1em;">
           Hello there, and welcome to Marketplace!<br/><br/>
-          Your listing has been {{ type }}. Please click the button
+          Your listing has been created. Please click the button
           below to edit it.</td>
     </tr>
     <tr>
       <td style="font: 18px Arial, sans-serif;
                  padding: 1em;">
-        <a href="REPLACEME"
+        <a href="{{ url_for('show_listing', permalink=listing.key().name(),
+                            key=listing.admin_key, _external=True) }}"
            style="padding: 0.5em;
                   background-color: #39c;
                   color: white;
-                  text-decoration: none;">Edit "Listing Name"</a></td>
+                  text-decoration: none;">Edit "{{ listing.title }}"</a></td>
     </tr>
     <tr>
       <td style="font: 18px Arial, sans-serif;
