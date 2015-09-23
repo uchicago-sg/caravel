@@ -16,6 +16,14 @@ body {
 
 .branding {
     font: 400 36px Roboto, sans-serif;
+    width: 240px;
+    margin-top: 15px;
+}
+
+.logo-image{
+    height:100px;
+    display: inline;
+    margin-top:10px;
 }
 
 .search-form {
@@ -125,3 +133,19 @@ body {
     margin-left: 10px;
 
 }
+
+.user-button-container {
+    display: inline-block;
+    margin: 42px 20px;
+}
+
+.user-button {
+    border: none;
+}
+
+.btn-manage-listings{
+    padding: 3px 20px;
+    color: black;
+    text-decoration: none;
+}
+

@@ -9,7 +9,7 @@ from caravel.storage import entities, helpers
 from google.appengine.ext import deferred
 from google.appengine.api import taskqueue, urlfetch
 
-@app.route("/_pull", methods=["POST"])
+@app.route("/_pull", methods=["GET"])
 def pull_from_legacy_site():
     """A webhook triggered by the old site that pulls that site."""
     deferred.defer(
@@ -71,4 +71,4 @@ def pull_from_old_marketplace(permalink, _urlopen=urllib2.urlopen):
     listing.put()
 
     # Invalidate the cache.
-    helpers.invalidate_listing(permalink, listing.keywords)
+    helpers.invalidate_listing(listing)

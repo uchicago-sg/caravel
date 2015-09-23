@@ -26,8 +26,7 @@ class DerivedProperty(db.Property):
         return self.derive_func(model_instance)
 
     def __set__(self, model_instance, value):
-        """Block assignment to entity.prop."""
-        raise db.DerivedPropertyError("cannot assign to a DerivedProperty")
+        """Ignore assignment to entity.prop."""
 
 class Versioned(db.Expando):
     version = db.IntegerProperty(default=1)
@@ -51,6 +50,11 @@ def fold_query_term(word):
     Returns the canonical representation of the given query word.
     """
 
+    # if email do nothing:
+    if "@" in word:
+        return word
+
+    # Else, singularize
     stripped = re.sub(r'[^a-z0-9]', '', word.lower())
     singularized = INFLECT_ENGINE.singular_noun(stripped) or stripped
     return singularized
@@ -59,20 +63,25 @@ class Listing(Versioned):
     SCHEMA_VERSION = 1
 
     seller = db.StringProperty() # an email address
-    title = db.StringProperty()
-    body = db.TextProperty()
-    price = db.IntegerProperty() # in cents of a U.S. dollar
-    posting_time = db.FloatProperty() # set to 0 iff not yet published
+    title = db.StringProperty(default="")
+    body = db.TextProperty(default="")
+    price = db.IntegerProperty(default=0) # in cents of a U.S. dollar
+    posting_time = db.FloatProperty(default=0) # set to 0 iff not yet published
+    admin_key = db.StringProperty() # how to administer this listing
 
     photos_ = db.StringListProperty(indexed=False, name="photos")
     thumbnail_url = db.StringProperty(indexed=False)
+
+    @property
+    def permalink(self):
+        return self.key().name()
 
     @DerivedProperty
     def keywords(self):
         """Generates keywords based on the alphanumeric words in the string."""
 
         # Tokenize title and body (ranking them equally)
-        words = self.title.split() + self.body.split()
+        words = [self.seller] + self.title.split() + self.body.split()
         singularized = [fold_query_term(word) for word in words]
 
         # Return a uniqified list of words.

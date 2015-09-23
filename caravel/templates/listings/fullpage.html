@@ -1,0 +1,53 @@
+{% import "bootstrap/wtf.html" as wtf %}
+<div class="row">
+  <div class="col-md-6">
+    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+      <div class="carousel-inner" role="listbox">
+        {% for photo in listing.photo_urls %}
+          {% if loop.first %}
+            <div class="item active">
+          {% else %}
+            <div class="item">
+          {% endif %}
+        <img src="{{ photo | public_url }}">
+        </div>
+        {% endfor %}
+        {% if listing.thumbnail_url is none %}
+          <div class="item active">
+            <img src="/static/no-image.png">
+          </div>
+        {% endif %}
+      </div>
+      {% if listing.thumbnail_url is not none %}
+        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+          <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+          <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-md-6">
+    <h3>{{ listing.title }}</h3>
+    <p>{{ '$%0.2f'|format(listing.price / 100) }}</p>
+    <p>{{ listing.body }}</p>
+    <hr>
+    <button class="btn btn-default dropdown-toggle" type="button" id="dropdown_menu_user" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="true">
+      Make an Inquiry
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu dropdown-form-buyer">
+      <li>
+        <div class="row inquiry-dropdown">
+          <div class="col-md-12">
+            {{ wtf.quick_form(buyer_form) }}
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

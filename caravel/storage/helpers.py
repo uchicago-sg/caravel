@@ -1,6 +1,7 @@
 from caravel.storage import entities
 from caravel.storage.cache import cache
 from google.appengine.ext import db
+import heapq
 
 @cache
 def lookup_listing(permalink):
@@ -8,29 +9,15 @@ def lookup_listing(permalink):
     Retrieves a listing by permalink.
     """
 
-    ent = entities.Listing.get_by_key_name(permalink)
-    if not ent:
-        return None
-    ent.migrate()
-    json_dict = db.to_dict(ent)
-    json_dict["key"] = permalink
-    json_dict["photo_urls"] = ent.photo_urls # FIXME: handle getters better
+    return entities.Listing.get_by_key_name(permalink)
 
-    # FIXME: remove below once all listings are migrated to new schema
-    if not json_dict.get("title"):
-        json_dict["title"] = json_dict.get("description")
-    if not json_dict.get("body"):
-        json_dict["body"] = json_dict.get("details")
-
-    return json_dict
-
-def invalidate_listing(permalink, keywords=[]):
+def invalidate_listing(listing):
     """
     Marks the cache as having lost the given listing.
     """
 
-    lookup_listing.invalidate(permalink)
-    for keyword in keywords:
+    lookup_listing.invalidate(listing.permalink)
+    for keyword in listing.keywords:
         fetch_shard.invalidate(keyword)
     fetch_shard.invalidate("")
 
@@ -43,9 +30,9 @@ def fetch_shard(shard=""):
     query = entities.Listing.all(keys_only=True).order("-posting_time")
     if shard:
         query = query.filter("keywords =", shard)
-    return [k.name() for k in query.fetch(30)]
+    return [k.name() for k in query.fetch(1000)]
 
-def run_query(query=""):
+def run_query(query="", offset=0):
     """
     Performs a search query over all listings.
     """
@@ -57,13 +44,21 @@ def run_query(query=""):
     words = words[:5] # TODO: Raise once we know the approximate cost.
 
     # Retrieve the keys for entities that match all terms.
-    shards = [set(fetch_shard(entities.fold_query_term(w))) for w in words]
+    shards = [fetch_shard(entities.fold_query_term(w)) for w in words]
     if not shards:
-        return []
-    keys = shards[0].intersection(*shards[1:])
+        return # yields empty generator
 
-    # Find the listings for those keys.
-    listings = [lookup_listing(key) for key in keys]
-    listings.sort(key=lambda x: -x["posting_time"])
+    # Load each key from all shards lazily.
+    def _load(keys):
+        while keys:
+            # Process listings ten at a time.
+            batch, keys = keys[:10], keys[10:]
+            listings = lookup_listing.parallel([([b], {}) for b in batch])
+            for key, listing in zip(batch, listings):
+                if listing and listing.posting_time:
+                    yield (listing.posting_time, listing)
 
-    return listings
+    # Merge all shards together via mergesort.
+    merged = heapq.merge(*[_load(shard) for shard in shards])
+    for _, listing in merged:
+        yield listing
