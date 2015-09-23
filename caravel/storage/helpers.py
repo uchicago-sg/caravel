@@ -30,7 +30,7 @@ def fetch_shard(shard=""):
     query = entities.Listing.all(keys_only=True).order("-posting_time")
     if shard:
         query = query.filter("keywords =", shard)
-    return [k.name() for k in query]
+    return [k.name() for k in query.fetch(1000)]
 
 def run_query(query="", offset=0):
     """
