@@ -11,24 +11,22 @@
     <div class="col-md-6">
       <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner" role="listbox">
-        {% set i =0 %}
         {% for photo in listing.photo_urls %}
-          {% if i == 0 %}
+          {% if loop.first %}
             <div class="item active">
           {% else %}
             <div class="item">
           {% endif %}
             <img src="{{ photo | public_url }}">
           </div>
-        {% set i = i + 1 %}
         {% endfor %}
-        {% if i == 0 %}
+        {% if listing.thumbnail_url is none %}
           <div class="item active">
             <img src="/static/no-image.png">
           </div>
         {% endif %}
         </div>
-        {% if i != 0 %}
+        {% if listing.thumbnail_url is not none %}
             <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
               <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
               <span class="sr-only">Previous</span>
