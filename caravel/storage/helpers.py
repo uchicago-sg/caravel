@@ -30,7 +30,7 @@ def fetch_shard(shard=""):
     query = entities.Listing.all(keys_only=True).order("-posting_time")
     if shard:
         query = query.filter("keywords =", shard)
-    return [k.name() for k in query]
+    return [k.name() for k in query.fetch(1000)]
 
 def run_query(query="", offset=0):
     """
@@ -50,10 +50,13 @@ def run_query(query="", offset=0):
 
     # Load each key from all shards lazily.
     def _load(keys):
-        for key in keys:
-            listing = lookup_listing(key)
-            if listing and listing.posting_time:
-                yield (listing.posting_time, listing)
+        while keys:
+            # Process listings ten at a time.
+            batch, keys = keys[:10], keys[10:]
+            listings = lookup_listing.parallel([([b], {}) for b in batch])
+            for key, listing in zip(batch, listings):
+                if listing and listing.posting_time:
+                    yield (listing.posting_time, listing)
 
     # Merge all shards together via mergesort.
     merged = heapq.merge(*[_load(shard) for shard in shards])
