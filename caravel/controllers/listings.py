@@ -41,7 +41,7 @@ def show_listing(permalink):
         abort(404)
 
     # If the listing isn't yet published, check the ACL and update session.
-    if request.args.get("key") == listing.admin_key:
+    if request.args.get("key") == listing.admin_key and listing.admin_key:
         session["email"] = listing.seller
         if not listing.posting_time:
             listing.posting_time = time.time()
@@ -54,7 +54,7 @@ def show_listing(permalink):
     if buyer_form.validate_on_submit():
         return redirect(url_for("place_inquiry", permalink=permalink))
 
-    if session.get("email") and session.get("validated"):
+    if session.get("email"):
         buyer_form.email.data = session.get("email")
     return render_template("listing_show.html", listing=listing,
                            buyer_form=buyer_form)
@@ -70,15 +70,11 @@ def edit_listing(permalink):
         abort(403)
 
     if session.get("email"):
-        if session.get("validated"):
-            seller_form.email.data = session.get("email")
-            if seller_form.validate_on_submit():
-                """ TODO (georgeteo): If already validated email address,
-                then post edit directly"""
-                pass
-        else:
-            if seller_form.validate_on_submit():
-                return redirect(url_for("create", keyword="updated"))
+        seller_form.email.data = session["email"]
+        if seller_form.validate_on_submit():
+            """ TODO (georgeteo): If already validated email address,
+            then post edit directly"""
+            pass
 
     seller_form.title.data = listing.title
     seller_form.description = listing.body
@@ -120,7 +116,7 @@ def new_listing():
         )
 
         # Only allow the user to see the listing if they are signed in.
-        if session.get("email") and session.get("validated"):
+        if session.get("email"):
             return redirect(url_for("show_listing", permalink=listing.key_name))
         else:
             return redirect(url_for("search_listings"))
