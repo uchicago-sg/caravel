@@ -122,6 +122,18 @@ body {
     font-size: 300px;
 }
 
+/* For show page */
+.inquiry-dropdown{
+    margin: 10px;
+}
+
+.dropdown-form-buyer{
+    width: 90%;
+    margin-right: 10px;
+    margin-left: 10px;
+
+}
+
 .user-button-container {
     display: inline-block;
     margin: 42px 20px;
