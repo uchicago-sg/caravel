@@ -5,13 +5,13 @@ Listings are placed by sellers when they want to sell things.
 import uuid, time
 
 from flask import render_template, request, abort, redirect, url_for, session
-from forms import BuyerForm, SellerForm
 import itertools
 
 from google.appengine.api import mail
 
 from caravel import app, policy
 from caravel.storage import helpers, entities
+from caravel.controllers import forms
 
 @app.route("/")
 def search_listings():
@@ -50,7 +50,7 @@ def show_listing(permalink):
     elif not listing.posting_time:
         abort(404)
 
-    buyer_form = BuyerForm()
+    buyer_form = forms.BuyerForm()
     if buyer_form.validate_on_submit():
         return redirect(url_for("place_inquiry", permalink=permalink))
 
@@ -59,52 +59,84 @@ def show_listing(permalink):
     return render_template("listing_show.html", listing=listing,
                            buyer_form=buyer_form)
 
-@app.route("/<permalink>/edit", methods=['GET', 'POST'])
-def edit_listing(permalink):
-    """Allow a seller to update or unpublish a listing."""
+@app.route("/<permalink>/claim", methods=["POST"])
+def claim_listing(permalink):
+    """Allow a seller to claim a listing whose email they have lost."""
+
+    # Look up the existing listing used for this person.
     listing = helpers.lookup_listing(permalink)
     if not listing:
         abort(404)
-    seller_form = SellerForm
-    if session.get("email") != listing.seller:
+
+    # Send the user an email to let them edit the listing.
+    mail.send_mail(
+        "Marketplace <magicmonkeys@hosted-caravel.appspotmail.com>",
+        listing.seller,
+        "Welcome to Marketplace!",
+        body=render_template("email/welcome.txt", listing=listing),
+        html=render_template("email/welcome.html", listing=listing),
+    )
+
+    return redirect(url_for("show_listing", permalink=listing.permalink))
+
+@app.route("/<permalink>/edit", methods=["GET", "POST"])
+def edit_listing(permalink):
+    """Allow a seller to update or unpublish a listing."""
+
+    # Retrieve the listing by key.
+    listing = helpers.lookup_listing(permalink)
+    if not listing:
+        abort(404)
+
+    form = forms.EditListingForm()
+
+    # Prevent non-creators from editing a listing.
+    if session.get("email") != listing.seller or not session["email"]:
         abort(403)
 
-    if session.get("email"):
-        seller_form.email.data = session["email"]
-        if seller_form.validate_on_submit():
-            """ TODO (georgeteo): If already validated email address,
-            then post edit directly"""
-            pass
+    # Allow authors to edit listings.
+    if form.validate_on_submit():
+        listing.title = form.title.data
+        listing.body = form.description.data
+        listing.price = int(form.price.data * 100)
+        listing.put()
 
-    seller_form.title.data = listing.title
-    seller_form.description = listing.body
-    seller_form.price = listing.price
-    # TODO (georgeteo): Do we want to reload the photos from database?
-    return render_template("listing_form.html", type="Edit", listing=listing,
-                           seller_form=seller_form)
+        helpers.invalidate_listing(listing)
+
+        return redirect(url_for("show_listing", permalink=listing.permalink))
+
+    # Display an edit form.
+    form.title.data = listing.title
+    form.description.data = listing.body
+    form.price.data = listing.price / 100.0
+
+    return render_template("listing_form.html", type="Edit", form=form)
 
 @app.route("/new", methods=["GET", "POST"])
 def new_listing():
     """Creates or removes this listing."""
 
     # Populate a form to create a listing.
-    seller_form = SellerForm()
+    form = forms.NewListingForm()
 
     # Actually create the listing.
-    if seller_form.validate_on_submit():
+    if form.validate_on_submit():
         # Save a provisional version in the DB.
-        seller = seller_form.seller.data
+        seller = form.seller.data
         listing = entities.Listing(
             key_name=str(uuid.uuid4()), # FIXME: add proper permalink generator.
-            title=seller_form.title.data,
-            price=int(seller_form.price.data * 100),
-            description=seller_form.description.data,
+            title=form.title.data,
+            price=int(form.price.data * 100),
+            description=form.description.data,
             seller=seller,
             posting_time=0.0,
             admin_key=str(uuid.uuid4())
         )
         listing.put()
         helpers.invalidate_listing(listing)
+
+        print url_for("show_listing", permalink=listing.key().name(),
+                      key=listing.admin_key, _external=True)
 
         # Send the user an email to let them edit the listing.
         mail.send_mail(
@@ -122,11 +154,10 @@ def new_listing():
             return redirect(url_for("search_listings"))
 
     # Have the form email default to the value from the session.
-    if not seller_form.seller.data:
-        seller_form.seller.data = session.get("email")
+    if not form.seller.data:
+        form.seller.data = session.get("email")
 
-    return render_template("listing_form.html", type="New",
-                           seller_form=seller_form)
+    return render_template("listing_form.html", type="New", form=form)
 
 @app.route("/<permalink>/inquiry", methods=["POST"])
 def place_inquiry(permalink):
