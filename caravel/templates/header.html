@@ -17,26 +17,24 @@
     </div>
   </form>
   {% if session.get("email") %}
-    {% if session.get("validated") %}
-      <div class="btn-group user-button-container">
-        <button class="btn btn-default dropdown-toggle user-button"
-          type="button"  data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="true" >
-            {{ session.get('email') }}
-            <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu">
-          <li><a href="{{ url_for('new') }}">New Listing</a></li>
-          <li>
-            <form method="GET" action="/">
-                <button type="submit" class="btn btn-link btn-manage-listings" name="q" value="{{ session.get("email") }}">
-                  Manage Listings
-                </button>
-            </form>
-          </li>
-          <li><a href={{ url_for('logout') }}>Logout</a></li>
-        </ul>
-      </div>
-    {% endif %}
+    <div class="btn-group user-button-container">
+      <button class="btn btn-default dropdown-toggle user-button"
+        type="button"  data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="true" >
+          {{ session.get('email') }}
+          <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+        <li><a href="{{ url_for('new') }}">New Listing</a></li>
+        <li>
+          <form method="GET" action="/">
+              <button type="submit" class="btn btn-link btn-manage-listings" name="q" value="{{ session.get("email") }}">
+                Manage Listings
+              </button>
+          </form>
+        </li>
+        <li><a href={{ url_for('logout') }}>Logout</a></li>
+      </ul>
+    </div>
   {% endif %}
 </div>
