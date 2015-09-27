@@ -2,7 +2,7 @@ Hello again!
 
 We've received a new inquiry for LISTINGNAME:
 
-  Name: Bobby Jones (jones@uchicago.edu, IP: 1.2.3.4)
+  Buyer: {{ buyer }}
   
   {{ message.replace("\n", "\n  ") }}
 

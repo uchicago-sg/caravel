@@ -53,7 +53,7 @@ def show_listing(permalink):
         abort(404)
 
     # Display a form for buyers to place an offer. 
-    buyer_form = BuyerForm() 
+    buyer_form = forms.BuyerForm() 
 
     # Handle submissions on the form.
     if buyer_form.validate_on_submit():
