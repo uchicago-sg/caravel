@@ -215,6 +215,7 @@ body {
     padding: 3px;
     border-radius: 5px;
     opacity: 0.8;
+    margin-top:10px;
 }
 
 .category-text {
@@ -230,12 +231,12 @@ body {
     margin: 0;
 }
 
-.thumbnail-title p {
+p.thumbnail-title {
     padding-left: 10px;
     padding-right: 10px;
 }
 
-.thumbnail-title a {
+a.thumbnail-title {
     font-size: 17px;
     font-weight: 400;
     color: black;
