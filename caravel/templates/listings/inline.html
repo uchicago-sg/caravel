@@ -1,20 +1,22 @@
-<div class="listing col-xs-12 col-md-3">
-  <h3 class="title">
-    <a href="/{{ listing.permalink }}?q={{ request.args['q']}}">
-      {{ listing.title }}
-    </a>
-  </h3>
-  <p class="price">{{ '${:,.2f}'.format(listing.price / 100) }}</p>
-  <p class="age">{{ listing.posting_time | as_duration }}</p>
-  <a href="/{{ listing.permalink }}?q={{ request.args['q']}}">
+<div class="col-xs-12 col-md-3 inline-thumbnail">
+  <div class="category-tag">
+    <span class="category-text"> Category </span>
+  </div>
+  <a href="/{{ listing.key }}?q={{ request.args['q']}}">
     {% if listing.thumbnail_url %}
-    <img
-        src="{{ listing.thumbnail_url | public_url }}"
-        class="panel-image-preview"/>
+      <img class="thumbnail-image"
+           src="{{ listing.thumbnail_url | public_url }}"/>
     {% else %}
-    <span class="small-image-placeholder">
-      {{ listing.title[:1].upper() }}
-    </span>
+      <img  class="thumbnail-image"
+            src="/static/no-image.png"/>
     {% endif %}
   </a>
+  <h3 class="thumbnail-title-block">
+    <p class = "thumbnail-title">
+      <a href="/{{ listing.key }}?q={{ request.args['q']}}" class="thumbnail-title">
+        {{ listing.title }}
+      </a>
+    </p>
+    <p class="thumbnail-price"> {{ '${:,.2f}'.format(listing.price / 100) }}</p>
+  </h3>
 </div>
