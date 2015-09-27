@@ -16,19 +16,19 @@
       </span>
     </div>
   </form>
-  {% if session.get("email") %}
+  {% if session["email"] %}
     <div class="btn-group user-button-container">
       <button class="btn btn-default dropdown-toggle user-button"
         type="button"  data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="true" >
-          {{ session.get('email') }}
+          {{ session["email"] }}
           <span class="caret"></span>
       </button>
       <ul class="dropdown-menu">
         <li><a href="{{ url_for('new') }}">New Listing</a></li>
         <li>
           <form method="GET" action="/">
-              <button type="submit" class="btn btn-link btn-manage-listings" name="q" value="{{ session.get("email") }}">
+              <button type="submit" class="btn btn-link btn-manage-listings" name="q" value="{{ session["email"] }}">
                 Manage Listings
               </button>
           </form>
