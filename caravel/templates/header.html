@@ -25,7 +25,7 @@
           <span class="caret"></span>
       </button>
       <ul class="dropdown-menu">
-        <li><a href="{{ url_for('new') }}">New Listing</a></li>
+        <li><a href="{{ url_for('new_listing') }}">New Listing</a></li>
         <li>
           <form method="GET" action="/">
               <button type="submit" class="btn btn-link btn-manage-listings" name="q" value="{{ session["email"] }}">
