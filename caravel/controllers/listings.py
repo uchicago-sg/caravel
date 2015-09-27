@@ -2,75 +2,162 @@
 Listings are placed by sellers when they want to sell things.
 """
 
-from caravel import app, policy
-from caravel.storage import helpers
+import uuid, time
+
 from flask import render_template, request, abort, redirect, url_for, session
+import itertools
+
 from google.appengine.api import mail
-from forms import BuyerForm, SellerForm
+
+from caravel import app, policy
+from caravel.storage import helpers, entities
+from caravel.controllers import forms
 
 @app.route("/")
-def index():
+def search_listings():
     """Display a list of listings that match the given query."""
-    listings = helpers.run_query(request.args.get("q", ""))
-    return render_template("index.html", listings=listings)
+
+    # Parse filtering options from query.
+    query = request.args.get("q", "")
+    offset = int(request.args.get("offset", "0"))
+    if offset < 0:
+        offset = 0
+
+    # Compute the results matching that query.
+    listings = helpers.run_query(query)
+    listings = itertools.islice(listings, offset, offset + 24)
+
+    # Render a chrome-less template for AJAH continuation.
+    template = ("" if "continuation" not in request.args else "_continuation")
+    return render_template("index{}.html".format(template), listings=listings)
 
 @app.route("/<permalink>", methods=['GET', 'POST'])
-def show(permalink):
+def show_listing(permalink):
     """View a particular listing and provide links to place an inquiry."""
+
+    # Retrieve the listing by key.
     listing = helpers.lookup_listing(permalink)
     if not listing:
         abort(404)
-    buyer_form = BuyerForm()
+
+    # If the listing isn't yet published, check the ACL and update session.
+    if request.args.get("key") == listing.admin_key and listing.admin_key:
+        session["email"] = listing.seller
+        if not listing.posting_time:
+            listing.posting_time = time.time()
+            listing.put()
+            helpers.invalidate_listing(listing)
+    elif not listing.posting_time:
+        abort(404)
+
+    buyer_form = forms.BuyerForm()
     if buyer_form.validate_on_submit():
         return redirect(url_for("place_inquiry", permalink=permalink))
-    if session.get("email") and session.get("validated"):
+
+    if session.get("email"):
         buyer_form.email.data = session.get("email")
     return render_template("listing_show.html", listing=listing,
                            buyer_form=buyer_form)
 
-@app.route("/<permalink>/edit", methods=['GET', 'POST'])
-def edit(permalink):
-    """Allow a seller to update or unpublish a listing."""
+@app.route("/<permalink>/claim", methods=["POST"])
+def claim_listing(permalink):
+    """Allow a seller to claim a listing whose email they have lost."""
+
+    # Look up the existing listing used for this person.
     listing = helpers.lookup_listing(permalink)
     if not listing:
         abort(404)
-    seller_form = SellerForm
-    if session.get("email") != listing.seller:
+
+    # Send the user an email to let them edit the listing.
+    mail.send_mail(
+        "Marketplace <magicmonkeys@hosted-caravel.appspotmail.com>",
+        listing.seller,
+        "Welcome to Marketplace!",
+        body=render_template("email/welcome.txt", listing=listing),
+        html=render_template("email/welcome.html", listing=listing),
+    )
+
+    return redirect(url_for("show_listing", permalink=listing.permalink))
+
+@app.route("/<permalink>/edit", methods=["GET", "POST"])
+def edit_listing(permalink):
+    """Allow a seller to update or unpublish a listing."""
+
+    # Retrieve the listing by key.
+    listing = helpers.lookup_listing(permalink)
+    if not listing:
+        abort(404)
+
+    form = forms.EditListingForm()
+
+    # Prevent non-creators from editing a listing.
+    if session.get("email") != listing.seller or not session["email"]:
         abort(403)
 
-    if session.get("email"):
-        if session.get("validated"):
-            seller_form.email.data = session.get("email")
-            if seller_form.validate_on_submit():
-                """ TODO (georgeteo): If already validated email address,
-                then post edit directly"""
-                pass
+    # Allow authors to edit listings.
+    if form.validate_on_submit():
+        listing.title = form.title.data
+        listing.body = form.description.data
+        listing.price = int(form.price.data * 100)
+        listing.put()
+
+        helpers.invalidate_listing(listing)
+
+        return redirect(url_for("show_listing", permalink=listing.permalink))
+
+    # Display an edit form.
+    form.title.data = listing.title
+    form.description.data = listing.body
+    form.price.data = listing.price / 100.0
+
+    return render_template("listing_form.html", type="Edit", form=form)
+
+@app.route("/new", methods=["GET", "POST"])
+def new_listing():
+    """Creates or removes this listing."""
+
+    # Populate a form to create a listing.
+    form = forms.NewListingForm()
+
+    # Actually create the listing.
+    if form.validate_on_submit():
+        # Save a provisional version in the DB.
+        seller = form.seller.data
+        listing = entities.Listing(
+            key_name=str(uuid.uuid4()), # FIXME: add proper permalink generator.
+            title=form.title.data,
+            price=int(form.price.data * 100),
+            description=form.description.data,
+            seller=seller,
+            posting_time=0.0,
+            admin_key=str(uuid.uuid4())
+        )
+        listing.put()
+        helpers.invalidate_listing(listing)
+
+        print url_for("show_listing", permalink=listing.key().name(),
+                      key=listing.admin_key, _external=True)
+
+        # Send the user an email to let them edit the listing.
+        mail.send_mail(
+            "Marketplace <magicmonkeys@hosted-caravel.appspotmail.com>",
+            seller,
+            "Welcome to Marketplace!",
+            body=render_template("email/welcome.txt", listing=listing),
+            html=render_template("email/welcome.html", listing=listing),
+        )
+
+        # Only allow the user to see the listing if they are signed in.
+        if session.get("email"):
+            return redirect(url_for("show_listing", permalink=listing.key_name))
         else:
-            if seller_form.validate_on_submit():
-                return redirect(url_for("create", keyword="updated"))
+            return redirect(url_for("search_listings"))
 
-    seller_form.title.data = listing.title
-    seller_form.description = listing.body
-    seller_form.price = listing.price
-    # TODO (georgeteo): Do we want to reload the photos from database?
-    return render_template("listing_form.html", type="Edit", listing=listing,
-                           seller_form=seller_form)
+    # Have the form email default to the value from the session.
+    if not form.seller.data:
+        form.seller.data = session.get("email")
 
-@app.route("/new", methods=['GET', 'POST'])
-def new():
-    """Creates a new listing"""
-    seller_form = SellerForm()
-    if session.get("email"):
-        if session.get("validated"):
-            seller_form.email.data = session.get("email")
-            if seller_form.validate_on_submit():
-                """ TODO (georgete): POST directly for validated emails"""
-                pass
-        else:
-            return redirect(url_for("create", keyword="created"))
-    return render_template("listing_form.html", type="New",
-                           seller_form=seller_form)
-
+    return render_template("listing_form.html", type="New", form=form)
 
 @app.route("/<permalink>/inquiry", methods=["POST"])
 def place_inquiry(permalink):
@@ -85,24 +172,9 @@ def place_inquiry(permalink):
             html=render_template("email/inquiry.html")
         )
 
-    return redirect(url_for("show", permalink=permalink))
-
-@app.route("/", methods=["POST"])
-def create(keyword):
-    seller = request.form.get("email", "")
-
-    if policy.is_authorized_seller(seller):
-        mail.send_mail(
-            "Marketplace <magicmonkeys@hosted-caravel.appspotmail.com>",
-            seller,
-            "Welcome to Marketplace!",
-            body=render_template("email/welcome.txt"),
-            html=render_template("email/welcome.html", type=keyword)
-        )
-
-    return redirect(url_for("index"))
+    return redirect(url_for("show_listing", permalink=permalink))
 
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('index'))
+    return redirect(url_for("search_listings"))

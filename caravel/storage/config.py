@@ -16,6 +16,5 @@ def lookup(key, default):
     """Look up the given key, or return the default."""
     return Parameter.get_or_insert(key_name=key, value=default).value
 
-SHARED_SECRET = lookup("shared_secret", os.urandom(32))
-app.secret_key = SHARED_SECRET
+app.secret_key = lookup("shared_secret", os.urandom(32))
 Bootstrap(app)

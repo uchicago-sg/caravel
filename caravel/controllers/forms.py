@@ -1,22 +1,34 @@
 from flask.ext.wtf import Form
-from wtforms import StringField, SubmitField, TextAreaField, DecimalField, FileField, FieldList, FormField
-from wtforms.validators import Email
-
+from wtforms import StringField, SubmitField, TextAreaField, DecimalField
+from wtforms import FileField, FieldList, FormField
+from wtforms.validators import Email, DataRequired, ValidationError
+from caravel import policy, app
+from flask_wtf.csrf import CsrfProtect
 
 class BuyerForm(Form):
-    email = StringField('Email (UChicago email preferred)', validators=[Email()])
-    message = TextAreaField('Message')
-    submit = SubmitField('Send')
-
+    email = StringField("Email", description="UChicago email preferred",
+                validators=[Email()])
+    message = TextAreaField("Message")
+    submit = SubmitField("Send")
 
 class ImageEntry(Form):
-    image = FileField('Image')
+    image = FileField("Image")
 
+class EditListingForm(Form):
+    title = StringField("Listing Title",
+                validators=[DataRequired()])
+    price = DecimalField("Price", places=2,
+                validators=[DataRequired()])
+    description = TextAreaField("Description", validators=[DataRequired()])
+    photos = FieldList(FormField(ImageEntry), min_entries=5)
+    submit = SubmitField("Post")
 
-class SellerForm(Form):
-    title = StringField('Listing Title')
-    email = StringField('Email (UChicago email preferred)', validators=[Email()])
-    price = DecimalField('Price', places=2)
-    description = TextAreaField('Description')
-    images = FieldList(FormField(ImageEntry), min_entries=5)
-    submit = SubmitField('Post')
+class NewListingForm(EditListingForm):
+    seller = StringField("Email", description="UChicago Email Required",
+                validators=[Email()])
+
+    def validate_seller(self, field):
+        if not policy.is_authorized_seller(field.data or ""):
+            raise ValidationError("Only @uchicago.edu addresses are allowed.")
+
+CsrfProtect(app)
