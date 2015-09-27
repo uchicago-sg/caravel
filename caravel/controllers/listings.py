@@ -31,7 +31,7 @@ def search_listings():
     template = ("" if "continuation" not in request.args else "_continuation")
     return render_template("index{}.html".format(template), listings=listings)
 
-@app.route("/<permalink>", methods=['GET', 'POST'])
+@app.route("/<permalink>", methods=["GET", "POST"])
 def show_listing(permalink):
     """View a particular listing and provide links to place an inquiry."""
 
@@ -40,22 +40,44 @@ def show_listing(permalink):
     if not listing:
         abort(404)
 
-    # If the listing isn't yet published, check the ACL and update session.
+    # If the listing isn't yet published, check the URL key and update session.
     if request.args.get("key") == listing.admin_key and listing.admin_key:
         session["email"] = listing.seller
         if not listing.posting_time:
             listing.posting_time = time.time()
             listing.put()
             helpers.invalidate_listing(listing)
+
+    # Otherwise, hide the listing.
     elif not listing.posting_time:
         abort(404)
 
-    buyer_form = forms.BuyerForm()
-    if buyer_form.validate_on_submit():
-        return redirect(url_for("place_inquiry", permalink=permalink))
+    # Display a form for buyers to place an offer. 
+    buyer_form = forms.BuyerForm() 
 
-    if session.get("email"):
-        buyer_form.email.data = session.get("email")
+    # Handle submissions on the form.
+    if buyer_form.validate_on_submit():
+        buyer = buyer_form.buyer.data
+        message = buyer_form.message.data
+
+        mail.send_mail(
+            "Marketplace <magicmonkeys@hosted-caravel.appspotmail.com>",
+            listing.seller,
+            "Marketplace Inquiry for {!r}".format(listing.title),
+            body=render_template("email/inquiry.txt", listing=listing,
+                                 buyer=buyer, message=message),
+            html=render_template("email/inquiry.html", listing=listing,
+                                 buyer=buyer, message=message),
+            reply_to=buyer,
+        )
+
+        return redirect(url_for("show_listing", permalink=permalink))
+
+    # Have the form email default to the value from the session.
+    if not buyer_form.buyer.data:
+        buyer_form.buyer.data = session.get("email")
+
+    # Display the resulting template.
     return render_template("listing_show.html", listing=listing,
                            buyer_form=buyer_form)
 
@@ -158,21 +180,6 @@ def new_listing():
         form.seller.data = session.get("email")
 
     return render_template("listing_form.html", type="New", form=form)
-
-@app.route("/<permalink>/inquiry", methods=["POST"])
-def place_inquiry(permalink):
-    buyer = request.form.get("email", "")
-
-    if policy.is_authorized_buyer(buyer):
-        mail.send_mail(
-            "Marketplace <magicmonkeys@hosted-caravel.appspotmail.com>",
-            buyer,
-            "LISTINGNAME has received an inquiry!",
-            body=render_template("email/inquiry.txt"),
-            html=render_template("email/inquiry.html")
-        )
-
-    return redirect(url_for("show_listing", permalink=permalink))
 
 @app.route('/logout')
 def logout():

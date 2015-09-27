@@ -23,7 +23,7 @@
       <td style="font: 18px Arial, sans-serif;
                  padding: 1em;">
           Hello again!<br/><br/>
-          We've received a new inquiry for LISTINGNAME:
+          We've received a new inquiry for {{ listing.title }}:
       </td>
     </tr>
     <tr>
@@ -32,11 +32,9 @@
         <table style="width:80%;
                       background-color: #fff;">
           <tr>
-            <td style="padding: 1em">
-              Name: Bobby Jones (jones@uchicago.edu, IP: 1.2.3.4)<br/>
-              <br/>
-              Message goes here, wrapped to 60 chars.<br/>
-            </td>
+            <td style="padding: 1em;write-space:pre;">
+              Buyer: {{ buyer }}<br/>
+              <br/>{{ message }}</td>
           </tr>
         </table>
       </td>
