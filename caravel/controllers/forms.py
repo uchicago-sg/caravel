@@ -6,10 +6,14 @@ from caravel import policy, app
 from flask_wtf.csrf import CsrfProtect
 
 class BuyerForm(Form):
-    email = StringField("Email", description="UChicago email preferred",
+    buyer = StringField("Email", description="UChicago Email Preferred",
                 validators=[Email()])
     message = TextAreaField("Message")
     submit = SubmitField("Send")
+
+    def validate_buyer(self, field):
+        if not policy.is_authorized_buyer(field.data or ""):
+            raise ValidationError("Only @uchicago.edu addresses are allowed.")
 
 class ImageEntry(Form):
     image = FileField("Image")
