@@ -197,3 +197,53 @@ body {
     text-decoration: none;
 }
 
+/* For inline listings */
+.inline-thumbnail {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 15px;
+    padding: 0;
+    background-color: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #e5e5e5;
+}
+
+.category-tag {
+    position: absolute;
+    left: 10px;
+    background: #900;
+    padding: 3px;
+    border-radius: 5px;
+    opacity: 0.8;
+}
+
+.category-text {
+    color: white;
+}
+
+.thumbnail-image {
+    width: 100%;
+}
+
+.thumbnail-title-block {
+    background-color: white;
+    margin: 0;
+}
+
+.thumbnail-title p {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.thumbnail-title a {
+    font-size: 17px;
+    font-weight: 400;
+    color: black;
+}
+
+.thumbnail-price {
+    font-weight: 300;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 15px;
+}

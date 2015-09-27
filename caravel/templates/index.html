@@ -11,30 +11,26 @@
     {%  if i%4 == 0 %}
       <div class="row row-eq-height">
     {% endif %}
-    <div class="col-xs-12 col-md-3" style="margin-left: 10px; margin-right: 10px; margin-bottom:15px; padding:0; background-color: #ffffff;
-    border-radius: 10px; border: 1px solid #e5e5e5">
-      <div style="position: absolute; left: 10px; top: 10px; background: #900; padding: 3px; border-radius: 5px; opacity: 0.8;">
-        <span style="color: white;"> Category </span>
+    <div class="col-xs-12 col-md-3 inline-thumbnail">
+      <div class="category-tag">
+        <span class="category-text"> Category </span>
       </div>
-{#      <div>#}
-{#       <span>{{ listing.posting_time | as_duration }}</span>#}
-{#      </div>#}
       <a href="/{{ listing.key }}?q={{ request.args['q']}}">
         {% if listing.thumbnail_url %}
-          <img  style="width:100%;"
+          <img class="thumbnail-image"
             src="{{ listing.thumbnail_url | public_url }}"/>
         {% else %}
-          <img  style="width:100%;"
+          <img  class="thumbnail-image"
                     src="/static/no-image.png"/>
         {% endif %}
       </a>
-      <h3 style="background-color: #ffffff; margin: 0">
-        <p style="padding-left: 10px;">
-          <a href="/{{ listing.key }}?q={{ request.args['q']}}" style="font-size: 17px; font-weight:400; color: black;">
+      <h3 class="thumbnail-title-block">
+        <p class = "thumbnail-title">
+          <a href="/{{ listing.key }}?q={{ request.args['q']}}" class="thumbnail-title">
             {{ listing.title }}
           </a>
         </p>
-        <p style="font-weight:300; padding-left:10px; font-size:15px"> {{ '${:,.2f}'.format(listing.price / 100) }}</p>
+        <p class="thumbnail-price"> {{ '${:,.2f}'.format(listing.price / 100) }}</p>
       </h3>
     </div>
     {% if j%4 == 0 %}
