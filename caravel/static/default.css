@@ -149,3 +149,18 @@ body {
     text-decoration: none;
 }
 
+/* For making WTForms less painful with Bootstrap. */
+.form-group ul.form-control {
+    height: auto;
+    background-color: inherit;
+    border: none;
+    box-shadow: none;
+}
+
+ul.form-control li {
+    list-style-type: none;
+}
+
+ul.form-control li label {
+    font-weight: normal;
+}
