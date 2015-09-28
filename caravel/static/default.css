@@ -247,6 +247,7 @@ a.thumbnail-title {
     padding-left: 10px;
     padding-right: 10px;
     font-size: 15px;
+}
 
 /* For making WTForms less painful with Bootstrap. */
 .form-group ul.form-control {
