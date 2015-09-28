@@ -16,6 +16,7 @@
         {% if form.seller %}
           {{ wtf.form_field(form.seller) }}
         {% endif %}
+        {{ wtf.form_field(seller_form.categories) }}
         {{ wtf.form_field(form.price) }}
         {{ wtf.form_field(form.description) }}
         {% for image in form.images %}
