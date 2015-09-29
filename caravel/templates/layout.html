@@ -15,6 +15,9 @@
 <body>
     <div class="container">
       {% include "header.html" %}
+      {% for message in get_flashed_messages() %}
+        <div class="alert alert-info" role="alert">{{ message }}</div>
+      {% endfor %}
       {% block content %}
       {% endblock %}
       {% include "footer.html" %}
