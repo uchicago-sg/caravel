@@ -5,17 +5,8 @@
   <script src="/static/js/continuation.js" type="text/javascript"></script>
 {% endblock %}
 {% block content %}
-  {% set i = 0 %}
   {% for listing in listings %}
-    {% set j = i + 1 %}
-    {%  if i%4 == 0 %}
-      <div class="row row-eq-height">
-    {% endif %}
     {% include "listings/inline.html" %}
-    {% if j%4 == 0 %}
-      </div>
-    {% endif %}
-    {%  set i = i + 1 %}
   {% endfor %}
   </div>
 {% endblock %}
