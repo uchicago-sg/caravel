@@ -15,40 +15,29 @@ body {
 }
 
 .branding {
-    font: 400 36px Roboto, sans-serif;
-    width: 240px;
-    margin-top: 15px;
+    font: 400 30px Roboto, sans-serif;
+    margin-top: 0.7em;
 }
 
-.logo-image{
-    height:100px;
+.logo-image {
+    height: 100px;
     display: inline;
-    margin-top:10px;
+    margin-top: 10px;
 }
 
-.search-form {
-    padding: 0 1em;
-}
-
-.user-info {
-    padding: 1em 1em;
+.user-button-container {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
 }
 
 @media (min-width: 992px) {
     .search-form {
-        padding: 3em 0;
+        padding-top: 3em;
     }
 
-    .user-info {
-        line-height: 8em;
-        text-indent: 1em;
-        padding: 0;
+    .user-button-container {
+        padding-top: 3em;
     }
-}
-
-.user-info a {
-    color: #000;
-    text-decoration: underline;
 }
 
 /* For search results */
@@ -132,11 +121,6 @@ body {
     margin-right: 10px;
     margin-left: 10px;
 
-}
-
-.user-button-container {
-    display: inline-block;
-    margin: 42px 20px;
 }
 
 .user-button {
