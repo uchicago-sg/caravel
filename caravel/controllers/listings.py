@@ -5,6 +5,7 @@ Listings are placed by sellers when they want to sell things.
 import uuid, time
 
 from flask import render_template, request, abort, redirect, url_for, session
+from flask import flash
 import itertools
 
 from google.appengine.api import mail
@@ -47,6 +48,10 @@ def show_listing(permalink):
             listing.posting_time = time.time()
             listing.put()
             helpers.invalidate_listing(listing)
+
+            flash("Your listing has been published.")
+            return redirect(url_for("show_listing", permalink=permalink,
+                                                    q=request.args.get("q")))
 
     # Otherwise, hide the listing.
     elif not listing.posting_time:
@@ -99,6 +104,8 @@ def claim_listing(permalink):
         html=render_template("email/welcome.html", listing=listing),
     )
 
+    flash("We've emailed you a link to edit this listing.")
+
     return redirect(url_for("show_listing", permalink=listing.permalink))
 
 @app.route("/<permalink>/edit", methods=["GET", "POST"])
@@ -145,13 +152,14 @@ def new_listing():
     if form.validate_on_submit():
         # Save a provisional version in the DB.
         seller = form.seller.data
+        posting_time = time.time() if session.get("email") else 0.0
         listing = entities.Listing(
             key_name=str(uuid.uuid4()), # FIXME: add proper permalink generator.
             title=form.title.data,
             price=int(form.price.data * 100),
             description=form.description.data,
             seller=seller,
-            posting_time=0.0,
+            posting_time=posting_time,
             admin_key=str(uuid.uuid4())
         )
         listing.put()
@@ -171,8 +179,11 @@ def new_listing():
 
         # Only allow the user to see the listing if they are signed in.
         if session.get("email"):
-            return redirect(url_for("show_listing", permalink=listing.key_name))
+            flash("Your listing has been published.")
+            return redirect(url_for("show_listing", permalink=listing.permalink))
         else:
+            flash("Your listing has been created. "
+                  "Click the link in your email to publish it.")
             return redirect(url_for("search_listings"))
 
     # Have the form email default to the value from the session.
