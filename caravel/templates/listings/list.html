@@ -1,22 +1,26 @@
 <tr>
   <td>
-    <h3>
+    <div style="height:150px; width: 150px; overflow: hidden;">
+      {% if listing.thumbnail_url %}
+        <div style="height:150px; width: 150px; overflow: hidden;background-position: center center;
+    background-size: cover; background-image: '{{ listing.thumbnail_url | public_url }}'">
+        <img src="{{ listing.thumbnail_url | public_url }}"/>
+      {% else %}
+        <span class="small-image-placeholder">
+          {{ listing.title[:1].upper() }}
+        </span>
+      {% endif %}
+    </div>
+  </td>
+  <td>
       <a href="/{{ listing.permalink }}?q={{ request.args['q']}}">
         {{ listing.title }}
       </a>
-    </h3>
   </td>
   <td>
     <p>{{ '${:,.2f}'.format(listing.price / 100) }}</p>
   </td>
   <td>
     <p> Category </p>
-  </td>
-  <td>
-    {% if listing.thumbnail_url %}
-      <p> Yes </p>
-    {% else %}
-      <p> No </p>
-    {% endif %}
   </td>
 </tr>
