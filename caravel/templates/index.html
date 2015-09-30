@@ -6,8 +6,24 @@
 {% endblock %}
 {% block content %}
   <div class="row" id="listings">
+    {% if True %}
+      <table class="table">
+        <tr>
+          <th>Title</th>
+          <th>Price</th>
+          <th>Category</th>
+          <th>Images</th>
+        </tr>
+    {% endif %}
     {% for listing in listings %}
-      {% include "listings/inline.html" %}
+      {% if True %}
+          {% include "listings/list.html" %}
+      {% else %}
+        {% include "listings/thumbnail.html" %}
+      {% endif %}
     {% endfor %}
+    {% if True %}
+      </table>
+    {% endif %}
   </div>
 {% endblock %}

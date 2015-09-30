@@ -1,0 +1,22 @@
+<tr>
+  <td>
+    <h3>
+      <a href="/{{ listing.permalink }}?q={{ request.args['q']}}">
+        {{ listing.title }}
+      </a>
+    </h3>
+  </td>
+  <td>
+    <p>{{ '${:,.2f}'.format(listing.price / 100) }}</p>
+  </td>
+  <td>
+    <p> Category </p>
+  </td>
+  <td>
+    {% if listing.thumbnail_url %}
+      <p> Yes </p>
+    {% else %}
+      <p> No </p>
+    {% endif %}
+  </td>
+</tr>
