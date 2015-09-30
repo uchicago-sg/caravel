@@ -148,3 +148,9 @@ ul.form-control li {
 ul.form-control li label {
     font-weight: normal;
 }
+
+/* Footer */
+.copyright {
+    margin-top: 15px;
+    text-align: center;
+}
