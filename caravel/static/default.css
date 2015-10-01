@@ -40,6 +40,10 @@ body {
     }
 }
 
+.new-listing {
+    color: white;
+}
+
 /* For search results */
 .listing {
     margin-bottom: 4em;
