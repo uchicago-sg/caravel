@@ -151,5 +151,5 @@ ul.form-control li label {
 
 /* For show page */
 .claim-listing-button {
-    margin-bottom: 10px;
+    display: inline-block;
 }
