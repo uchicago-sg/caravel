@@ -3,7 +3,8 @@
   <div class="category-tag">
     <span class="category-text"> Category </span>
   </div>
-  <a href="url_for('show_listing', permalink=listing.permalink, q=request.args['q'])">
+  <a href="{{ url_for('show_listing', permalink=listing.permalink,
+                q=request.args['q']) }}">
     {% if listing.thumbnail_url %}
       <img class="thumbnail-image"
            src="{{ listing.thumbnail_url | public_url }}"/>
@@ -14,11 +15,13 @@
   </a>
   <h3 class="thumbnail-title-block">
     <p class="thumbnail-title">
-      <a href="url_for('show_listing', permalink=listing.permalink, q=request.args['q'])" class="thumbnail-title">
+      <a href="{{ url_for('show_listing', permalink=listing.permalink,
+                 q=request.args['q']) }}" class="thumbnail-title">
         {{ listing.title }}
       </a>
     </p>
-    <p class="thumbnail-price"> {{ '${:,.2f}'.format(listing.price / 100) }}</p>
+    <p class="thumbnail-price">
+      {{ '${:,.2f}'.format(listing.price / 100) }}</p>
   </h3>
 </div>
 </div>
