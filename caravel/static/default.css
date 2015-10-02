@@ -273,3 +273,8 @@ ul.form-control li {
 ul.form-control li label {
     font-weight: normal;
 }
+
+/* For show page */
+.claim-listing-button {
+    display: inline-block;
+}
