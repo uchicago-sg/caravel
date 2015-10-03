@@ -1,7 +1,9 @@
 <div class="col-xs-12 col-sm-3 thumbnail-col">
 <div class="inline-thumbnail">
   <div class="category-tag">
-    <span class="category-text"> Category </span>
+  {% for category in listing.categories %}
+    <span class="category-text">{{ listing.CATEGORIES_DICT[category] }}</span>
+  {% endfor %}
   </div>
   <a href="{{ url_for('show_listing', permalink=listing.permalink,
                 q=request.args['q']) }}">
