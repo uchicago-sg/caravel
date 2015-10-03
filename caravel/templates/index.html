@@ -5,8 +5,9 @@
   <script src="/static/js/continuation.js" type="text/javascript"></script>
 {% endblock %}
 {% block content %}
-  {% for listing in listings %}
-    {% include "listings/inline.html" %}
-  {% endfor %}
+  <div class="row" id="listings">
+    {% for listing in listings %}{% include "listings/inline.html" %}{%
+      endfor %}
+  </div>
   </div>
 {% endblock %}

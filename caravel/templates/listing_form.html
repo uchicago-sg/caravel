@@ -5,25 +5,26 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-  <div class="row">
-    <div class="col-xs-12">
-      <h2> {{ type }} Listing </h2>
-      <a href="/" class="btn btn-link"> Back to listings </a>
-      <form class="form form-horizontal" method="post" role="form">
-        {{ form.hidden_tag() }}
-        {{ wtf.form_errors(form, hiddens="only") }}
-        {{ wtf.form_field(form.title) }}
-        {% if form.seller %}
-          {{ wtf.form_field(form.seller) }}
-        {% endif %}
-        {{ wtf.form_field(form.categories) }}
-        {{ wtf.form_field(form.price) }}
-        {{ wtf.form_field(form.description) }}
-        {% for image in form.images %}
-          {{ wtf.form_field(image.image) }}
-        {% endfor %}
-        {{ wtf.form_field(form.submit) }}
-      </form>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+        <form class="form" method="post" role="form">
+          {{ form.hidden_tag() }}
+          {{ wtf.form_errors(form, hiddens="only") }}
+          {{ wtf.form_field(form.title) }}
+          {% if form.seller %}
+            {{ wtf.form_field(form.seller) }}
+          {% endif %}
+          {{ wtf.form_field(form.categories) }}
+          {{ wtf.form_field(form.price) }}
+          {{ wtf.form_field(form.description) }}
+          {% for image in form.images %}
+            {{ wtf.form_field(image.image) }}
+          {% endfor %}
+          <input type="submit" class="btn btn-primary" value="Save"/>
+          <a href="javascript:history.back()" class="btn btn-default">Cancel</a>
+        </form>
+      </div>
     </div>
   </div>
 {% endblock %}
