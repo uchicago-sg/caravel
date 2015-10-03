@@ -123,8 +123,23 @@ def edit_listing(permalink):
     if session.get("email") != listing.seller or not session["email"]:
         abort(403)
 
+    # Upload photos after validate_on_submit(), even if other fields in the form
+    # are invalid.
+    is_valid = form.validate_on_submit()
+    if request.method == "POST":
+        photos = []
+        for photo in form.photos:
+            if not photo.data:
+                continue
+            image = photo.data["image"]
+            if not image or (hasattr(image, "filename") and not image.filename):
+                continue
+            photos.append(image)
+
+        listing.photo_urls = photos
+
     # Allow authors to edit listings.
-    if form.validate_on_submit():
+    if is_valid:
         listing.title = form.title.data
         listing.body = form.description.data
         listing.categories = form.categories.data
@@ -140,6 +155,11 @@ def edit_listing(permalink):
     form.description.data = listing.body
     form.categories.data = listing.categories
     form.price.data = listing.price / 100.0
+    for index, entry in enumerate(form.photos.entries):
+        if index < len(listing.photo_urls):
+            entry["image"].data = listing.photo_urls[index]
+        else:
+            entry["image"].data = None
 
     return render_template("listing_form.html", type="Edit", form=form)
 

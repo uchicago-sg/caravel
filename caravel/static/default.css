@@ -274,13 +274,17 @@ ul.form-control li label {
     font-weight: normal;
 }
 
+form .thumbnail {
+    max-width: 200px;
+}
+
 /* Footer */
 .copyright {
     margin-top: 15px;
     text-align: center;
 }
 
-/* Show page */
+/* For show page */
 .claim-listing-button {
     display: inline-block;
 }
