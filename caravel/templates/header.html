@@ -5,7 +5,7 @@
   <h1 class="branding col-xs-9 col-md-2">
     <a href="/">UChicago Marketplace</a>
   </h1>
-  <form class="search-form col-xs-12 col-md-6" method="GET" action="/">
+  <form class="search-form col-xs-12 col-md-5" method="GET" action="/">
     <div class="input-group">
       <input type="text" class="form-control" name="q"
         value="{{ request.args['q'] }}" placeholder="Search for listings..."/>
@@ -16,8 +16,13 @@
       </span>
     </div>
   </form>
+  <div class="user-button-container col-xs-12 col-sm-1 user-button-container">
+    <button class="btn btn-default user-button">
+      <a href="{{ url_for('new_listing') }}" class="new-listing">New Listing</a>
+    </button>
+  </div>
   {% if session["email"] %}
-    <div class="user-button-container col-xs-12 col-md-3">
+    <div class="user-button-container col-xs-12 col-md-2">
       <button class="btn btn-default dropdown-toggle user-button"
         type="button"  data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="true" >
@@ -25,7 +30,6 @@
           <span class="caret"></span>
       </button>
       <ul class="dropdown-menu">
-        <li><a href="{{ url_for('new_listing') }}">New Listing</a></li>
         <li>
           <form method="GET" action="/">
               <button type="submit" class="btn btn-link btn-manage-listings" name="q" value="{{ session["email"] }}">

@@ -196,3 +196,4 @@ def new_listing():
 def logout():
     session.clear()
     return redirect(url_for("search_listings"))
+
