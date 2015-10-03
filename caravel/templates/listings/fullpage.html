@@ -14,7 +14,7 @@
         {% endfor %}
         {% if listing.thumbnail_url is none %}
           <div class="item active">
-            <img src="/static/no-image.png">
+            <img src="/static/images/{{ listing.primary_category }}.png"/>
           </div>
         {% endif %}
       </div>

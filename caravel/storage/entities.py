@@ -92,6 +92,10 @@ class Listing(Versioned):
     def permalink(self):
         return self.key().name()
 
+    @property
+    def primary_category(self):
+        return (self.categories[:1] + ["miscellaneous"])[0]
+
     @DerivedProperty
     def keywords(self):
         """Generates keywords based on the alphanumeric words in the string."""
