@@ -274,7 +274,13 @@ ul.form-control li label {
     font-weight: normal;
 }
 
-/* For show page */
+/* Footer */
+.copyright {
+    margin-top: 15px;
+    text-align: center;
+}
+
+/* Show page */
 .claim-listing-button {
     display: inline-block;
 }
