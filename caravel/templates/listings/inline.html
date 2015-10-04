@@ -2,6 +2,8 @@
   <div class="thumbnail">
     <a href="{{ url_for('show_listing', permalink=listing.permalink,
                   q=request.args.get('q')) }}">
+        <span class="label label-info" style="background-color:black;opacity:0.8;font-size:13px;position:absolute;margin-top:10px;margin-left:10px;">
+          {{ listing.posting_time|as_duration }} ago</span>
       {% if listing.thumbnail_url %}
         <img src="{{ listing.thumbnail_url | public_url }}"/>
       {% else %}
@@ -9,29 +11,40 @@
       {% endif %}
     </a>
     <div class="caption">
-    	<h3>
+    	<p>
         <a href="{{ url_for('show_listing', permalink=listing.permalink,
     	                 q=request.args.get('q')) }}"
-    	       style="color:black;text-decoration:none">
+    	       style="color:black;text-decoration:none;font-size:20px">
     	        {% if listing.title[50:] %}
                 {{ listing.title[:50] }}...
               {% else %}
                 {{ listing.title }}
               {% endif %}
         </a>
-      </h3>
+      </p>
       <p>
-        <span class="label label-info">
-          {{ listing.posting_time|as_duration }} ago</span>
+        {% set category_colors = {
+          "apartments":"#a52a2a",
+          "subleases": "#ff1493",
+          "appliances": "#ff8c00",
+          "bikes": "#6495ed",
+          "cars": "#ff0000",
+          "electronics": "#9370db",
+          "employment": "#008000",
+          "furniture": "#ff7f50",
+          "miscelleneous": "#808080",
+          "services": "#202baa",
+          "wanted": "#40e0d0"
+          }
+        %}
         {% for category in listing.categories %}
           <a href="{{ url_for('search_listings',
               q=request.args.get('q', '') + category) }}"
              class="no-underline">
-          <span class="label label-default">
-          
+          <span class="label label-default" style="font-size:13px;background-color:{{ category_colors[category] }}">
               {{ category }}</span></a>
         {% endfor %}
-        <span class="label label-success">
+        <span class="label label-success" style="font-size:13px;">
           {{ '${:,.2f}'.format(listing.price / 100) }}</span>
       </p>
     </div>
