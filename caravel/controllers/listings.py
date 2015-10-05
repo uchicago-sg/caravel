@@ -136,6 +136,7 @@ def edit_listing(permalink):
     if form.validate_on_submit():
         listing.title = form.title.data
         listing.body = form.description.data
+        listing.categories = form.categories.data
         listing.price = int(form.price.data * 100)
         listing.put()
 
@@ -146,6 +147,7 @@ def edit_listing(permalink):
     # Display an edit form.
     form.title.data = listing.title
     form.description.data = listing.body
+    form.categories.data = listing.categories
     form.price.data = listing.price / 100.0
 
     return render_template("listing_form.html", type="Edit", form=form)
@@ -166,7 +168,8 @@ def new_listing():
             key_name=str(uuid.uuid4()), # FIXME: add proper permalink generator.
             title=form.title.data,
             price=int(form.price.data * 100),
-            description=form.description.data,
+            body=form.description.data,
+            categories=form.categories.data,
             seller=seller,
             posting_time=posting_time,
             admin_key=str(uuid.uuid4())
@@ -205,3 +208,4 @@ def new_listing():
 def logout():
     session.clear()
     return redirect(url_for("search_listings"))
+
