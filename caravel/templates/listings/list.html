@@ -1,19 +1,13 @@
 <tr>
   <td>
-    <div style="height:150px; width: 150px; overflow: hidden;">
       {% if listing.thumbnail_url %}
-        <div style="height:150px; width: 150px; overflow: hidden;background-position: center center;
-    background-size: cover; background-image: '{{ listing.thumbnail_url | public_url }}'">
-        <img src="{{ listing.thumbnail_url | public_url }}"/>
+        Yes
       {% else %}
-        <span class="small-image-placeholder">
-          {{ listing.title[:1].upper() }}
-        </span>
+        No
       {% endif %}
-    </div>
   </td>
   <td>
-      <a href="/{{ listing.permalink }}?q={{ request.args['q']}}">
+      <a href="/{{ listing.permalink }}?q={{ request.args['q']}}" style="color:black; text-decoration: none">
         {{ listing.title }}
       </a>
   </td>

@@ -18,6 +18,14 @@ from caravel.controllers import forms
 def search_listings():
     """Display a list of listings that match the given query."""
 
+    # Fix session handler if not initialized
+    if not session.get("view"):
+        session["view"] = "thumbnail"
+    if request.args.get("View") == "List View":
+        session["view"] = "list"
+    elif request.args.get("View") == "Thumbnail View":
+        session["view"] = "thumbnail"
+
     # Parse filtering options from query.
     query = request.args.get("q", "")
     offset = int(request.args.get("offset", "0"))
@@ -30,6 +38,7 @@ def search_listings():
 
     # Render a chrome-less template for AJAH continuation.
     template = ("" if "continuation" not in request.args else "_continuation")
+
     return render_template("index{}.html".format(template), listings=listings)
 
 @app.route("/<permalink>", methods=["GET", "POST"])
