@@ -1,5 +1,5 @@
 {% for listing in listings %}
-  {% if session["view"] == "thumbnail" %}
+  {% if view == "thumbnail" %}
     {% include "listings/thumbnail.html" %}
   {% else %}
     {% include "listings/list.html" %}

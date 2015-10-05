@@ -6,7 +6,7 @@
 {% endblock %}
 {% block content %}
     <button type="button" class="btn btn-default"><a href="{{ url_for('new_listing') }}" style="text-decoration: none; color: black;">New Listing</a></button>
-    {% if session["view"] == "thumbnail" %}
+    {% if view == "thumbnail" %}
       <form method="get" style="display:inline-block; float:right">
       <input class="btn btn-default" type="submit" name="View" value="List View">
       </form>
@@ -17,8 +17,8 @@
     {% endif %}
   <hr>
   <div class="row" id="listings">
-    {% if session["view"]=="list" %}
-      <table class="table">
+    {% if view=="list" %}
+      <table class="table" id = "listings">
         <tr>
           <th>Images?</th>
           <th>Title</th>
@@ -27,13 +27,13 @@
         </tr>
     {% endif %}
     {% for listing in listings %}
-      {% if session["view"]=="list" %}
+      {% if view=="list" %}
           {% include "listings/list.html" %}
       {% else %}
         {% include "listings/thumbnail.html" %}
       {% endif %}
     {% endfor %}
-    {% if session["view"] %}
+    {% if view == "list" %}
       </table>
     {% endif %}
   </div>
