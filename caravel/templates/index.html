@@ -6,18 +6,19 @@
 {% endblock %}
 {% block content %}
     <button type="button" class="btn btn-default"><a href="{{ url_for('new_listing') }}" style="text-decoration: none; color: black;">New Listing</a></button>
-    {% if view == "thumbnail" %}
+    {% if view == "Thumbnail" %}
       <form method="get" style="display:inline-block; float:right">
-      <input class="btn btn-default" type="submit" name="View" value="List View">
+      <input class="btn btn-default" type="submit" name="v" value="List">
+      <input type="hidden" name="q" value="{{ query }}"/>
       </form>
     {% else %}
       <form method="get" style="display:inline-block; float:right">
-      <input class="btn btn-default" type="submit" name="View" value="Thumbnail View">
+      <input class="btn btn-default" type="submit" name="v" value="Thumbnail">
+      <input type="hidden" name="q" value="{{ query }}"/>
       </form>
     {% endif %}
   <hr>
-  <div class="row" id="listings">
-    {% if view=="list" %}
+    {% if view=="List" %}
       <table class="table" id = "listings">
         <tr>
           <th>Images?</th>
@@ -25,16 +26,19 @@
           <th>Price</th>
           <th>Category</th>
         </tr>
+    {% else %}
+      <div class="row" id="listings">
     {% endif %}
     {% for listing in listings %}
-      {% if view=="list" %}
+      {% if view=="List" %}
           {% include "listings/list.html" %}
       {% else %}
         {% include "listings/thumbnail.html" %}
       {% endif %}
     {% endfor %}
-    {% if view == "list" %}
+    {% if view == "List" %}
       </table>
+    {% else %}
+      </div>
     {% endif %}
-  </div>
 {% endblock %}

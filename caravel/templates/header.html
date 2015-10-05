@@ -7,6 +7,7 @@
   </h1>
   <form class="search-form col-xs-12 col-md-6" method="GET" action="/">
     <div class="input-group">
+      <input type="hidden" name="view" value="{{ view }}"/>
       <input type="text" class="form-control" name="q"
         value="{{ request.args['q'] }}" placeholder="Search for listings..."/>
       <span class="input-group-btn">
