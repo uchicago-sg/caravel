@@ -5,29 +5,20 @@
   <script src="/static/js/continuation.js" type="text/javascript"></script>
 {% endblock %}
 {% block content %}
-    <button type="button" class="btn btn-default"><a href="{{ url_for('new_listing') }}" style="text-decoration: none; color: black;">New Listing</a></button>
-    {% if view == "Thumbnail" %}
-      <form method="get" style="display:inline-block; float:right">
-      <input class="btn btn-default" type="submit" name="v" value="List">
-      <input type="hidden" name="q" value="{{ query }}"/>
-      </form>
+  {% for file in [("list_button.html", "thumbnail_button.html"), ("thumbnail_header.html", "list_header.html")] %}
+    {% if loop.first %}
+      <button type="button" class="btn btn-default"><a href="{{ url_for('new_listing') }}" style="text-decoration: none; color: black;">New Listing</a></button>
     {% else %}
-      <form method="get" style="display:inline-block; float:right">
-      <input class="btn btn-default" type="submit" name="v" value="Thumbnail">
-      <input type="hidden" name="q" value="{{ query }}"/>
-      </form>
+      <hr>
+      <div class="row" id="listings">
     {% endif %}
-  <hr>
-  <div class="row" id="listings">
-    {% if view=="List" %}
-      <table class="table listings-table">
-        <tr>
-          <th>Images?</th>
-          <th>Title</th>
-          <th>Price</th>
-          <th>Category</th>
-        </tr>
+
+    {% if view == "Thumbnail" %}
+      {% include file %}
+    {% else %}
+      {% include file %}
     {% endif %}
+  {% endfor %}
     {% for listing in listings %}
       {% if view=="List" %}
           {% include "listings/list.html" %}
