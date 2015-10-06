@@ -14,9 +14,12 @@
     {% endif %}
 
     {% if view == "Thumbnail" %}
-      {% include file %}
+      {% include file[0] %}
     {% else %}
-      {% include file %}
+      {% if not loop.first %}
+        <table class="table">
+      {% endif %}
+      {% include file[1] %}
     {% endif %}
   {% endfor %}
     {% for listing in listings %}
