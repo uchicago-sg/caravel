@@ -60,7 +60,7 @@ var fetchMore = coalesce(function(complete) {
         if (viewQuery == "v=List") {
             var frag = document.createElement("table");
             var att = document.createAttribute("class");
-            att.value = "table"
+            att.value = "table listings-table"
             frag.setAttributeNode(att)
         }
         else {

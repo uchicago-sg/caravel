@@ -284,3 +284,12 @@ ul.form-control li label {
 .claim-listing-button {
     display: inline-block;
 }
+
+/* Listings table */
+.listings-table {
+    margin-bottom: 0px;
+}
+
+.listing-table-image {
+    width: 104px;
+}
