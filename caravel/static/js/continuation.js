@@ -26,19 +26,26 @@ var coalesce = function(action) {
 var fetchMore = coalesce(function(complete) {
 
     // Reconstruct the current query.
-    var searchQuery = "";
-    var frags = window.location.search.split("?");
-    for (var i = 0; i < frags.length; i++) {
-        if (frags[i].startsWith("q="))
-            searchQuery = frags[i];
-    }
+    var searchQuery = ""
+    var viewQuery = "v=Thumbnail"
+    var parameter_string = window.location.search.replace( "?", "" ); // will return the GET parameter
+    var parameter_list = parameter_string.split("&")
+    console.log(parameter_list)
+    searchQuery = parameter_list[1]
+    viewQuery = parameter_list[0]
+
+    //var frags = window.location.search.split("?");
+    //for (var i = 0; i < frags.length; i++) {
+    //    if (frags[i].startsWith("q="))
+    //        searchQuery = frags[i];
+    //}
 
     searchQuery += "&continuation";
     searchQuery += "&offset=" + document.querySelectorAll(".listing").length;
 
     // Make a background AJAH request.
     var xhr = new XMLHttpRequest;
-    xhr.open("GET", "?" + searchQuery, true);
+    xhr.open("GET", "?" + viewQuery + "&" + searchQuery, true);
     xhr.onreadystatechange = function() {
 
         // Ignore events for incomplete requests.
@@ -50,8 +57,17 @@ var fetchMore = coalesce(function(complete) {
             return;
 
         // Append the results to the existing results <div>
-        var frag = document.createElement("div");
+        if (viewQuery == "v=List") {
+            var frag = document.createElement("table");
+            var att = document.createAttribute("class");
+            att.value = "table"
+            frag.setAttributeNode(att)
+        }
+        else {
+            var frag = document.createElement("div");
+        }
         frag.innerHTML = xhr.responseText;
+        console.log(frag)
 
         var listings = document.querySelector("#listings");
         listings.appendChild(frag);

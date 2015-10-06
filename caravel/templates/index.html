@@ -18,16 +18,15 @@
       </form>
     {% endif %}
   <hr>
+  <div class="row" id="listings">
     {% if view=="List" %}
-      <table class="table" id = "listings">
+      <table class="table">
         <tr>
           <th>Images?</th>
           <th>Title</th>
           <th>Price</th>
           <th>Category</th>
         </tr>
-    {% else %}
-      <div class="row" id="listings">
     {% endif %}
     {% for listing in listings %}
       {% if view=="List" %}
@@ -38,7 +37,6 @@
     {% endfor %}
     {% if view == "List" %}
       </table>
-    {% else %}
-      </div>
     {% endif %}
+  </div>
 {% endblock %}
