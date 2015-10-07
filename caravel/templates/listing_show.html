@@ -4,5 +4,7 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
+  <h2> View Listing </h2>
+  <a href="/?q={{ request.args['q'] }}">Back to listings</a>
   {% include "listings/fullpage.html" %}
 {% endblock %}
