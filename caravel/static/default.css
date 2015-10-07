@@ -55,8 +55,6 @@ a.no-underline {
     text-decoration: none !important;
 }
 
-/* For show page */
-
 
 /* For making WTForms less painful with Bootstrap. */
 .form-group ul.form-control {
@@ -78,3 +76,29 @@ ul.form-control li label {
 .claim-listing-button {
     display: inline-block;
 }
+
+
+/* For thumbnail view */
+.thumbnail-price {
+    font-size: 13px;
+}
+
+.thumbnail-category {
+    font-size: 13px;
+}
+
+.thumbnail-title {
+    color: black;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.thumbnail-time {
+    background-color:black;
+    opacity: 0.7;
+    font-size: 13px;
+    position: absolute;
+    margin-top: 10px;
+    marign-right:10px
+}
+

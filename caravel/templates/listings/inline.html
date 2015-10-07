@@ -2,7 +2,7 @@
   <div class="thumbnail">
     <a href="{{ url_for('show_listing', permalink=listing.permalink,
                   q=request.args.get('q')) }}">
-        <span class="label label-info" style="background-color:black;opacity:0.8;font-size:13px;position:absolute;margin-top:10px;margin-left:10px;">
+        <span class="label label-info thumbnail-time">
           {{ listing.posting_time|as_duration }} ago</span>
       {% if listing.thumbnail_url %}
         <img src="{{ listing.thumbnail_url | public_url }}"/>
@@ -14,7 +14,7 @@
     	<p>
         <a href="{{ url_for('show_listing', permalink=listing.permalink,
     	                 q=request.args.get('q')) }}"
-    	       style="color:black;text-decoration:none;font-size:18px">
+    	       class="thumbnail-title">
     	        {% if listing.title[50:] %}
                 {{ listing.title[:50] }}...
               {% else %}
@@ -27,10 +27,10 @@
           <a href="{{ url_for('search_listings',
               q=request.args.get('q', '') + category) }}"
              class="no-underline">
-          <span class="label label-default" style="font-size:13px;background-color:{{ category|category_colors }}">
+          <span class="label label-default thumbnail-category" style="background-color:{{ category|category_colors }}">
               {{ category }}</span></a>
         {% endfor %}
-        <span class="label label-success" style="font-size:13px;">
+        <span class="label label-success thumbnail-price" >
           {{ '${:,.2f}'.format(listing.price / 100) }}</span>
       </p>
     </div>
