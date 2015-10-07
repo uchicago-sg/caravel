@@ -9,7 +9,9 @@ def lookup_listing(permalink):
     Retrieves a listing by permalink.
     """
 
-    return entities.Listing.get_by_key_name(permalink)
+    listing = entities.Listing.get_by_key_name(permalink)
+    listing.migrate()
+    return listing
 
 def invalidate_listing(listing):
     """
