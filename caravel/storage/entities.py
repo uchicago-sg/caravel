@@ -31,15 +31,28 @@ class DerivedProperty(db.Property):
 class Versioned(db.Expando):
     version = db.IntegerProperty(default=1)
     migrations = {}
-    
+
+    def __init__(self, *vargs, **kwargs):
+        """
+        Ensure that version is set to SCHEMA_VERSION.
+        """
+
+        if 'version' not in kwargs:
+            kwargs['version'] = self.__class__.SCHEMA_VERSION
+        super(Versioned, self).__init__(*vargs, **kwargs)
+
     @classmethod
     def migration(kls, to_version):
+        """
+        Migrate to SCHEMA_VERSION.
+        """
+
         def inner(func):
             kls.migrations = dict(kls.migrations)
             kls.migrations[to_version] = func
             return func
         return inner
-    
+
     def migrate(self):
         while self.version < self.SCHEMA_VERSION:
             self.migrations.get(self.version, lambda _: None)(self)
