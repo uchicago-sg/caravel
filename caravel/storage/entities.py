@@ -60,7 +60,7 @@ def fold_query_term(word):
     return singularized
 
 class Listing(Versioned):
-    SCHEMA_VERSION = 1
+    SCHEMA_VERSION = 2
     CATEGORIES = [
         ("apartments", "Apartments"),
         ("subleases", "Subleases"),
@@ -86,7 +86,7 @@ class Listing(Versioned):
     admin_key = db.StringProperty() # how to administer this listing
 
     photos_ = db.StringListProperty(indexed=False, name="photos")
-    thumbnails_ = db.StringListProperty(indexed=False, name="thumbnail_url")
+    thumbnails_ = db.StringListProperty(indexed=False, name="thumbnails")
 
     @property
     def permalink(self):
@@ -145,3 +145,7 @@ class Listing(Versioned):
             thumbnails.append(thumbnail)
 
         self.photos_, self.thumbnails_ = large_photos, thumbnails
+
+@Listing.migration(1)
+def from_single_thumbnail_to_many(listing):
+    listing.thumbnails_ = [listing.thumbnail_url]
