@@ -12,13 +12,13 @@
         <img src="{{ photo | public_url }}">
         </div>
         {% endfor %}
-        {% if listing.thumbnail_url is none %}
+        {% if not listing.thumbnail_urls %}
           <div class="item active">
             <img src="/static/images/{{ listing.primary_category }}.png"/>
           </div>
         {% endif %}
       </div>
-      {% if listing.thumbnail_url is not none %}
+      {% if listing.listing.thumbnail_urls %}
         <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
           <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
           <span class="sr-only">Previous</span>
