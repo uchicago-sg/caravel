@@ -31,15 +31,28 @@ class DerivedProperty(db.Property):
 class Versioned(db.Expando):
     version = db.IntegerProperty(default=1)
     migrations = {}
-    
+
+    def __init__(self, *vargs, **kwargs):
+        """
+        Ensure that version is set to SCHEMA_VERSION.
+        """
+
+        if 'version' not in kwargs:
+            kwargs['version'] = self.__class__.SCHEMA_VERSION
+        super(Versioned, self).__init__(*vargs, **kwargs)
+
     @classmethod
     def migration(kls, to_version):
+        """
+        Migrate to SCHEMA_VERSION.
+        """
+
         def inner(func):
             kls.migrations = dict(kls.migrations)
             kls.migrations[to_version] = func
             return func
         return inner
-    
+
     def migrate(self):
         while self.version < self.SCHEMA_VERSION:
             self.migrations.get(self.version, lambda _: None)(self)
@@ -60,7 +73,7 @@ def fold_query_term(word):
     return singularized
 
 class Listing(Versioned):
-    SCHEMA_VERSION = 1
+    SCHEMA_VERSION = 2
     CATEGORIES = [
         ("apartments", "Apartments"),
         ("subleases", "Subleases"),
@@ -86,7 +99,7 @@ class Listing(Versioned):
     admin_key = db.StringProperty() # how to administer this listing
 
     photos_ = db.StringListProperty(indexed=False, name="photos")
-    thumbnails_ = db.StringListProperty(indexed=False, name="thumbnail_url")
+    thumbnails_ = db.StringListProperty(indexed=False, name="thumbnails")
 
     @property
     def permalink(self):
@@ -145,3 +158,8 @@ class Listing(Versioned):
             thumbnails.append(thumbnail)
 
         self.photos_, self.thumbnails_ = large_photos, thumbnails
+
+@Listing.migration(1)
+def from_single_thumbnail_to_many(listing):
+    if listing.thumbnail_url:
+        listing.thumbnails_ = [listing.thumbnail_url]
