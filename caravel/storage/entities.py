@@ -146,13 +146,16 @@ class Listing(Versioned):
         large_photos, thumbnails = [], []
 
         for photo in url_or_fps:
+            if not photo:
+                continue
+
             if hasattr(photo, 'read'):
                 photo = StringIO.StringIO(photo.read())
                 large_photo = photos.upload(photo, 'large')
                 photo.seek(0)
                 thumbnail = photos.upload(photo, 'small')
             else:
-                large_photo, thumbnail = large_photo, large_photo
+                large_photo, thumbnail = photo, photo
 
             large_photos.append(large_photo)
             thumbnails.append(thumbnail)
@@ -161,5 +164,5 @@ class Listing(Versioned):
 
 @Listing.migration(1)
 def from_single_thumbnail_to_many(listing):
-    if listing.thumbnail_url:
+    if hasattr(listing, "thumbnail_url") and listing.thumbnail_url:
         listing.thumbnails_ = [listing.thumbnail_url]
