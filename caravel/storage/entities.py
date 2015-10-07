@@ -161,4 +161,5 @@ class Listing(Versioned):
 
 @Listing.migration(1)
 def from_single_thumbnail_to_many(listing):
-    listing.thumbnails_ = [listing.thumbnail_url]
+    if listing.thumbnail_url:
+        listing.thumbnails_ = [listing.thumbnail_url]
