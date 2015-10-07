@@ -28,7 +28,7 @@
                      q=request.args.get('q', '') + ' ' + category) }}"
              class="no-underline">
             <span class="label label-default">
-              {{ listing.CATEGORIES.get(category, category) }}
+              {{ listing.CATEGORIES_DICT.get(category, category) }}
             </span>
           </a>
         {% endfor %}
