@@ -4,11 +4,13 @@
                   q=request.args.get('q')) }}">
         <span class="label label-info thumbnail-time">
           {{ listing.posting_time|as_duration }} ago</span>
-      {% if listing.thumbnail_url %}
-        <img src="{{ listing.thumbnail_url | public_url }}"/>
-      {% else %}
-        <img src="/static/no-image.png"/>
-      {% endif %}
+    {% if listing.thumbnail_urls[0] %}
+      <img class="thumbnail-image"
+           src="{{ listing.thumbnail_urls[0] | public_url }}"/>
+    {% else %}
+      <img  class="thumbnail-image"
+            src="/static/images/{{ listing.primary_category }}.png"/>
+    {% endif %}
     </a>
     <div class="caption">
     	<p>
@@ -28,7 +30,7 @@
               q=request.args.get('q', '') + '' + category) }}"
              class="no-underline">
           <span class="label label-default thumbnail-category" style="background-color:{{ category|category_colors }}">
-              {{ category }}</span></a>
+              {{ listing.CATEGORIES_DICT[category] }}<</span></a>
         {% endfor %}
         <span class="label label-success thumbnail-price" >
           {{ '${:,.2f}'.format(listing.price / 100) }}</span>

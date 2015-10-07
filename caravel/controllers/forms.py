@@ -2,28 +2,46 @@ from flask.ext.wtf import Form
 from wtforms import StringField, SubmitField, TextAreaField, DecimalField
 from wtforms import FileField, FieldList, FormField, SelectMultipleField
 from wtforms.validators import Email, DataRequired, ValidationError
-from wtforms.widgets import ListWidget, CheckboxInput
+from wtforms.widgets import ListWidget, CheckboxInput, HTMLString, html_params
 from caravel import policy, app
+from caravel.storage import photos
 from flask_wtf.csrf import CsrfProtect
 
-CATEGORIES = [
-    ("apartments", "Apartments"),
-    ("subleases", "Subleases"),
-    ("appliances", "Appliances"),
-    ("bikes", "Bikes"),
-    ("books", "Books"),
-    ("cars", "Cars"),
-    ("electronics", "Electronics"),
-    ("employment", "Employment"),
-    ("furniture", "Furniture"),
-    ("miscellaneous", "Miscellaneous"),
-    ("services", "Services"),
-    ("wanted", "Wanted"),
-]
+from caravel import policy, app
+from caravel.storage import entities
 
 class CheckboxSelectMultipleField(SelectMultipleField):
     option_widget = CheckboxInput()
     widget = ListWidget(prefix_label=False)
+
+class StatefulFileField(StringField):
+    FILLED_IN = '''<div class="thumbnail">
+        <input {attributes}/><img src="{preview_url}"/>
+        <div class="caption">
+            <a class="btn btn-danger"
+               onclick="removeThumbnail(this, {id!r})">Remove</a>
+        </div>
+    </div>'''
+    UNFILLED = '<input {attributes}/>'
+
+    def widget(self, field, **kwargs):
+        kwargs.update(id=field.name, name=field.name)
+
+        if field.data:
+            # Display a preview of what's already present, plus a link to
+            # reset the input type with JavaScript.
+            kwargs.update(type='hidden', value=field.data)
+            return HTMLString(self.FILLED_IN.format(
+                attributes=html_params(**kwargs),
+                preview_url=photos.public_url(field.data),
+                id=str(kwargs['id'])
+            ))
+
+        else:
+            # Display just a file input.
+            kwargs.update(type='file')
+            return HTMLString(self.UNFILLED.format(
+                attributes=html_params(**kwargs)))
 
 class BuyerForm(Form):
     buyer = StringField("Email", description="UChicago Email Preferred",
@@ -36,7 +54,7 @@ class BuyerForm(Form):
             raise ValidationError("Only @uchicago.edu addresses are allowed.")
 
 class ImageEntry(Form):
-    image = FileField("Image")
+    image = StatefulFileField("Image")
 
 class EditListingForm(Form):
     title = StringField("Listing Title",
@@ -44,8 +62,9 @@ class EditListingForm(Form):
     price = DecimalField("Price", places=2,
                 validators=[DataRequired()])
     description = TextAreaField("Description", validators=[DataRequired()])
-    categories = CheckboxSelectMultipleField("Categories", choices=CATEGORIES,
-                     validators=[DataRequired()])
+    categories = CheckboxSelectMultipleField("Categories",
+                    choices=entities.Listing.CATEGORIES,
+                    validators=[DataRequired()])
     photos = FieldList(FormField(ImageEntry), min_entries=5)
     submit = SubmitField("Post")
 

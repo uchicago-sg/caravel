@@ -73,10 +73,6 @@ ul.form-control li label {
 }
 
 /* For show page */
-.claim-listing-button {
-    display: inline-block;
-}
-
 
 /* For thumbnail view */
 .thumbnail-price {
@@ -102,3 +98,17 @@ ul.form-control li label {
     marign-right:10px
 }
 
+form .thumbnail {
+    max-width: 200px;
+}
+
+/* Footer */
+.copyright {
+    margin-top: 15px;
+    text-align: center;
+}
+
+/* For show page */
+.claim-listing-button {
+    display: inline-block;
+}
