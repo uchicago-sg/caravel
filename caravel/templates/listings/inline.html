@@ -25,7 +25,7 @@
       <p>
         {% for category in listing.categories %}
           <a href="{{ url_for('search_listings',
-              q=request.args.get('q', '') + category) }}"
+              q=request.args.get('q', '') + '' + category) }}"
              class="no-underline">
           <span class="label label-default thumbnail-category" style="background-color:{{ category|category_colors }}">
               {{ category }}</span></a>
