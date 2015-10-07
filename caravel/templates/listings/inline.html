@@ -7,9 +7,9 @@
   </div>
   <a href="{{ url_for('show_listing', permalink=listing.permalink,
                 q=request.args['q']) }}">
-    {% if listing.thumbnail_url %}
+    {% if listing.thumbnail_urls[0] %}
       <img class="thumbnail-image"
-           src="{{ listing.thumbnail_url | public_url }}"/>
+           src="{{ listing.thumbnail_urls[0] | public_url }}"/>
     {% else %}
       <img  class="thumbnail-image"
             src="/static/images/{{ listing.primary_category }}.png"/>

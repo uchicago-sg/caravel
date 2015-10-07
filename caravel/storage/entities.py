@@ -86,7 +86,7 @@ class Listing(Versioned):
     admin_key = db.StringProperty() # how to administer this listing
 
     photos_ = db.StringListProperty(indexed=False, name="photos")
-    thumbnail_url = db.StringProperty(indexed=False)
+    thumbnails_ = db.StringListProperty(indexed=False, name="thumbnail_url")
 
     @property
     def permalink(self):
@@ -116,19 +116,32 @@ class Listing(Versioned):
 
         return self.photos_
 
+    @property
+    def thumbnail_urls(self):
+        """
+        Gets the scaled photo URLs for this listing.
+        """
+
+        return self.thumbnails_
+
     @photo_urls.setter
     def photo_urls(self, url_or_fps):
         """
         Sets the URLs of the photos for this Listing.
         """
 
-        # Upload a thumbnail, if one is given.
-        if url_or_fps and hasattr(url_or_fps[0], 'read'):
-            # Buffer first file before uploading.
-            url_or_fps[0] = StringIO.StringIO(url_or_fps[0].read())
-            self.thumbnail_url = photos.upload(url_or_fps[0], 'small')
-            url_or_fps[0].seek(0)
+        large_photos, thumbnails = [], []
 
-        # Actually set the property on the backend.
-        self.photos_ = [(photos.upload(u, 'large') if hasattr(u, 'read') else u)
-                        for u in url_or_fps]
+        for photo in url_or_fps:
+            if hasattr(photo, 'read'):
+                photo = StringIO.StringIO(photo.read())
+                large_photo = photos.upload(photo, 'large')
+                photo.seek(0)
+                thumbnail = photos.upload(photo, 'small')
+            else:
+                large_photo, thumbnail = large_photo, large_photo
+
+            large_photos.append(large_photo)
+            thumbnails.append(thumbnail)
+
+        self.photos_, self.thumbnails_ = large_photos, thumbnails

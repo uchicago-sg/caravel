@@ -71,7 +71,7 @@ def public_url(path):
 
     if not path or not re.match(r'^[a-zA-Z0-9\-]+$', path):
         if path:
-            raise Exception(repr(path))
+            raise ValueError("Invalid path {!r}".format(path))
         return ""
 
     path = GCS_BUCKET + "/" + path
