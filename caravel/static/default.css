@@ -45,218 +45,18 @@ body {
 }
 
 /* For search results */
-.listing {
-    margin-bottom: 4em;
+.float-to-inline-block {
+    display:inline-block;
+    vertical-align:top;
+    float:none;
 }
 
-.listing img, .listing .small-image-placeholder {
-    width: 100%;
-    border-radius: 5px 5px 0 0;
-}
-
-.listing h3 {
-    position: absolute;
-    bottom: -40px;
-    left: 15px;
-    right: 15px;
-    padding: 5px 10px;
-    font: 300 1.5em/30px Roboto,sans-serif;
-    margin: 0;
-    background-color: #fff;
-    border-radius: 0 0 5px 5px;
-    overflow: hidden;
-    z-index: 10;
-    text-align: center;
-}
-
-.listing h3 a {
-    color: #000;
-}
-
-.listing .price, .listing .age {
-    position: absolute;
-    top: 1em;
-    color: #fff;
-    padding: 3px 5px;
-    z-index: 15;
-}
-
-.listing .age {
-    background-color: #111;
-    left: 15px;
-    border-radius: 0 5px 5px 0;
-}
-
-.listing .price {
-    background-color: #900;
-    right: 15px;
-    text-align: right;
-    border-radius: 5px 0 0 5px;
-}
-
-/* For listings without images */
-.small-image-placeholder, .large-image-placeholder {
-    display: block;
-    font: bold 150px sans-serif;
-    color: #fff !important;
-    background-color: #eee;
-    text-align: center;
+a.no-underline {
     text-decoration: none !important;
-    overflow: hidden;
-}
-
-.small-image-placeholder {
-    font-size: 150px;
-    height: 213px;
-    line-height: 213px;
-}
-
-.large-image-placeholder {
-    font-size: 300px;
-}
-
-/* New grid system */
-
-/* USAGE
-<div class="row">
-  <div class="row-height">
-    <div class="col-xs-2 col-xs-height col-xs-middle">
-      <div class="inside"></div>
-    </div>
-    <div class="col-xs-4 col-lg-5 col-xs-height col-xs-middle">
-      <div class="inside"></div>
-    </div>
-  </div>
-</div>
-*/
-
-/* content styles */
-
-/*
- * Row with equal height columns
- * --------------------------------------------------
- */
-.row-eq-height {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display:         flex;
-}
-
-.age {
-    background-color: #111;
-    left: 15px;
-    border-radius: 0 5px 5px 0;
-}
-
-.category div {
-    position: absolute;
-    left: 10px;
-    top: 10px;
-    background: #900;
-    padding: 3px;
-    border-radius: 5px;
-    opacity: 0.8;
-}
-
-.category span {
-    color: white;
 }
 
 /* For show page */
-.inquiry-dropdown{
-    margin: 10px;
-}
 
-.dropdown-form-buyer{
-    width: 90%;
-    margin-right: 10px;
-    margin-left: 10px;
-
-}
-
-.user-button {
-    border: none;
-}
-
-.btn-manage-listings{
-    padding: 3px 20px;
-    color: black;
-    text-decoration: none;
-}
-
-/* For inline listings */
-.inline-thumbnail {
-    /*margin-left: 10px;*/
-    /*margin-right: 10px;*/
-    /*margin-bottom: 15px;*/
-    /*padding: 0;*/
-    position: relative;
-    background-color: #ffffff;
-    border-radius: 10px;
-    border: 1px solid #e5e5e5;
-}
-
-.category-tag {
-    position: absolute;
-    left: 10px;
-    background: #900;
-    padding: 3px;
-    border-radius: 5px;
-    opacity: 0.8;
-    margin-top:10px;
-}
-
-.category-text {
-    color: white;
-}
-
-.thumbnail-image {
-    width: 100%;
-}
-
-.thumbnail-title-block {
-    background-color: white;
-    margin: 0;
-    color: black;
-}
-
-p.thumbnail-title {
-    padding-left: 10px;
-    padding-right: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-a.thumbnail-title {
-    font-size: 17px;
-    font-weight: 400;
-    color: black;
-    white-space: nowrap;
-}
-
-.thumbnail-price {
-    font-weight: 300;
-    padding-left: 10px;
-    padding-right: 10px;
-    font-size: 15px;
-    color: black;
-}
-
-@media only screen and (min-width: 768px) {
-    .thumbnail-col {
-        color: #e5e5e5;
-        margin-bottom: 10px;
-        height: 318px;
-    }
-}
-
-@media only screen and (max-width: 767px) {
-    .thumbnail-col {
-        color: #e5e5e5;
-        margin-bottom: 10px;
-    }
-}
 
 /* For making WTForms less painful with Bootstrap. */
 .form-group ul.form-control {
@@ -274,13 +74,17 @@ ul.form-control li label {
     font-weight: normal;
 }
 
+form .thumbnail {
+    max-width: 200px;
+}
+
 /* Footer */
 .copyright {
     margin-top: 15px;
     text-align: center;
 }
 
-/* Show page */
+/* For show page */
 .claim-listing-button {
     display: inline-block;
 }

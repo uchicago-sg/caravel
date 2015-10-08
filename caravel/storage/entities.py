@@ -31,15 +31,28 @@ class DerivedProperty(db.Property):
 class Versioned(db.Expando):
     version = db.IntegerProperty(default=1)
     migrations = {}
-    
+
+    def __init__(self, *vargs, **kwargs):
+        """
+        Ensure that version is set to SCHEMA_VERSION.
+        """
+
+        if 'version' not in kwargs:
+            kwargs['version'] = self.__class__.SCHEMA_VERSION
+        super(Versioned, self).__init__(*vargs, **kwargs)
+
     @classmethod
     def migration(kls, to_version):
+        """
+        Migrate to SCHEMA_VERSION.
+        """
+
         def inner(func):
             kls.migrations = dict(kls.migrations)
             kls.migrations[to_version] = func
             return func
         return inner
-    
+
     def migrate(self):
         while self.version < self.SCHEMA_VERSION:
             self.migrations.get(self.version, lambda _: None)(self)
@@ -60,7 +73,7 @@ def fold_query_term(word):
     return singularized
 
 class Listing(Versioned):
-    SCHEMA_VERSION = 1
+    SCHEMA_VERSION = 2
     CATEGORIES = [
         ("apartments", "Apartments"),
         ("subleases", "Subleases"),
@@ -86,11 +99,15 @@ class Listing(Versioned):
     admin_key = db.StringProperty() # how to administer this listing
 
     photos_ = db.StringListProperty(indexed=False, name="photos")
-    thumbnail_url = db.StringProperty(indexed=False)
+    thumbnails_ = db.StringListProperty(indexed=False, name="thumbnails")
 
     @property
     def permalink(self):
         return self.key().name()
+
+    @property
+    def primary_category(self):
+        return (self.categories[:1] + ["miscellaneous"])[0]
 
     @DerivedProperty
     def keywords(self):
@@ -112,19 +129,40 @@ class Listing(Versioned):
 
         return self.photos_
 
+    @property
+    def thumbnail_urls(self):
+        """
+        Gets the scaled photo URLs for this listing.
+        """
+
+        return self.thumbnails_
+
     @photo_urls.setter
     def photo_urls(self, url_or_fps):
         """
         Sets the URLs of the photos for this Listing.
         """
 
-        # Upload a thumbnail, if one is given.
-        if url_or_fps and hasattr(url_or_fps[0], 'read'):
-            # Buffer first file before uploading.
-            url_or_fps[0] = StringIO.StringIO(url_or_fps[0].read())
-            self.thumbnail_url = photos.upload(url_or_fps[0], 'small')
-            url_or_fps[0].seek(0)
+        large_photos, thumbnails = [], []
 
-        # Actually set the property on the backend.
-        self.photos_ = [(photos.upload(u, 'large') if hasattr(u, 'read') else u)
-                        for u in url_or_fps]
+        for photo in url_or_fps:
+            if not photo:
+                continue
+
+            if hasattr(photo, 'read'):
+                photo = StringIO.StringIO(photo.read())
+                large_photo = photos.upload(photo, 'large')
+                photo.seek(0)
+                thumbnail = photos.upload(photo, 'small')
+            else:
+                large_photo, thumbnail = photo, photo
+
+            large_photos.append(large_photo)
+            thumbnails.append(thumbnail)
+
+        self.photos_, self.thumbnails_ = large_photos, thumbnails
+
+@Listing.migration(1)
+def from_single_thumbnail_to_many(listing):
+    if hasattr(listing, "thumbnail_url") and listing.thumbnail_url:
+        listing.thumbnails_ = [listing.thumbnail_url]

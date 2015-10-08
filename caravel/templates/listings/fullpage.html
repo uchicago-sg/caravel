@@ -1,67 +1,63 @@
 {% import "bootstrap/wtf.html" as wtf %}
-<div class="row">
-  <div class="col-md-6">
-    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-      <div class="carousel-inner" role="listbox">
-        {% for photo in listing.photo_urls %}
-          {% if loop.first %}
-            <div class="item active">
-          {% else %}
-            <div class="item">
-          {% endif %}
-        <img src="{{ photo | public_url }}">
-        </div>
+<div class="container">
+  <div class="row">
+    {% if listing.photo_urls %}
+      <div class="col-md-3">
+    {% else %}
+      <div>
+    {% endif %}
+      {% for photo in listing.photo_urls %}
+        <a href="{{ photo | public_url }}" class="thumbnail">
+          <img src="{{ photo | public_url }}"/>
+        </a>
+      {% endfor %}
+    </div>
+    {% if listing.photo_urls %}
+      <div class="col-md-6">
+    {% else %}
+      <div class="col-md-9">
+    {% endif %}
+      <h2>{{ listing.title }}</h2>
+      <p>
+        {% for category in listing.categories %}
+          <span class="label label-default">{{ category }}</span>
         {% endfor %}
-        {% if listing.thumbnail_url is none %}
-          <div class="item active">
-            <img src="/static/no-image.png">
-          </div>
-        {% endif %}
-      </div>
-      {% if listing.thumbnail_url is not none %}
-        <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-          <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-          <span class="sr-only">Previous</span>
-        </a>
-        <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-          <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-          <span class="sr-only">Next</span>
-        </a>
-      {% endif %}
+        <span class="label label-success">
+          {{ '${:,.2f}'.format(listing.price / 100) }}</span>
+      </p>
+      <p style="white-space:pre-wrap">{{ listing.body }}</p>
     </div>
-  </div>
-  <div class="col-md-6">
-    <h3>{{ listing.title }}</h3>
-    <p>{{ '$%0.2f'|format(listing.price / 100) }}</p>
-    <p>{{ listing.body }}</p>
-    <hr>
-    <div class="claim-listing-button">
-    <button class="btn btn-default dropdown-toggle" type="button" id="dropdown_menu_user" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="true">
-      Make an Inquiry
-      <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu dropdown-form-buyer">
-      <li>
-        <div class="row inquiry-dropdown">
-          <div class="col-md-12">
-            {{ wtf.quick_form(buyer_form) }}
-          </div>
+    <div class="col-md-3">
+    {% if listing.seller == session["email"] %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Manage Listing</h3>
         </div>
-      </li>
-    </ul>
-    </div>
-    <div class="claim-listing-button">
-      {% if listing.seller == session["email"] %}
-        <p><a class="btn btn-default"
-              href="{{ url_for('edit_listing', permalink=listing.permalink) }}">
-          Edits</a></p>
-      {% else %}
-        <form method="post"
-              action="{{ url_for('claim_listing', permalink=listing.permalink) }}">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-          <input type="submit" class="btn btn-default" value="This is mine"/></form>
-      {% endif %}
-    </div>
+        <div class="panel-body">
+          <a class="btn btn-default"
+                href="{{ url_for('edit_listing',
+                         permalink=listing.permalink) }}">
+            Edit</a>
+        </div>
+      </div>
+     
+    {% else %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Contact Seller</h3>
+        </div>
+        <div class="panel-body">
+          {{ wtf.quick_form(buyer_form) }}
+          <p>
+          <form method="post"
+                action="{{ url_for('claim_listing',
+                           permalink=listing.permalink) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <input type="submit" class="btn btn-default" value="This is mine"/>
+          </form>
+          </p>
+        </div>
+      </div>
+    {% endif %}
   </div>
 </div>
