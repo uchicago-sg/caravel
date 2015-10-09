@@ -6,7 +6,8 @@
   <script src="/static/js/view.js" type=text/javascript></script>
 {% endblock %}
 {% block content %}
-  {% for file in [("list_button.html", "thumbnail_button.html"), ("thumbnail_header.html", "list_header.html")] %}
+
+  {% for i in range(2) %}
     {% if loop.first %}
       <button type="button" class="btn btn-default"><a href="{{ url_for('new_listing') }}" style="text-decoration: none; color: black;">New Listing</a></button>
     {% else %}
@@ -16,22 +17,20 @@
 
 
     {% if loop.first %}
-    <div class="btn-group">
-      <div class="btn btn-primary" id="thumbnail-toggle">Thumbnails</div>
-      <div class="btn btn-default" id="list-toggle">List</div>
+    <div class="btn-group" style="float:right;">
+      {% include "thumbnail_button.html" %}
+      {% include "list_button.html" %}
     </div>
-    {% endif %}
-
-
-    {% if view == "Thumbnail" %}
-      {% include file[0] %}
-    {% else %}
-      {% if not loop.first %}
+    {% else  %}
+      {% if view == "Thumbnail" %}
+        {% include "thumbnail_header.html" %}
+      {% else %}
         <table class="table">
+        {% include "list_header.html" %}
       {% endif %}
-      {% include file[1] %}
     {% endif %}
   {% endfor %}
+
     {% for listing in listings %}
       {% if view=="List" %}
           {% include "listings/list.html" %}
