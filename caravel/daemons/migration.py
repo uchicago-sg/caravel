@@ -16,5 +16,4 @@ def migrate_schema():
         db.run_in_transaction(lambda: (listing.migrate(), listing.put()))
         helpers.invalidate_listing(listing)
 
-    # Invalidate the cache.
-    helpers.invalidate_listing(listing)
+    return "ok"
