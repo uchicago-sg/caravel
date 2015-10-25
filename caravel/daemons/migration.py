@@ -2,6 +2,8 @@
 The migration daemon pulls the latest listings from the old site.
 """
 
+from google.appengine.api import db
+
 from caravel.storage import entities, helpers
 from caravel import app
 
