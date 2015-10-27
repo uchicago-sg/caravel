@@ -26,7 +26,7 @@ def search_listings():
 
     # Compute the results matching that query.
     listings = helpers.run_query(query)
-    listings = itertools.islice(listings, offset, offset + 24)
+    listings = list(itertools.islice(listings, offset, offset + 24))
 
     # Render a chrome-less template for AJAH continuation.
     template = ("" if "continuation" not in request.args else "_continuation")
