@@ -2,7 +2,7 @@ def is_authorized_seller(email):
     """Returns true if the user can use Marketplace to sell things."""
     try:
         user, domain = email.split("@")
-        return domain == "uchicago.edu"
+        return domain in ["uchicago.edu", "uchospitals.edu", "chicagobooth.edu"]
     except ValueError:
         return False
 
