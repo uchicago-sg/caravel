@@ -21,19 +21,15 @@
         </a>
       </h3>
       <p>
-        <span class="label label-info">
-          {{ listing.posting_time|as_duration }} ago</span>
+        <span class="label label-info">{{
+          listing.posting_time|as_duration }} ago</span>
         {% for category in listing.categories %}
-          <a href="{{ url_for('search_listings',
-                     q=request.args.get('q', '') + ' ' + category) }}"
-             class="no-underline">
-            <span class="label label-default">
-              {{ listing.CATEGORIES_DICT.get(category, category) }}
-            </span>
-          </a>
+        <span class="label label-default">{{
+          listing.CATEGORIES_DICT.get(category, category)
+        }}</span>
         {% endfor %}
-        <span class="label label-success">
-          {{ '${:,.2f}'.format(listing.price / 100) }}</span>
+        <span class="label label-success">{{
+          '${:,.2f}'.format(listing.price / 100) }}</span>
       </p>
     </div>
   </div>
