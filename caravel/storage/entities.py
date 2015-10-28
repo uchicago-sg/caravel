@@ -21,12 +21,15 @@ class DerivedProperty(db.Property):
 
     def __get__(self, model_instance, model_class):
         """Override when this property is read from an entity."""
-        if model_instance is None:
-            return self
-        return self.derive_func(model_instance)
 
-    def __set__(self, model_instance, value):
-        """Ignore assignment to entity.prop."""
+        try:
+            result = getattr(model_instance, self._attr_name())
+            if result is not None:
+                return result
+        except AttributeError:
+            pass
+
+        return self.derive_func(model_instance)
 
 class Versioned(db.Expando):
     version = db.IntegerProperty(default=1)
