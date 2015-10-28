@@ -56,6 +56,10 @@ a.no-underline {
     text-decoration: none !important;
 }
 
+#categories {
+    margin-top: 0.5em;
+}
+
 /* For show page */
 
 
