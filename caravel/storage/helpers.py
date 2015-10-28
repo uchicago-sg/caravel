@@ -1,17 +1,22 @@
 from caravel.storage import entities
-from caravel.storage.cache import cache
+from caravel.storage.cache import cache, batchcache
 from google.appengine.ext import db
 import heapq
 
-@cache
-def lookup_listing(permalink):
+@batchcache
+def lookup_listing(args=[]):
     """
-    Retrieves a listing by permalink.
+    Retrieves many listings by permalink.
     """
 
-    listing = entities.Listing.get_by_key_name(permalink)
-    listing.migrate()
-    return listing
+    keys = [db.Key.from_path("Listing", v[0]) for (v, kw) in args]
+    records = entities.Listing.get(keys)
+
+    for record in records:
+        if record:
+            record.migrate()
+
+    return records
 
 def invalidate_listing(listing):
     """
@@ -24,7 +29,7 @@ def invalidate_listing(listing):
     fetch_shard.invalidate("")
 
 @cache
-def fetch_shard(shard=""):
+def fetch_shard(shard):
     """
     Retrieves the permalinks of all listings to appear on the home page.
     """
@@ -45,6 +50,10 @@ def run_query(query="", offset=0):
         words = [""]
     words = words[:5] # TODO: Raise once we know the approximate cost.
 
+    shard = fetch_shard("sublet")
+    if not isinstance(shard[0], basestring):
+        raise Exception(shard)
+
     # Retrieve the keys for entities that match all terms.
     shards = [fetch_shard(entities.fold_query_term(w)) for w in words]
     if not shards:
@@ -55,7 +64,7 @@ def run_query(query="", offset=0):
         while keys:
             # Process listings ten at a time.
             batch, keys = keys[:10], keys[10:]
-            listings = lookup_listing.parallel([([b], {}) for b in batch])
+            listings = lookup_listing.batch([([b], {}) for b in batch])
             for key, listing in zip(batch, listings):
                 if listing and listing.posting_time:
                     yield (listing.posting_time, listing)
