@@ -18,7 +18,3 @@ from caravel import utils
 # Import test modules iff running locally.
 if os.environ["SERVER_SOFTWARE"].startswith("Development/"):
     from caravel.testing import integration_test
-
-# Add tracing to the Flask app.
-from google.appengine.ext.appstats import recording
-wsgi_app = recording.appstats_wsgi_middleware(app)
