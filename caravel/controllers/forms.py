@@ -67,8 +67,7 @@ class ImageEntry(Form):
 class EditListingForm(Form):
     title = StringField("Listing Title",
                 validators=[DataRequired()])
-    price = DecimalField("Price", places=2,
-                validators=[DataRequired()])
+    price = DecimalField("Price", places=2, default=0)
     description = TextAreaField("Description", validators=[DataRequired()])
     categories = CheckboxSelectMultipleField("Categories",
                     choices=entities.Listing.CATEGORIES,

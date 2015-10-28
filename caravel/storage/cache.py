@@ -48,6 +48,17 @@ class DBDecoder(JSONDecoder):
 
 def cache(func):
     """
+    Wraps a regular function as batch cache.
+    """
+
+    @batchcache
+    def inner(vargs):
+        return map(lambda (v, kw): func(*v, **kw), vargs)
+
+    return inner
+
+def batchcache(func):
+    """
     A decorator to add inline caching behavior to a function.
     """
 
@@ -61,9 +72,9 @@ def cache(func):
         Runs the given function with the cache as a backing.
         """
 
-        return parallel([(vargs, kwargs)])[0]
+        return batch([(vargs, kwargs)])[0]
 
-    def parallel(args):
+    def batch(args):
         """
         Runs this function with the given list of arguments, batching memcache
         elements together.
@@ -75,18 +86,26 @@ def cache(func):
         cached = memcache.get_multi(keys)
         writeback = {}
         results = {} 
+        arguments = []
 
         # Fill in results that aren't in the cache.
         for key, (vargs, kwargs) in zip(keys, args):
             if key in cached:
                 results[key] = DBDecoder().decode(cached[key])
             else:
-                results[key] = func(*vargs, **kwargs)
+                results[key] = None
+                arguments.append((vargs, kwargs))
                 logging.warning("Cache miss on {!r}".format(key))
+
+        # Fetch remaining elements from the database.
+        for key, result in zip(keys, func(arguments)):
+            results[key] = result
+            if result:
                 writeback[key] = DBEncoder().encode(results[key])
 
         # Writeback those elements to memcached.
-        memcache.set_multi(writeback, time=3600)
+        if writeback:
+            memcache.set_multi(writeback, time=3600)
 
         return [results[key] for key in keys]
 
@@ -99,6 +118,6 @@ def cache(func):
         memcache.delete(_key(vargs, kwargs))
 
     inner.invalidate = invalidate
-    inner.parallel = parallel
+    inner.batch = batch
     
     return inner
