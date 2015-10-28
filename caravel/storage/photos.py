@@ -69,7 +69,7 @@ def public_url(path):
     Returns a complete file URL given its path.
     """
 
-    if not path or not re.match(r'^[a-zA-Z0-9\-]+$', path):
+    if not path or not re.match(r'^[a-zA-Z0-9\-\.]+$', path):
         if path:
             raise ValueError("Invalid path {!r}".format(path))
         return ""
