@@ -50,10 +50,6 @@ def run_query(query="", offset=0):
         words = [""]
     words = words[:5] # TODO: Raise once we know the approximate cost.
 
-    shard = fetch_shard("sublet")
-    if not isinstance(shard[0], basestring):
-        raise Exception(shard)
-
     # Retrieve the keys for entities that match all terms.
     shards = [fetch_shard(entities.fold_query_term(w)) for w in words]
     if not shards:
@@ -67,12 +63,16 @@ def run_query(query="", offset=0):
             listings = lookup_listing.batch([([b], {}) for b in batch])
             for key, listing in zip(batch, listings):
                 if listing and listing.posting_time:
-                    yield (listing.posting_time, listing)
+                    yield (-listing.posting_time, listing)
 
     # Merge all shards together via mergesort.
     merged = heapq.merge(*[_load(shard) for shard in shards])
-    for _, listing in merged:
-        yield listing
+
+    prev = None
+    for time, listing in merged:
+        if prev is None or listing.key() != prev.key():
+            prev = listing
+            yield listing
 
 def add_inqury(listing, buyer, message):
     """
