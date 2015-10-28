@@ -36,7 +36,7 @@
     </div>
   </form>
   <div class="user-button-container col-xs-12 col-md-4">
-    <a href="{{ url_for('new_listing') }}"
+    <a href="{{ url_for('new_listing', q=request.args.get('q')) }}"
       class="btn btn-default user-button new-listing">New Listing</a>
   {% if session["email"] %}
     <span style="position:relative">

@@ -76,7 +76,7 @@ def fold_query_term(word):
     return singularized
 
 class Listing(Versioned):
-    SCHEMA_VERSION = 2
+    SCHEMA_VERSION = 3
     CATEGORIES = [
         ("apartments", "Apartments"),
         ("subleases", "Subleases"),
@@ -90,6 +90,7 @@ class Listing(Versioned):
         ("miscellaneous", "Miscellaneous"),
         ("services", "Services"),
         ("wanted", "Wanted"),
+        ("free", "Free")
     ]
     CATEGORIES_DICT = dict(CATEGORIES)
 
@@ -119,6 +120,8 @@ class Listing(Versioned):
         # Tokenize title and body (ranking them equally)
         words = [self.seller] + self.title.split() + self.body.split()
         words += self.categories
+        if self.price == 0:
+            words += ["free"]
         singularized = [fold_query_term(word) for word in words]
 
         # Return a uniqified list of words.
