@@ -100,6 +100,7 @@ class Listing(Versioned):
     posting_time = db.FloatProperty(default=0) # set to 0 iff not yet published
     categories = db.StringListProperty() # stored as keys of CATEGORIES
     admin_key = db.StringProperty(default="") # how to administer this listing
+    buyers = db.StringListProperty() # how many people are interested
 
     photos_ = db.StringListProperty(indexed=False, name="photos")
     thumbnails_ = db.StringListProperty(indexed=False, name="thumbnails")

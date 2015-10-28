@@ -65,6 +65,9 @@ def show_listing(permalink):
         buyer = buyer_form.buyer.data
         message = buyer_form.message.data
 
+        # Track what requests are sent to which people.
+        helpers.add_inqury(listing, buyer, message)
+
         mail.send_mail(
             "Marketplace <magicmonkeys@hosted-caravel.appspotmail.com>",
             listing.seller,
