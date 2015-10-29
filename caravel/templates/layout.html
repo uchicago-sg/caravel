@@ -5,10 +5,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-<link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400' rel='stylesheet' type='text/css'>    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/default.css"/>
     <script src="/static/js/jquery-plus-bootstrap.min.js" async></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript">
+      window.addEventListener("load", function() {
+        if (window.innerWidth <= 750)
+          window.scrollTo(0,
+            document.getElementById("top-of-content").offsetTop);
+      });
+    </script>
     <title> UChicago Marketplace - {% block title %} {% endblock %}</title>
   {% endblock %}
 </head>
