@@ -17,8 +17,11 @@
       </span>
     </div>
   </form>
+  <div class="user-button-container col-xs-12 col-md-4">
+    <a href="{{ url_for('new_listing') }}"
+      class="btn btn-default user-button new-listing">New Listing</a>
   {% if session["email"] %}
-    <div class="user-button-container col-xs-12 col-md-3">
+    <span style="position:relative">
       <button class="btn btn-default dropdown-toggle user-button"
         type="button"  data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="true" >
@@ -27,14 +30,11 @@
       </button>
       <ul class="dropdown-menu">
         <li>
-          <form method="GET" action="/">
-              <button type="submit" class="btn btn-link btn-manage-listings" name="q" value="{{ session["email"] }}">
-                Manage Listings
-              </button>
-          </form>
-        </li>
+          <li><a href="{{ url_for('search_listings', q=session['email'] + ' ' +
+              request.args.get('q', '')) }}">Manage Listings</a></li>
         <li><a href={{ url_for('logout') }}>Logout</a></li>
       </ul>
-    </div>
+    </span>
   {% endif %}
+  </div>
 </div>

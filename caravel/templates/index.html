@@ -6,39 +6,27 @@
   <script src="/static/js/view.js" type=text/javascript></script>
 {% endblock %}
 {% block content %}
-
-  {% for i in range(2) %}
-    {% if loop.first %}
-      <button type="button" class="btn btn-default"><a href="{{ url_for('new_listing') }}" style="text-decoration: none; color: black;">New Listing</a></button>
-    {% else %}
-      <hr>
-      <div class="row" id="listings">
-    {% endif %}
-
-
-    {% if loop.first %}
+  <div class = "row">
+    <button type="button" class="btn btn-default">
+      <a href="{{ url_for('new_listing') }}" style="text-decoration: none; color: black;">New Listing</a>
+    </button>
     <div class="btn-group" style="float:right;">
       {% include "thumbnail_button.html" %}
       {% include "list_button.html" %}
     </div>
-    {% else  %}
-      {% if view == "Thumbnail" %}
-        {% include "thumbnail_header.html" %}
-      {% else %}
-        <table class="table">
-        {% include "list_header.html" %}
-      {% endif %}
-    {% endif %}
-  {% endfor %}
+  </div>
 
-    {% for listing in listings %}
-      {% if view=="List" %}
-          {% include "listings/list.html" %}
-      {% else %}
+  <hr>
+
+  <div class="row" id="listings">
+    {% if view == "Thumbnail" %}
+      {% for listing in listings %}
         {% include "listings/thumbnail.html" %}
-      {% endif %}
-    {% endfor %}
-    {% if view == "List" %}
+      {% endfor %}
+    {% else %}
+      <table class="table">
+        {% include "list_header.html" %}
+        {% include "listings/list.html" %}
       </table>
     {% endif %}
   </div>

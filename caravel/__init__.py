@@ -12,13 +12,9 @@ app = Flask(__name__)
 # Imported for side effects:
 from caravel.storage import config, photos
 from caravel.controllers import listings
-from caravel.daemons import replication, migration
+from caravel.daemons import replication, migration, delete_old_photos
 from caravel import utils
 
 # Import test modules iff running locally.
 if os.environ["SERVER_SOFTWARE"].startswith("Development/"):
     from caravel.testing import integration_test
-
-# Add tracing to the Flask app.
-from google.appengine.ext.appstats import recording
-wsgi_app = recording.appstats_wsgi_middleware(app)

@@ -2,6 +2,8 @@
 The migration daemon pulls the latest listings from the old site.
 """
 
+from google.appengine.ext import db
+
 from caravel.storage import entities, helpers
 from caravel import app
 
@@ -11,8 +13,7 @@ def migrate_schema():
     q = q.filter("version <", entities.Listing.SCHEMA_VERSION)
 
     for listing in q.fetch(100):
-        db.transaction(lambda: (listing.migrate(), listing.put()))
-        helpers.invalidate_listing(listing.permalink, listing.keywords)
+        db.run_in_transaction(lambda: (listing.migrate(), listing.put()))
+        helpers.invalidate_listing(listing)
 
-    # Invalidate the cache.
-    helpers.invalidate_listing(listing)
+    return "ok"
