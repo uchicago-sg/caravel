@@ -1,7 +1,7 @@
-{% for listing in listings %}
-  {% if view == "List" %}
-    {%- include "listings/list.html" -%}
-  {% else %}
+{%- for listing in listings -%}
+  {%- if view == "List" -%}
+    {% include "listings/list.html" %}
+  {%- else -%}
     {%- include "listings/thumbnail.html" -%}
   {% endif %}
 {% endfor %}
