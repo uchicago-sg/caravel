@@ -50,7 +50,12 @@ body {
     display:inline-block;
     vertical-align:top;
     float:none;
-    width: 24.7%;
+}
+
+@media (min-width: 480px) {
+    .thumbnail-width {
+        width: 24.7%;
+    }
 }
 
 a.no-underline {
