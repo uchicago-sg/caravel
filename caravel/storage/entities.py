@@ -66,8 +66,8 @@ def fold_query_term(word):
     Returns the canonical representation of the given query word.
     """
 
-    # if email do nothing:
-    if "@" in word:
+    # if email or keyword do nothing:
+    if "@" in word or ":" in word:
         return word
 
     # Else, singularize
@@ -76,7 +76,7 @@ def fold_query_term(word):
     return singularized
 
 class Listing(Versioned):
-    SCHEMA_VERSION = 3
+    SCHEMA_VERSION = 4
     CATEGORIES = [
         ("apartments", "Apartments"),
         ("subleases", "Subleases"),
@@ -90,7 +90,7 @@ class Listing(Versioned):
         ("miscellaneous", "Miscellaneous"),
         ("services", "Services"),
         ("wanted", "Wanted"),
-        ("free", "Free")
+        ("price:free", "Free")
     ]
     CATEGORIES_DICT = dict(CATEGORIES)
 
@@ -122,7 +122,7 @@ class Listing(Versioned):
         words = [self.seller] + self.title.split() + self.body.split()
         words += self.categories
         if self.price == 0:
-            words += ["free"]
+            words += ["price:free"]
         singularized = [fold_query_term(word) for word in words]
 
         # Return a uniqified list of words.
