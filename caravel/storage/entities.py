@@ -76,7 +76,7 @@ def fold_query_term(word):
     return singularized
 
 class Listing(Versioned):
-    SCHEMA_VERSION = 2
+    SCHEMA_VERSION = 3
     CATEGORIES = [
         ("apartments", "Apartments"),
         ("subleases", "Subleases"),
@@ -90,6 +90,7 @@ class Listing(Versioned):
         ("miscellaneous", "Miscellaneous"),
         ("services", "Services"),
         ("wanted", "Wanted"),
+        ("free", "Free")
     ]
     CATEGORIES_DICT = dict(CATEGORIES)
 
@@ -99,7 +100,8 @@ class Listing(Versioned):
     price = db.IntegerProperty(default=0) # in cents of a U.S. dollar
     posting_time = db.FloatProperty(default=0) # set to 0 iff not yet published
     categories = db.StringListProperty() # stored as keys of CATEGORIES
-    admin_key = db.StringProperty() # how to administer this listing
+    admin_key = db.StringProperty(default="") # how to administer this listing
+    buyers = db.StringListProperty() # how many people are interested
 
     photos_ = db.StringListProperty(indexed=False, name="photos")
     thumbnails_ = db.StringListProperty(indexed=False, name="thumbnails")
@@ -119,6 +121,8 @@ class Listing(Versioned):
         # Tokenize title and body (ranking them equally)
         words = [self.seller] + self.title.split() + self.body.split()
         words += self.categories
+        if self.price == 0:
+            words += ["free"]
         singularized = [fold_query_term(word) for word in words]
 
         # Return a uniqified list of words.

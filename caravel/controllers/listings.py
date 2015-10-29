@@ -69,6 +69,9 @@ def show_listing(permalink):
         buyer = buyer_form.buyer.data
         message = buyer_form.message.data
 
+        # Track what requests are sent to which people.
+        helpers.add_inqury(listing, buyer, message)
+
         mail.send_mail(
             "Marketplace <magicmonkeys@hosted-caravel.appspotmail.com>",
             listing.seller,
@@ -174,40 +177,60 @@ def new_listing():
     # Populate a form to create a listing.
     form = forms.NewListingForm()
 
-    # Actually create the listing.
-    if form.validate_on_submit():
-        # Save a provisional version in the DB.
-        seller = form.seller.data
-        posting_time = time.time() if session.get("email") else 0.0
-        listing = entities.Listing(
-            key_name=str(uuid.uuid4()), # FIXME: add proper permalink generator.
-            title=form.title.data,
-            price=int(form.price.data * 100),
-            body=form.description.data,
-            categories=form.categories.data,
-            seller=seller,
-            posting_time=posting_time,
-            admin_key=str(uuid.uuid4())
-        )
-        listing.put()
-        helpers.invalidate_listing(listing)
+    # Create a temporary listing so that photos can be uploaded.
+    listing = entities.Listing(
+        key_name=str(uuid.uuid4()), # FIXME: add proper permalink generator.
+        title=form.title.data,
+        price=int(form.price.data * 100),
+        body=form.description.data,
+        categories=form.categories.data or [],
+        seller=form.seller.data,
+        posting_time=(time.time() if session.get("email") else 0.0),
+        admin_key=str(uuid.uuid4())
+    )
 
-        print url_for("show_listing", permalink=listing.key().name(),
-                      key=listing.admin_key, _external=True)
+    # Allow uploading and saving the given request.
+    is_valid = form.validate_on_submit()
+    if request.method == "POST":
+        photos = []
+        for photo in form.photos:
+            if not photo.data:
+                continue
+            image = photo.data["image"]
+            if not image or (hasattr(image, "filename") and not image.filename):
+                continue
+            photos.append(image)
+
+        listing.photo_urls = photos
+
+    # Allow anyone to create listings.
+    if is_valid:
+        listing.title = form.title.data
+        listing.body = form.description.data
+        listing.categories = form.categories.data
+        listing.price = int(form.price.data * 100)
+        listing.put()
+
+        helpers.invalidate_listing(listing)
 
         # Send the user an email to let them edit the listing.
         mail.send_mail(
             "Marketplace <magicmonkeys@hosted-caravel.appspotmail.com>",
-            seller,
+            listing.seller,
             "Welcome to Marketplace!",
             body=render_template("email/welcome.txt", listing=listing),
             html=render_template("email/welcome.html", listing=listing),
         )
 
+        # If running locally, print a link to this listing.
+        print url_for("show_listing", permalink=listing.key().name(),
+                      key=listing.admin_key, _external=True)
+
         # Only allow the user to see the listing if they are signed in.
         if session.get("email"):
             flash("Your listing has been published.")
-            return redirect(url_for("show_listing", permalink=listing.permalink))
+            return redirect(url_for("show_listing",
+                     permalink=listing.permalink))
         else:
             flash("Your listing has been created. "
                   "Click the link in your email to publish it.")
@@ -217,10 +240,17 @@ def new_listing():
     if not form.seller.data:
         form.seller.data = session.get("email")
 
+    # Display the photo URL of any uploaded photos.
+    for index, entry in enumerate(form.photos.entries):
+        if index < len(listing.photo_urls):
+            print listing.photo_urls
+            entry["image"].data = listing.photo_urls[index]
+        else:
+            entry["image"].data = None
+
     return render_template("listing_form.html", type="New", form=form)
 
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for("search_listings"))
-

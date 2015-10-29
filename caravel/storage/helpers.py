@@ -73,3 +73,19 @@ def run_query(query="", offset=0):
     merged = heapq.merge(*[_load(shard) for shard in shards])
     for _, listing in merged:
         yield listing
+
+def add_inqury(listing, buyer, message):
+    """
+    Tracks when a given buyer displays interest in the given listing.
+    """
+
+    key = listing.key()
+
+    @db.run_in_transaction
+    def txn():
+        listing = entities.Listing.get(key)
+        if buyer not in listing.buyers:
+            listing.buyers.append(buyer)
+        listing.put()
+
+    invalidate_listing(listing)

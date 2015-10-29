@@ -1,5 +1,24 @@
-<div class="masthead row">
-  <div class="col-xs-3 col-sm-1">
+<ul class="nav nav-tabs nav-justified" id="categories">
+  {% for tag, label in categories %}
+    {% if tag in request.args.get('q', '') %}
+    <li class="active">
+      <a href="{{ url_for('search_listings',
+                          q=modify_search(remove=[tag])) }}">
+        {{ label }}
+      </a>
+    </li>
+    {% else %}
+    <li>
+      <a href="{{ url_for('search_listings',
+              q=modify_search(add=[tag], remove=categories_dict.keys())) }}">
+        {{ label }}
+      </a>
+    </li>
+    {% endif %}
+  {% endfor %}
+</ul>
+<div class="masthead row" id="top-of-content">
+  <div class="col-xs-3 col-md-1">
     <img src="/static/images/logo.jpg" class="logo-image">
   </div>
   <h1 class="branding col-xs-9 col-sm-2">
@@ -16,7 +35,7 @@
       </span>
     </div>
   </form>
-  <div class="user-button-container col-xs-12 col-sm-3">
+  <div class="user-button-container col-xs-12 col-md-4">
   {% if session["email"] %}
     <span style="position:relative">
       <button class="btn btn-default dropdown-toggle user-button"
@@ -27,8 +46,10 @@
       </button>
       <ul class="dropdown-menu">
         <li>
-          <li><a href="{{ url_for('search_listings', q=session['email'] + ' ' +
-              request.args.get('q', '')) }}">Manage Listings</a></li>
+          <li><a href="{{ url_for('search_listings',
+                          q=modify_search(add=[session['email']])) }}">
+            Manage Listings
+          </a></li>
         <li><a href={{ url_for('logout') }}>Logout</a></li>
       </ul>
     </span>

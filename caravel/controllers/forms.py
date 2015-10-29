@@ -7,6 +7,8 @@ from caravel import policy, app
 from caravel.storage import photos
 from flask_wtf.csrf import CsrfProtect
 
+import logging
+
 from caravel import policy, app
 from caravel.storage import entities
 
@@ -25,23 +27,27 @@ class StatefulFileField(StringField):
     UNFILLED = '<input {attributes}/>'
 
     def widget(self, field, **kwargs):
-        kwargs.update(id=field.name, name=field.name)
+        try:
+            kwargs.update(id=field.name, name=field.name)
 
-        if field.data:
-            # Display a preview of what's already present, plus a link to
-            # reset the input type with JavaScript.
-            kwargs.update(type='hidden', value=field.data)
-            return HTMLString(self.FILLED_IN.format(
-                attributes=html_params(**kwargs),
-                preview_url=photos.public_url(field.data),
-                id=str(kwargs['id'])
-            ))
+            if field.data:
+                # Display a preview of what's already present, plus a link to
+                # reset the input type with JavaScript.
+                kwargs.update(type='hidden', value=field.data)
+                return HTMLString(self.FILLED_IN.format(
+                    attributes=html_params(**kwargs),
+                    preview_url=photos.public_url(field.data),
+                    id=str(kwargs['id'])
+                ))
 
-        else:
-            # Display just a file input.
-            kwargs.update(type='file')
-            return HTMLString(self.UNFILLED.format(
-                attributes=html_params(**kwargs)))
+            else:
+                # Display just a file input.
+                kwargs.update(type='file')
+                return HTMLString(self.UNFILLED.format(
+                    attributes=html_params(**kwargs)))
+        
+        except Exception, e:
+            logging.exception(e)
 
 class BuyerForm(Form):
     buyer = StringField("Email", description="UChicago Email Preferred",
@@ -62,7 +68,8 @@ class EditListingForm(Form):
     price = DecimalField("Price", places=2, default=0)
     description = TextAreaField("Description", validators=[DataRequired()])
     categories = CheckboxSelectMultipleField("Categories",
-                    choices=entities.Listing.CATEGORIES,
+                    choices=[(x, y)
+                        for x, y in entities.Listing.CATEGORIES if x != "free"],
                     validators=[DataRequired()])
     photos = FieldList(FormField(ImageEntry), min_entries=5)
     submit = SubmitField("Post")
