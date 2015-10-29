@@ -108,3 +108,64 @@ form .thumbnail {
 .claim-listing-button {
     display: inline-block;
 }
+
+/* Listings table */
+.listings-table {
+    margin-bottom: 0px;
+}
+
+.listing-table-image {
+    width: 104px;
+}
+
+
+/* List-Thumbail togles */
+
+.btn-thumbnail-List-view {
+    background-color: #ffffff;
+    border-color: #ccc;
+}
+
+
+.btn-list-List-view {
+    background-color: #337ab7;
+    color: #ffffff;
+    border-color: #2e6da4;
+}
+
+.btn-thumbnail-Thumbnail-view {
+    background-color: #337ab7;
+    color: #ffffff;
+    border-color: #2e6da4;
+}
+
+.btn-list-Thumbnail-view{
+    background-color: #ffffff;
+    border-color: #ccc;
+}
+
+
+/* Util */
+.hidden-link{
+    color: black;
+    text-decoration: none;
+}
+
+.thumbnail-button{
+    border-top-right-radius:0;
+    border-bottom-right-radius: 0;
+}
+
+.list-button{
+    border-top-left-radius: 0;
+    border-bottom-left-radius:0;
+}
+
+.thumbnail-grp{
+    display: inline-block;
+}
+
+.list-grp{
+    display: inline-block;
+    float: right;
+}

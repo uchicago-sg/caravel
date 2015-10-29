@@ -25,20 +25,12 @@ var coalesce = function(action) {
  */
 var fetchMore = coalesce(function(complete) {
 
-    // Reconstruct the current query.
-    var searchQuery = "";
-    var frags = window.location.search.split("?");
-    for (var i = 0; i < frags.length; i++) {
-        if (frags[i].startsWith("q="))
-            searchQuery = frags[i];
-    }
-
-    searchQuery += "&continuation";
-    searchQuery += "&offset=" + document.querySelectorAll(".listing").length;
+    var parameterString = window.location.search.substring(1);
+    var continuation = "&continuation&offset=" + document.querySelectorAll(".listing").length;
 
     // Make a background AJAH request.
     var xhr = new XMLHttpRequest;
-    xhr.open("GET", "?" + searchQuery, true);
+    xhr.open("GET", "?" + parameterString + continuation, true);
     xhr.onreadystatechange = function() {
 
         // Ignore events for incomplete requests.
@@ -50,7 +42,14 @@ var fetchMore = coalesce(function(complete) {
             return;
 
         // Append the results to the existing results <div>
-        var frag = document.createElement("div");
+        var frag;
+        if (parameterString.indexOf("v=List") >= 0) {
+            frag = document.createElement("table");
+            frag.setAttribute("class", "table listing-table");
+        }
+        else {
+            frag = document.createElement("div");
+        }
         frag.innerHTML = xhr.responseText;
 
         var listings = document.querySelector("#listings");

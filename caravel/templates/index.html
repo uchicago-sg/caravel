@@ -3,11 +3,31 @@
 {% block head %}
   {{ super() }}
   <script src="/static/js/continuation.js" type="text/javascript"></script>
+  <script src="/static/js/view.js" type=text/javascript></script>
 {% endblock %}
 {% block content %}
-  <div class="row" id="listings">
-    {% for listing in listings %}{% include "listings/inline.html" %}{%
-      endfor %}
+  <div class = "row">
+      <a href="{{ url_for('new_listing') }}" class="btn btn-default">New Listing</a>
+    <div class="btn-group" style="float:right;">
+      {% include "thumbnail_button.html" %}
+      {% include "list_button.html" %}
+    </div>
   </div>
+
+  <hr>
+
+  <div class="row" id="listings">
+    {% if view == "Thumbnail" %}
+      {% for listing in listings %}
+        {%- include "listings/thumbnail.html" -%}
+      {% endfor %}
+    {% else %}
+      <table class="table table-striped">
+      {% include "list_header.html" %}
+      {% for listing in listings %}
+          {% include "listings/list.html" %}
+      {% endfor %}
+      </table>
+    {% endif %}
   </div>
 {% endblock %}
