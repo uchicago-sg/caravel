@@ -141,3 +141,12 @@ form .thumbnail {
     border-top-left-radius: 0;
     border-bottom-left-radius:0;
 }
+
+.thumbnail-grp{
+    display: inline-block;
+}
+
+.list-grp{
+    display: inline-block;
+    float: right;
+}
