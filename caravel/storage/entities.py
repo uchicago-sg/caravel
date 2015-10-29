@@ -76,7 +76,7 @@ def fold_query_term(word):
     return singularized
 
 class Listing(Versioned):
-    SCHEMA_VERSION = 3
+    SCHEMA_VERSION = 4
     CATEGORIES = [
         ("apartments", "Apartments"),
         ("subleases", "Subleases"),
