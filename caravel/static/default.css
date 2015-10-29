@@ -52,12 +52,6 @@ body {
     float:none;
 }
 
-@media (min-width: 768px) {
-    .thumbnail-width {
-        width: 24.7%;
-    }
-}
-
 a.no-underline {
     text-decoration: none !important;
 }
@@ -129,4 +123,21 @@ form .thumbnail {
 .btn-list-Thumbnail-view{
     background-color: #ffffff;
     border-color: #ccc;
+}
+
+
+/* Util */
+.hidden-link{
+    color: black;
+    text-decoration: none;
+}
+
+.thumbnail-button{
+    border-top-right-radius:0;
+    border-bottom-right-radius: 0;
+}
+
+.list-button{
+    border-top-left-radius: 0;
+    border-bottom-left-radius:0;
 }

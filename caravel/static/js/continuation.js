@@ -25,12 +25,12 @@ var coalesce = function(action) {
  */
 var fetchMore = coalesce(function(complete) {
 
-    var parameter_string = window.location.search.substring(1);
+    var parameterString = window.location.search.substring(1);
     var continuation = "&continuation&offset=" + document.querySelectorAll(".listing").length;
 
     // Make a background AJAH request.
     var xhr = new XMLHttpRequest;
-    xhr.open("GET", "?" + parameter_string + continuation, true);
+    xhr.open("GET", "?" + parameterString + continuation, true);
     xhr.onreadystatechange = function() {
 
         // Ignore events for incomplete requests.
@@ -44,7 +44,8 @@ var fetchMore = coalesce(function(complete) {
         // Append the results to the existing results <div>
         var frag;
         if (viewQuery.indexOf("v=List") >= 0) {
-            frag = document.createElement("table").setAttribute("class", "table listing-table");
+            frag = document.createElement("table");
+            frag.setAttribute("class", "table listing-table");
         }
         else {
             frag = document.createElement("div");

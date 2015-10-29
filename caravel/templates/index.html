@@ -7,9 +7,7 @@
 {% endblock %}
 {% block content %}
   <div class = "row">
-    <button type="button" class="btn btn-default">
-      <a href="{{ url_for('new_listing') }}" style="text-decoration: none; color: black;">New Listing</a>
-    </button>
+      <a href="{{ url_for('new_listing') }}" class="btn btn-default hidden-link">New Listing</a>
     <div class="btn-group" style="float:right;">
       {% include "thumbnail_button.html" %}
       {% include "list_button.html" %}
@@ -21,13 +19,13 @@
   <div class="row" id="listings">
     {% if view == "Thumbnail" %}
       {% for listing in listings %}
-        {% include "listings/thumbnail.html" %}
+        {%- include "listings/thumbnail.html" -%}
       {% endfor %}
     {% else %}
       {% for listing in listings %}
+        {% include "list_header.html" %}
         <table class="table">
-          {% include "list_header.html" %}
-          {% include "listings/list.html" %}
+          {%- include "listings/list.html" -%}
         </table>
       {% endfor %}
     {% endif %}
