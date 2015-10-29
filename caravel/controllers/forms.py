@@ -69,7 +69,7 @@ class EditListingForm(Form):
     description = TextAreaField("Description", validators=[DataRequired()])
     categories = CheckboxSelectMultipleField("Categories",
                     choices=[(x, y)
-                        for x, y in entities.Listing.CATEGORIES if x != "free"],
+                        for x, y in entities.Listing.CATEGORIES if x != "price:free"],
                     validators=[DataRequired()])
     photos = FieldList(FormField(ImageEntry), min_entries=5)
     submit = SubmitField("Post")
