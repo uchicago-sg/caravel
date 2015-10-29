@@ -56,6 +56,25 @@ a.no-underline {
     text-decoration: none !important;
 }
 
+#categories {
+    margin-top: 0.5em;
+}
+
+@media (min-width: 992px) {
+    #categories {
+        font-size: 0.9em;
+    }
+    
+    #categories a {
+        padding: 5px;
+    }
+}
+
+#categories a {
+    color: #000;
+    text-decoration: none;
+}
+
 /* For show page */
 
 
