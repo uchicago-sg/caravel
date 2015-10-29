@@ -1,11 +1,11 @@
 <div class="masthead row">
-  <div class="col-xs-3 col-md-1">
+  <div class="col-xs-3 col-sm-1">
     <img src="/static/images/logo.jpg" class="logo-image">
   </div>
-  <h1 class="branding col-xs-9 col-md-2">
+  <h1 class="branding col-xs-9 col-sm-2">
     <a href="/">UChicago Marketplace</a>
   </h1>
-  <form class="search-form col-xs-12 col-md-5" method="GET" action="/">
+  <form class="search-form col-xs-12 col-sm-6" method="GET" action="/">
     <div class="input-group">
       <input type="text" class="form-control" name="q"
         value="{{ request.args['q'] }}" placeholder="Search for listings..."/>
@@ -16,9 +16,7 @@
       </span>
     </div>
   </form>
-  <div class="user-button-container col-xs-12 col-md-4">
-    <a href="{{ url_for('new_listing') }}"
-      class="btn btn-default user-button new-listing">New Listing</a>
+  <div class="user-button-container col-xs-12 col-sm-3">
   {% if session["email"] %}
     <span style="position:relative">
       <button class="btn btn-default dropdown-toggle user-button"

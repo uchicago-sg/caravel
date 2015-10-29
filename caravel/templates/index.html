@@ -24,10 +24,12 @@
         {% include "listings/thumbnail.html" %}
       {% endfor %}
     {% else %}
-      <table class="table">
-        {% include "list_header.html" %}
-        {% include "listings/list.html" %}
-      </table>
+      {% for listing in listings %}
+        <table class="table">
+          {% include "list_header.html" %}
+          {% include "listings/list.html" %}
+        </table>
+      {% endfor %}
     {% endif %}
   </div>
 {% endblock %}
