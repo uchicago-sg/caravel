@@ -99,7 +99,7 @@ class Listing(Versioned):
     price = db.IntegerProperty(default=0) # in cents of a U.S. dollar
     posting_time = db.FloatProperty(default=0) # set to 0 iff not yet published
     categories = db.StringListProperty() # stored as keys of CATEGORIES
-    admin_key = db.StringProperty() # how to administer this listing
+    admin_key = db.StringProperty(default="") # how to administer this listing
 
     photos_ = db.StringListProperty(indexed=False, name="photos")
     thumbnails_ = db.StringListProperty(indexed=False, name="thumbnails")

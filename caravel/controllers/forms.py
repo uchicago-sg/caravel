@@ -30,8 +30,6 @@ class StatefulFileField(StringField):
         try:
             kwargs.update(id=field.name, name=field.name)
 
-            print "Field: " + repr(field.data)
-
             if field.data:
                 # Display a preview of what's already present, plus a link to
                 # reset the input type with JavaScript.

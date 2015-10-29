@@ -176,7 +176,7 @@ def new_listing():
         title=form.title.data,
         price=int(form.price.data * 100),
         body=form.description.data,
-        categories=form.categories.data,
+        categories=form.categories.data or [],
         seller=form.seller.data,
         posting_time=(time.time() if session.get("email") else 0.0),
         admin_key=str(uuid.uuid4())
