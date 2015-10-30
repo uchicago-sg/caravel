@@ -88,6 +88,7 @@ def batchcache(func):
         writeback = {}
         results = {} 
         arguments = []
+        correspondence = []
 
         # Fill in results that aren't in the cache.
         for key, (vargs, kwargs) in zip(keys, args):
@@ -96,16 +97,18 @@ def batchcache(func):
                 results[key] = DBDecoder().decode(cached[key])
             else:
                 results[key] = None
+                correspondence.append(key)
                 arguments.append((vargs, kwargs))
                 logging.warning("CacheGet({!r}) = (null)".format(key))
 
         # Fetch remaining elements from the database.
-        for key, result in zip(keys, func(arguments)):
-            results[key] = result
-            if result:
-                writeback[key] = DBEncoder().encode(results[key])
-                logging.debug("CachePut({!r}, {!r})".format(
-                    key, writeback[key]))
+        if arguments:
+            for key, result in zip(correspondence, func(arguments)):
+                results[key] = result
+                if result:
+                    writeback[key] = DBEncoder().encode(results[key])
+                    logging.debug("CachePut({!r}, {!r})".format(
+                        key, writeback[key]))
 
         # Writeback those elements to memcached.
         if writeback:
