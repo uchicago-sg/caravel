@@ -60,7 +60,7 @@ a.no-underline {
     margin-top: 0.5em;
 }
 
-@media (min-width: 992px) {
+@media (max-width: 992px) and (min-width: 768px) {
     #categories {
         font-size: 0.9em;
     }
