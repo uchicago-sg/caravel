@@ -52,6 +52,7 @@ def cache(func):
     """
 
     @batchcache
+    @functools.wraps(func)
     def inner(vargs):
         return map(lambda (v, kw): func(*v, **kw), vargs)
 
@@ -91,17 +92,20 @@ def batchcache(func):
         # Fill in results that aren't in the cache.
         for key, (vargs, kwargs) in zip(keys, args):
             if key in cached:
+                logging.debug("CacheGet({!r}) = {!r}".format(key, cached[key]))
                 results[key] = DBDecoder().decode(cached[key])
             else:
                 results[key] = None
                 arguments.append((vargs, kwargs))
-                logging.warning("Cache miss on {!r}".format(key))
+                logging.warning("CacheGet({!r}) = (null)".format(key))
 
         # Fetch remaining elements from the database.
         for key, result in zip(keys, func(arguments)):
             results[key] = result
             if result:
                 writeback[key] = DBEncoder().encode(results[key])
+                logging.debug("CachePut({!r}, {!r})".format(
+                    key, writeback[key]))
 
         # Writeback those elements to memcached.
         if writeback:
@@ -115,7 +119,9 @@ def batchcache(func):
         """
 
         # Generate a memcache key from the arguments and function name.
-        memcache.delete(_key(vargs, kwargs))
+        key = _key(vargs, kwargs)
+        if memcache.delete(key) == 2:
+            logging.info("Invalidating {!r}".format(key))
 
     inner.invalidate = invalidate
     inner.batch = batch

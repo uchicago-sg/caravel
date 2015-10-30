@@ -2,6 +2,7 @@ from caravel.storage import entities
 from caravel.storage.cache import cache, batchcache
 from google.appengine.ext import db
 import heapq
+import logging
 
 @batchcache
 def lookup_listing(args=[]):
@@ -15,6 +16,8 @@ def lookup_listing(args=[]):
     for record in records:
         if record:
             record.migrate()
+
+    logging.debug("Lookup({!r}) = {!r}".format(keys, records))
 
     return records
 
@@ -37,7 +40,9 @@ def fetch_shard(shard):
     query = entities.Listing.all(keys_only=True).order("-posting_time")
     if shard:
         query = query.filter("keywords =", shard)
-    return [k.name() for k in query.fetch(1000)]
+    keys = [k.name() for k in query.fetch(1000)]
+    logging.debug("FetchShard({!r}) = {!r}".format(shard, keys))
+    return keys
 
 def run_query(query="", offset=0, length=24):
     """

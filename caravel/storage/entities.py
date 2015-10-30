@@ -61,6 +61,10 @@ class Versioned(db.Expando):
             self.migrations.get(self.version, lambda _: None)(self)
             self.version += 1
 
+    def __repr__(self):
+        return "<{} key={!r}>".format(self.__class__.__name__, self.key())
+
+
 def fold_query_term(word):
     """
     Returns the canonical representation of the given query word.
