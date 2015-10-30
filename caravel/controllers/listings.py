@@ -227,7 +227,7 @@ def new_listing():
                       key=listing.admin_key, _external=True)
 
         # Only allow the user to see the listing if they are signed in.
-        if session.get("email"):
+        if session.get("email") == listing.email:
             flash("Your listing has been published.")
             return redirect(url_for("show_listing",
                      permalink=listing.permalink))
