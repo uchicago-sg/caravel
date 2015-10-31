@@ -2,6 +2,7 @@ from caravel.storage import entities
 from caravel.storage.cache import cache, batchcache
 from google.appengine.ext import db
 import heapq
+import logging
 
 @batchcache
 def lookup_listing(args=[]):
@@ -15,6 +16,8 @@ def lookup_listing(args=[]):
     for record in records:
         if record:
             record.migrate()
+
+    logging.debug("Lookup({!r}) = {!r}".format(keys, records))
 
     return records
 
@@ -37,42 +40,43 @@ def fetch_shard(shard):
     query = entities.Listing.all(keys_only=True).order("-posting_time")
     if shard:
         query = query.filter("keywords =", shard)
-    return [k.name() for k in query.fetch(1000)]
+    keys = [k.name() for k in query.fetch(1000)]
+    logging.debug("FetchShard({!r}) = {!r}".format(shard, keys))
+    return keys
 
-def run_query(query="", offset=0):
+def run_query(query="", offset=0, length=24):
     """
     Performs a search query over all listings.
     """
 
     # Tokenize input query.
-    words = query.split()
+    words = [entities.fold_query_term(w) for w in query.split()]
+    words = [w for w in words if w]
     if not words:
         words = [""]
-    words = words[:5] # TODO: Raise once we know the approximate cost.
 
     # Retrieve the keys for entities that match all terms.
-    shards = [fetch_shard(entities.fold_query_term(w)) for w in words]
-    if not shards:
-        return # yields empty generator
+    shards = [fetch_shard(word) for word in words]
 
-    # Load each key from all shards lazily.
-    def _load(keys):
-        while keys:
-            # Process listings ten at a time.
-            batch, keys = keys[:10], keys[10:]
-            listings = lookup_listing.batch([([b], {}) for b in batch])
-            for key, listing in zip(batch, listings):
-                if listing and listing.posting_time:
-                    yield (-listing.posting_time, listing)
+    # Extract all elements from each shard. 
+    all_shards = set(shards[0])
+    for shard in shards[1:]:
+        all_shards = all_shards & set(shard)
+    in_order = [x for x in shards[0] if x in all_shards]
 
-    # Merge all shards together via mergesort.
-    merged = heapq.merge(*[_load(shard) for shard in shards])
+    # Load all listings matching these keys.
+    keys = in_order[offset:offset + length]
+    listings = lookup_listing.batch([([key], {}) for key in keys])
 
-    prev = None
-    for time, listing in merged:
-        if prev is None or listing.key() != prev.key():
-            prev = listing
-            yield listing
+    # Filter out old or invalid listings.
+    results = []
+    for listing in listings:
+        if not listing or not listing.posting_time:
+            continue
+        if any([word and word not in listing.keywords for word in words]):
+            continue
+        results.append(listing)
+    return results
 
 def add_inqury(listing, buyer, message):
     """

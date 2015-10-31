@@ -28,13 +28,13 @@ def search_listings():
         offset = 0
 
     # Compute the results matching that query.
-    listings = helpers.run_query(query)
-    listings = list(itertools.islice(listings, offset, offset + 24))
+    listings = helpers.run_query(query, offset, 24)
 
     # Render a chrome-less template for AJAH continuation.
     template = ("" if "continuation" not in request.args else "_continuation")
 
-    return render_template("index{}.html".format(template), listings=listings, view=view, query=query)
+    return render_template("index{}.html".format(template),
+        listings=listings, view=view, query=query)
 
 @app.route("/<permalink>", methods=["GET", "POST"])
 def show_listing(permalink):
