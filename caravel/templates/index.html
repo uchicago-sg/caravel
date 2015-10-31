@@ -5,16 +5,6 @@
   <script src="/static/js/continuation.js" type="text/javascript"></script>
 {% endblock %}
 {% block content %}
-  <div class = "row">
-      <a href="{{ url_for('new_listing') }}" class="btn btn-default">New Listing</a>
-    <div class="btn-group" style="float:right;">
-      {% include "thumbnail_button.html" %}
-      {% include "list_button.html" %}
-    </div>
-  </div>
-
-  <hr>
-
   <div class="row" id="listings">
     {% if view == "Thumbnail" %}
       {% for listing in listings %}

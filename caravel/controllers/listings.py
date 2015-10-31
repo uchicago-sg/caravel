@@ -255,3 +255,8 @@ def logout():
     session.clear()
     return redirect(url_for("search_listings"))
 
+# Test Code
+@app.route('/test')
+def test():
+    session["email"] = "georgeteo@uchicago.edu"
+    return redirect(url_for("search_listings"))

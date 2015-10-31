@@ -26,6 +26,7 @@
     <a href="/">UChicago Marketplace</a>
   </h1>
   </div>
+  <div class="search-button-block">
   <form class="search-form search-block" method="GET" action="/">
     <div class="input-group">
       <input type="text" class="form-control" name="q"
@@ -37,10 +38,16 @@
       </span>
     </div>
   </form>
-  <div class="user-button-container">
+  <div class="user-button-container btn-group">
+
+  <a href="{{ url_for('new_listing') }}" class="btn btn-default" style="color:green; margin-right: 10px; border-radius: 5px;"><span class="glyphicon glyphicon-plus"></span></a>
+
+  <div class="btn-group" style="margin-right:10px;">
+    {% include "thumbnail_button.html" %}
+    {% include "list_button.html" %}
+  </div>
   {% if session["email"] %}
-    <span style="position:relative">
-      <button class="btn btn-default dropdown-toggle user-button"
+      <button style="border-radius: 5px;" class="btn btn-default dropdown-toggle user-button"
         type="button"  data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="true" >
           <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
@@ -54,7 +61,7 @@
           </a></li>
         <li><a href={{ url_for('logout') }}>Logout</a></li>
       </ul>
-    </span>
   {% endif %}
+  </div>
   </div>
 </div>
