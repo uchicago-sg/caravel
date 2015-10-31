@@ -80,7 +80,7 @@ def fold_query_term(word):
     return singularized
 
 class Listing(Versioned):
-    SCHEMA_VERSION = 5
+    SCHEMA_VERSION = 6
     CATEGORIES = [
         ("apartments", "Apartments"),
         ("subleases", "Subleases"),
@@ -178,6 +178,7 @@ def from_single_thumbnail_to_many(listing):
     if hasattr(listing, "thumbnail_url") and listing.thumbnail_url:
         listing.thumbnails_ = [listing.thumbnail_url]
 
-@Listing.migration(to_version=5)
+@Listing.migration(to_version=6)
 def recompute_keywords(listing):
     listing.keywords = None # forces us to recompute it
+    listing.keywords = listing.keywords
