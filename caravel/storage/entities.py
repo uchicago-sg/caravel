@@ -61,6 +61,10 @@ class Versioned(db.Expando):
             self.migrations.get(self.version, lambda _: None)(self)
             self.version += 1
 
+    def __repr__(self):
+        return "<{} key={!r}>".format(self.__class__.__name__, self.key())
+
+
 def fold_query_term(word):
     """
     Returns the canonical representation of the given query word.
@@ -76,7 +80,7 @@ def fold_query_term(word):
     return singularized
 
 class Listing(Versioned):
-    SCHEMA_VERSION = 4
+    SCHEMA_VERSION = 5
     CATEGORIES = [
         ("apartments", "Apartments"),
         ("subleases", "Subleases"),
@@ -169,7 +173,11 @@ class Listing(Versioned):
 
         self.photos_, self.thumbnails_ = large_photos, thumbnails
 
-@Listing.migration(1)
+@Listing.migration(to_version=1)
 def from_single_thumbnail_to_many(listing):
     if hasattr(listing, "thumbnail_url") and listing.thumbnail_url:
         listing.thumbnails_ = [listing.thumbnail_url]
+
+@Listing.migration(to_version=5)
+def recompute_keywords(listing):
+    listing.keywords = None # forces us to recompute it

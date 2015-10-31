@@ -28,13 +28,13 @@ def search_listings():
         offset = 0
 
     # Compute the results matching that query.
-    listings = helpers.run_query(query)
-    listings = list(itertools.islice(listings, offset, offset + 24))
+    listings = helpers.run_query(query, offset, 24)
 
     # Render a chrome-less template for AJAH continuation.
     template = ("" if "continuation" not in request.args else "_continuation")
 
-    return render_template("index{}.html".format(template), listings=listings, view=view, query=query)
+    return render_template("index{}.html".format(template),
+        listings=listings, view=view, query=query)
 
 @app.route("/<permalink>", methods=["GET", "POST"])
 def show_listing(permalink):
@@ -227,7 +227,7 @@ def new_listing():
                       key=listing.admin_key, _external=True)
 
         # Only allow the user to see the listing if they are signed in.
-        if session.get("email"):
+        if session.get("email") == listing.email:
             flash("Your listing has been published.")
             return redirect(url_for("show_listing",
                      permalink=listing.permalink))
@@ -255,8 +255,3 @@ def logout():
     session.clear()
     return redirect(url_for("search_listings"))
 
-# Test Code
-@app.route('/test')
-def test():
-    session["email"] = "georgeteo@uchicago.edu"
-    return redirect(url_for("search_listings"))

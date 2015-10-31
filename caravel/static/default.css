@@ -46,7 +46,7 @@ a.no-underline {
     margin-top: 0.5em;
 }
 
-@media (min-width: 992px) {
+@media (max-width: 992px) and (min-width: 768px) {
     #categories {
         font-size: 0.9em;
     }
@@ -223,4 +223,13 @@ form .thumbnail {
         margin-left: 10px;
         margin-bottom: 10px;
     }
+}
+
+.btn-user{
+    margin-right: 10px;
+    border-radius: 5px;
+}
+
+.btn-user-right{
+    border-radius: 5px;
 }
