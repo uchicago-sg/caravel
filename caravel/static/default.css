@@ -17,28 +17,14 @@ body {
 .branding {
     font: 400 30px Roboto, sans-serif;
     margin-top: 0.7em;
+    margin-right: 10px;
+    width: 170px;
+    display: inline-block;
 }
 
 .logo-image {
     height: 100px;
     display: inline;
-    margin-top: 10px;
-}
-
-.user-button-container {
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
-    text-align: right;
-}
-
-@media (min-width: 992px) {
-    .search-form {
-        padding-top: 3em;
-    }
-
-    .user-button-container {
-        padding-top: 3em;
-    }
 }
 
 .new-listing {
@@ -168,4 +154,82 @@ form .thumbnail {
 .list-grp{
     display: inline-block;
     float: right;
+}
+
+/* Custom header via media query */
+@media (min-width: 992px){
+    .logo-brand-block{
+        display: inline-block;
+        width: 30%;
+    }
+    .logo{
+        display: inline-block;
+        margin-left: 10px;
+        margin-right: 10px;
+        vertical-align: top;
+        padding-top: 10px;
+    }
+    .search-button-block{
+        width: 70%;
+        display: inline-block;
+        vertical-align: top;
+        float: right;
+    }
+    .search-block{
+        padding-top:3em;
+        width: 60%;
+        display: inline-block;
+        vertical-align: top;
+    }
+    .user-block{
+        display:inline-block;
+        vertical-align: top;
+    }
+    .user-button-container {
+        padding-top: 3em;
+        vertical-align: top;
+        display: inline-block;
+        margin-left: 10px;
+    }
+}
+
+@media (max-width: 991px){
+    .logo-brand-block{
+        display: inline-block;
+        width: 100%;
+    }
+    .logo{
+        display: inline-block;
+        margin-left: 10px;
+        margin-right: 10px;
+        vertical-align: top;
+        padding-top: 10px;
+    }
+    .search-button-block{
+        width: 100%;
+        display: inline-block;
+    }
+    .search-block{
+        margin-left: 10px;
+        width: 70%;
+        display: inline-block;
+        vertical-align: top;
+        margin-bottom: 10px;
+    }
+
+    .user-button-container {
+        /*vertical-align: top;*/
+        display: inline-block;
+        margin-left: 10px;
+        margin-bottom: 10px;
+    }
+}
+
+.btn-user{
+    margin-right: 10px;
+    border-radius: 5px;
+}
+
+.btn-user-right{
+    border-radius: 5px;
 }

@@ -18,41 +18,50 @@
   {% endfor %}
 </ul>
 <div class="masthead row" id="top-of-content">
-  <div class="col-xs-3 col-md-1">
+  <div class="logo-brand-block">
+  <div class="logo">
     <img src="/static/images/logo.jpg" class="logo-image">
   </div>
-  <h1 class="branding col-xs-9 col-sm-2">
+  <h1 class="branding">
     <a href="/">UChicago Marketplace</a>
   </h1>
-  <form class="search-form col-xs-12 col-sm-6" method="GET" action="/">
-    <div class="input-group">
-      <input type="text" class="form-control" name="q"
-        value="{{ request.args['q'] }}" placeholder="Search for listings..."/>
-      <span class="input-group-btn">
-        <button type="submit" class="btn btn-primary">
-          <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-        </button>
-      </span>
+  </div>
+  <div class="search-button-block">
+    <form class="search-form search-block" method="GET" action="/">
+      <div class="input-group">
+        <input type="text" class="form-control" name="q"
+          value="{{ request.args['q'] }}" placeholder="Search for listings..."/>
+        <span class="input-group-btn">
+          <button type="submit" class="btn btn-primary">
+            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+          </button>
+        </span>
+      </div>
+    </form>
+    <div class="user-button-container btn-group">
+
+    <a href="{{ url_for('new_listing') }}" class="btn btn-default btn-user">New Listing</a>
+
+    <div class="btn-group btn-user">
+      {% include "thumbnail_button.html" %}
+      {% include "list_button.html" %}
     </div>
-  </form>
-  <div class="user-button-container col-xs-12 col-md-4">
-  {% if session["email"] %}
-    <span style="position:relative">
-      <button class="btn btn-default dropdown-toggle user-button"
-        type="button"  data-toggle="dropdown"
-        aria-haspopup="true" aria-expanded="true" >
-          {{ session["email"] }}
-          <span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu">
-        <li>
-          <li><a href="{{ url_for('search_listings',
-                          q=modify_search(add=[session['email']])) }}">
-            Manage Listings
-          </a></li>
-        <li><a href={{ url_for('logout') }}>Logout</a></li>
-      </ul>
-    </span>
-  {% endif %}
+    {% if session["email"] %}
+        <button class="btn btn-default dropdown-toggle user-button btn-user-right"
+          type="button"  data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="true" >
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+          <li class="dropdown-header">Logged in as {{ session["email"] }}</li>
+            <li><a href="{{ url_for('search_listings',
+                            q=modify_search(add=[session['email']])) }}">
+              Manage Listings
+            </a></li>
+          <li><a href={{ url_for('logout') }}>Logout</a></li>
+        </ul>
+    {% endif %}
+    </div>
   </div>
 </div>
