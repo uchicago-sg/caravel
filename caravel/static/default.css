@@ -100,14 +100,25 @@ form .thumbnail {
     margin-bottom: 0px;
 }
 
-.listing-table-image {
-    width: 104px;
-}
-
 .table-margin{
     margin:0px;
 }
 
+.list-image{
+    width: 10%;
+}
+
+.list-title{
+    width: 70%;
+}
+
+.list-price{
+    width: 10%;
+}
+
+.list-category{
+    width: 10%;
+}
 
 /* List-Thumbail togles */
 
