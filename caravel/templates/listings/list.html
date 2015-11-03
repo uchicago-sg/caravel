@@ -1,21 +1,23 @@
-<tr>
-  <td class="listing-table-image">
+<tr class="listing">
+  <td class="list-image">
       {% if listing.thumbnail_url %}
         Yes
       {% else %}
         No
       {% endif %}
   </td>
-  <td>
+  <td class="list-title">
       <a class="hidden-link" href="{{ url_for('show_listing', permalink=listing.permalink,
                  q=request.args['q']) }}">
         {{ listing.title }}
       </a>
   </td>
-  <td>
+  <td class="list-price">
     <p>{{ '${:,.2f}'.format(listing.price / 100) }}</p>
   </td>
-  <td>
-    <p> Category </p>
+  <td class="list-category">
+    {% for category in listing.categories %}
+        <p> {{listing.CATEGORIES_DICT.get(category, category)}}</p>
+    {% endfor %}
   </td>
 </tr>

@@ -27,6 +27,7 @@ var fetchMore = coalesce(function(complete) {
 
     var parameterString = window.location.search.substring(1);
     var continuation = "&continuation&offset=" + document.querySelectorAll(".listing").length;
+    console.log(document.querySelectorAll(".listing"));
 
     // Make a background AJAH request.
     var xhr = new XMLHttpRequest;
@@ -45,7 +46,7 @@ var fetchMore = coalesce(function(complete) {
         var frag;
         if (parameterString.indexOf("v=List") >= 0) {
             frag = document.createElement("table");
-            frag.setAttribute("class", "table listing-table");
+            frag.setAttribute("class", "table listing-table table-margin");
         }
         else {
             frag = document.createElement("div");
