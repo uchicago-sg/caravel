@@ -3,14 +3,16 @@
     {% if tag in request.args.get('q', '') %}
     <li class="active">
       <a href="{{ url_for('search_listings',
-                          q=modify_search(remove=[tag])) }}">
+                            q=modify_search(remove=[tag]),
+                            v=request.args.v) }}">
         {{ label }}
       </a>
     </li>
     {% else %}
     <li>
       <a href="{{ url_for('search_listings',
-              q=modify_search(add=[tag], remove=categories_dict.keys())) }}">
+                    q=modify_search(add=[tag], remove=categories_dict.keys()),
+                    v=request.args.v) }}">
         {{ label }}
       </a>
     </li>
@@ -38,29 +40,37 @@
         </span>
       </div>
     </form>
-    <div class="user-button-container btn-group">
-
-    <a href="{{ url_for('new_listing') }}" class="btn btn-default btn-user">New Listing</a>
-
-    <div class="btn-group btn-user">
-      {% include "thumbnail_button.html" %}
-      {% include "list_button.html" %}
-    </div>
+    <div class="user-button-container">
+      <a href="{{ url_for('new_listing') }}" class="btn btn-default btn-user">
+        New Listing</a>
+      <div class="btn-group btn-user">
+        <a href="{{ url_for('search_listings', q=request.args.q,
+                      v='th') }}"
+           class="btn glyphicon glyphicon-th-large
+                  btn-{% if request.args.get('v') != 'ls' %}primary{% else
+                     %}default{% endif %}"></a>
+        <a href="{{ url_for('search_listings', q=request.args.q,
+                      v='ls') }}"
+           class="btn glyphicon glyphicon-th-list
+                  btn-{% if request.args.get('v') == 'ls' %}primary{% else
+                     %}default{% endif %}"></a>
+      </div>
     {% if session["email"] %}
+      <div class="btn-group">
         <button class="btn btn-default dropdown-toggle user-button btn-user-right"
-          type="button"  data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="true" >
-            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-            <span class="caret"></span>
+            type="button"  data-toggle="dropdown">
+          <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+          <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
           <li class="dropdown-header">Logged in as {{ session["email"] }}</li>
-            <li><a href="{{ url_for('search_listings',
-                            q=modify_search(add=[session['email']])) }}">
-              Manage Listings
-            </a></li>
-          <li><a href={{ url_for('logout') }}>Logout</a></li>
+          <li><a href="{{ url_for('search_listings',
+                            q=modify_search(add=[session['email']]),
+                            v=request.args.v) }}">
+              My Listings</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
         </ul>
+      </div>
     {% endif %}
     </div>
   </div>

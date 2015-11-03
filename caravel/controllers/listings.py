@@ -19,7 +19,7 @@ def search_listings():
     """Display a list of listings that match the given query."""
 
     # Fix session handler if not initialized
-    view = request.args.get("v", "Thumbnail")
+    view = request.args.get("v", "th")
 
     # Parse filtering options from query.
     query = request.args.get("q", "")
@@ -227,7 +227,7 @@ def new_listing():
                       key=listing.admin_key, _external=True)
 
         # Only allow the user to see the listing if they are signed in.
-        if session.get("email") == listing.email:
+        if session.get("email") == listing.seller:
             flash("Your listing has been published.")
             return redirect(url_for("show_listing",
                      permalink=listing.permalink))
