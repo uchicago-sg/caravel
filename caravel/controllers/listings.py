@@ -130,6 +130,14 @@ def edit_listing(permalink):
     if session.get("email") != listing.seller or not session["email"]:
         abort(403)
 
+    # Allow the author of a listing to unpublish it.
+    if request.form.get("unpublish"):
+        listing.posting_time = 0.0
+        listing.put()
+        helpers.invalidate_listing(listing)
+
+        return redirect("/")
+
     # Upload photos after validate_on_submit(), even if other fields in the form
     # are invalid.
     is_valid = form.validate_on_submit()
