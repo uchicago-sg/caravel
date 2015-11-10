@@ -24,7 +24,7 @@ def search_listings():
     """Display a list of listings that match the given query."""
 
     # Fix session handler if not initialized
-    view = request.args.get("v", "Thumbnail")
+    view = request.args.get("v", "th")
 
     # Parse filtering options from query.
     query = request.args.get("q", "")

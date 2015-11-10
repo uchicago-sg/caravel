@@ -9,7 +9,7 @@ body {
     margin-bottom: 1em;
 }
 
-.masthead a {
+.masthead h1 a {
     color: #000;
     text-decoration: none;
 }
@@ -119,32 +119,6 @@ form .thumbnail {
 .list-category{
     width: 10%;
 }
-
-/* List-Thumbail togles */
-
-.btn-thumbnail-List-view {
-    background-color: #ffffff;
-    border-color: #ccc;
-}
-
-
-.btn-list-List-view {
-    background-color: #337ab7;
-    color: #ffffff;
-    border-color: #2e6da4;
-}
-
-.btn-thumbnail-Thumbnail-view {
-    background-color: #337ab7;
-    color: #ffffff;
-    border-color: #2e6da4;
-}
-
-.btn-list-Thumbnail-view{
-    background-color: #ffffff;
-    border-color: #ccc;
-}
-
 
 /* Util */
 .hidden-link{
