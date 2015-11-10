@@ -33,11 +33,16 @@
         <div class="panel-heading">
           <h3 class="panel-title">Manage Listing</h3>
         </div>
-        <div class="panel-body">
+        <form class="panel-body" method="post" action="{{
+                                  url_for('edit_listing',
+                                      permalink=listing.permalink) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
           <a class="btn btn-default"
                 href="{{ url_for('edit_listing',
                          permalink=listing.permalink) }}">
             Edit</a>
+          <input type="submit" class="btn btn-danger"
+              name="unpublish" value="Unpublish"/>
         </div>
       </div>
      

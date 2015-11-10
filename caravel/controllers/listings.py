@@ -14,6 +14,11 @@ from caravel import app, policy
 from caravel.storage import helpers, entities
 from caravel.controllers import forms
 
+@app.after_request
+def show_disclaimer(response):
+    session["seen_disclaimer"] = True
+    return response
+
 @app.route("/")
 def search_listings():
     """Display a list of listings that match the given query."""
@@ -129,6 +134,14 @@ def edit_listing(permalink):
     # Prevent non-creators from editing a listing.
     if session.get("email") != listing.seller or not session["email"]:
         abort(403)
+
+    # Allow the author of a listing to unpublish it.
+    if request.form.get("unpublish"):
+        listing.posting_time = 0.0
+        listing.put()
+        helpers.invalidate_listing(listing)
+
+        return redirect("/")
 
     # Upload photos after validate_on_submit(), even if other fields in the form
     # are invalid.

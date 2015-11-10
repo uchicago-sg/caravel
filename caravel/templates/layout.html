@@ -26,6 +26,14 @@
       {% for message in get_flashed_messages() %}
         <div class="alert alert-info" role="alert">{{ message }}</div>
       {% endfor %}
+      {% if not session["seen_disclaimer"] %}
+        <div class="alert alert-warning" role="alert">
+          Marketplace is a service provided through Student Government and is
+          not moderated or maintained by the University of Chicago. Any
+          concerns about the site should be directed to
+          marketplace@lists.uchicago.edu.
+        </div>
+      {% endif %}
       {% block content %}
       {% endblock %}
       {% include "footer.html" %}
