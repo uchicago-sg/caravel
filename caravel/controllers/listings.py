@@ -83,7 +83,7 @@ def show_listing(permalink):
         message.set_to(listing.seller)
         message.set_replyto(buyer)
         message.set_subject(
-            "Marketplace Inquiry for {!r}".format(listing.title))
+            "Re: Marketplace Listing \"{}\"".format(listing.title))
         message.set_html(render_template("email/inquiry.html", listing=listing,
                                  buyer=buyer, message=message))
         message.set_text(render_template("email/inquiry.txt", listing=listing,
@@ -113,7 +113,7 @@ def claim_listing(permalink):
     mail.send_mail(
         "Marketplace <magicmonkeys@hosted-caravel.appspotmail.com>",
         listing.seller,
-        "Welcome to Marketplace!",
+        "Marketplace Listing \"{}\"".format(listing.title),
         body=render_template("email/welcome.txt", listing=listing),
         html=render_template("email/welcome.html", listing=listing),
     )
