@@ -7,7 +7,7 @@ import os
 from google.appengine.ext import db
 from caravel import app
 from flask_bootstrap import Bootstrap
-from sendgrid import SendGridClient, Mail
+import sendgrid
 
 class Parameter(db.Model):
     """A parameter is a constant value that is set by default."""
