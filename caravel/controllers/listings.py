@@ -110,13 +110,13 @@ def claim_listing(permalink):
         abort(404)
 
     # Send the user an email to let them edit the listing.
-    mail.send_mail(
-        "Marketplace <magicmonkeys@hosted-caravel.appspotmail.com>",
-        listing.seller,
-        "Marketplace Listing \"{}\"".format(listing.title),
-        body=render_template("email/welcome.txt", listing=listing),
-        html=render_template("email/welcome.html", listing=listing),
-    )
+    message = sendgrid.Mail()
+    message.set_from("Marketplace Team <marketplace@lists.uchicago.edu>")
+    message.add_to(listing.seller)
+    message.set_subject("Marketplace Listing \"{}\"".format(listing.title))
+    message.set_html(render_template("email/welcome.html", listing=listing))
+    message.set_text(render_template("email/welcome.txt", listing=listing))
+    config.send_grid_client.send(message)
 
     flash("We've emailed you a link to edit this listing.")
 
@@ -232,7 +232,7 @@ def new_listing():
         message = sendgrid.Mail()
         message.set_from("Marketplace Team <marketplace@lists.uchicago.edu>")
         message.add_to(listing.seller)
-        message.set_subject("Welcome to Marketplace!")
+        message.set_subject("Marketplace Listing \"{}\"".format(listing.title))
         message.set_html(render_template("email/welcome.html", listing=listing))
         message.set_text(render_template("email/welcome.txt", listing=listing))
         config.send_grid_client.send(message)
