@@ -33,7 +33,7 @@ def collect_garbage():
             except cloudstorage.NotFoundError:
                 pass # ignore concurrent removals.
 
-def upload(file_object, size='medium'):
+def upload(image_data, *sizes):
     """
     Uploads the given photo, returning a dict mapping from size name to a URL.
     """
@@ -41,30 +41,35 @@ def upload(file_object, size='medium'):
     now = int(time.time())
     guid = uuid.uuid4()
 
-    max_width, max_height, crop_to_fit = SIZES.get(size, (None, None, False))
+    if not sizes:
+        sizes = ['original']
 
-    # Resize image to fit in the given size, and re-encode as JPEG.
-    img = images.Image(file_object.read())
-    if max_width and max_height:
-        img.resize(max_width, max_height, crop_to_fit=crop_to_fit)
-    img.im_feeling_lucky()
-    result_data = img.execute_transforms(output_encoding=images.JPEG)
+    for size in sizes:
+        # Choose image size, or default to original.
+        max_width, max_height, crop_to_fit = SIZES.get(size, (0, 0, False))
 
-    # Save the image to GCS.
-    photo_id = "{}-{}-{}".format(now, guid, size)
-    output_file = cloudstorage.open(
-        filename="/{}/{}".format(GCS_BUCKET, photo_id),
-        mode="w",
-        content_type="image/jpg",
-        options={"x-goog-acl": "public-read"}
-    )
-    output_file.write(result_data)
-    output_file.close()
+        # Resize image to fit in the given size, and re-encode as JPEG.
+        img = images.Image(image_data)
+        if max_width and max_height:
+            img.resize(max_width, max_height, crop_to_fit=crop_to_fit)
+        img.im_feeling_lucky()
+        result_data = img.execute_transforms(output_encoding=images.JPEG)
 
-    return photo_id
+        # Save the image to GCS.
+        photo_id = "{}-{}-{}".format(now, guid, size)
+        output_file = cloudstorage.open(
+            filename="/{}/{}".format(GCS_BUCKET, photo_id),
+            mode="w",
+            content_type="image/jpg",
+            options={"x-goog-acl": "public-read"}
+        )
+        output_file.write(result_data)
+        output_file.close()
 
-@app.template_filter("public_url")
-def public_url(path):
+    return "{}-{}".format(now, guid)
+
+@app.template_global()
+def public_url(path, size='large'):
     """
     Returns a complete file URL given its path.
     """

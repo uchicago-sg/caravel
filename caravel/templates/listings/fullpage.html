@@ -1,18 +1,18 @@
 {% import "bootstrap/wtf.html" as wtf %}
 <div class="container">
   <div class="row">
-    {% if listing.photo_urls %}
+    {% if listing.photos %}
       <div class="col-md-3">
     {% else %}
       <div>
     {% endif %}
-      {% for photo in listing.photo_urls %}
-        <a href="{{ photo | public_url }}" class="thumbnail">
-          <img src="{{ photo | public_url }}"/>
+      {% for photo in listing.photos %}
+        <a href="{{ public_url(photo, 'large') }}" class="thumbnail">
+          <img src="{{ public_url(photo, 'large') }}"/>
         </a>
       {% endfor %}
     </div>
-    {% if listing.photo_urls %}
+    {% if listing.photos %}
       <div class="col-md-6">
     {% else %}
       <div class="col-md-9">

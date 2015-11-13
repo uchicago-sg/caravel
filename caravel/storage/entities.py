@@ -135,45 +135,30 @@ class Listing(Versioned):
         return sorted(set(singularized[:500]) - set(['']))
 
     @property
-    def photo_urls(self):
+    def photos(self):
         """
         Gets the photo URLs for this listing.
         """
 
         return self.photos_
 
-    @property
-    def thumbnail_urls(self):
-        """
-        Gets the scaled photo URLs for this listing.
-        """
-
-        return self.thumbnails_
-
-    @photo_urls.setter
-    def photo_urls(self, url_or_fps):
+    @photos.setter
+    def photos(self, new_photos):
         """
         Sets the URLs of the photos for this Listing.
         """
 
-        large_photos, thumbnails = [], []
-
-        for photo in url_or_fps:
+        photo_list = []
+        thumbnails = []
+        for photo in new_photos:
             if not photo:
                 continue
-
             if hasattr(photo, 'read'):
-                photo = StringIO.StringIO(photo.read())
-                large_photo = photos.upload(photo, 'large')
-                photo.seek(0)
-                thumbnail = photos.upload(photo, 'small')
-            else:
-                large_photo, thumbnail = photo, photo
-
-            large_photos.append(large_photo)
-            thumbnails.append(thumbnail)
-
-        self.photos_, self.thumbnails_ = large_photos, thumbnails
+                photo = photos.upload(photo.read(), 'small', 'large')
+            photo_list.append(photo)
+            thumbnails.append(photo + "-small") # for old releases
+        self.photos_ = photo_list
+        self.thumbnails_ = thumbnails
 
 @Listing.migration(to_version=1)
 def from_single_thumbnail_to_many(listing):
