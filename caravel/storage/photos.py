@@ -74,6 +74,11 @@ def public_url(path):
             raise ValueError("Invalid path {!r}".format(path))
         return ""
 
+    # TEMPORARY: Allows serving version to handle new image format.
+    if not path.endswith("-large"):
+        path += "-large"
+
+    # Return existing version of site.
     path = GCS_BUCKET + "/" + path
     if os.environ["SERVER_SOFTWARE"].startswith("Development/"):
         return "/_ah/gcs/" + path
