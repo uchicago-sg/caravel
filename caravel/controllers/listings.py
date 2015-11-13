@@ -78,17 +78,17 @@ def show_listing(permalink):
         helpers.add_inqury(listing, buyer, message)
 
         # Send a listing to the person.
-        message = sendgrid.Mail()
-        message.set_from("Marketplace Team <marketplace@lists.uchicago.edu>")
-        message.add_to(listing.seller)
-        message.set_replyto(buyer)
-        message.set_subject(
+        email = sendgrid.Mail()
+        email.set_from("Marketplace Team <marketplace@lists.uchicago.edu>")
+        email.add_to(listing.seller)
+        email.set_replyto(buyer)
+        email.set_subject(
             "Re: Marketplace Listing \"{}\"".format(listing.title))
-        message.set_html(render_template("email/inquiry.html", listing=listing,
+        email.set_html(render_template("email/inquiry.html", listing=listing,
                                  buyer=buyer, message=message))
-        message.set_text(render_template("email/inquiry.txt", listing=listing,
+        email.set_text(render_template("email/inquiry.txt", listing=listing,
                                  buyer=buyer, message=message))
-        config.send_grid_client.send(message)
+        config.send_grid_client.send(email)
 
         return redirect(url_for("show_listing", permalink=permalink))
 
