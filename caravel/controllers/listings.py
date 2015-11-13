@@ -8,7 +8,7 @@ from flask import render_template, request, abort, redirect, url_for, session
 from flask import flash
 import itertools
 
-from sendgrid import SendGridClient, Mail
+import sendgrid
 
 from caravel import app, policy
 from caravel.storage import helpers, entities, config
@@ -80,7 +80,7 @@ def show_listing(permalink):
         # Send a listing to the person.
         message = sendgrid.Mail()
         message.set_from("Marketplace Team <marketplace@lists.uchicago.edu>")
-        message.set_to(listing.seller)
+        message.add_to(listing.seller)
         message.set_replyto(buyer)
         message.set_subject(
             "Re: Marketplace Listing \"{}\"".format(listing.title))
@@ -231,7 +231,7 @@ def new_listing():
         # Send the user an email to let them edit the listing.
         message = sendgrid.Mail()
         message.set_from("Marketplace Team <marketplace@lists.uchicago.edu>")
-        message.set_to(listing.seller)
+        message.add_to(listing.seller)
         message.set_subject("Welcome to Marketplace!")
         message.set_html(render_template("email/welcome.html", listing=listing))
         message.set_text(render_template("email/welcome.txt", listing=listing))
