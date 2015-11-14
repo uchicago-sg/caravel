@@ -6,6 +6,7 @@ from caravel.storage import photos
 from google.appengine.ext import db
 import re
 import inflect
+import hashlib
 INFLECT_ENGINE = inflect.engine()
 
 class DerivedProperty(db.Property):
@@ -182,3 +183,8 @@ def from_single_thumbnail_to_many(listing):
 def recompute_keywords(listing):
     listing.keywords = None # forces us to recompute it
     listing.keywords = listing.keywords
+
+@Listing.migration(to_version=7)
+def recompute_admin_keys(listing):
+    listing.admin_key = hashlib.sha1(app.secret_key +
+       ":" + listing.key().name).hexdigest()
