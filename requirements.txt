@@ -4,3 +4,4 @@ wtforms
 Flask==0.10.1
 GoogleAppEngineCloudStorageClient==1.9.22.1
 inflect==0.2.5
+sendgrid==1.5.14
