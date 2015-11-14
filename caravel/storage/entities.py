@@ -186,5 +186,6 @@ def recompute_keywords(listing):
 
 @Listing.migration(to_version=7)
 def recompute_admin_keys(listing):
-    listing.admin_key = hashlib.sha1(app.secret_key +
-       ":" + listing.key().name).hexdigest()
+    if not listing.admin_key:
+        listing.admin_key = hashlib.sha1(app.secret_key +
+            ":" + listing.key().name).hexdigest()
