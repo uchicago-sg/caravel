@@ -3,9 +3,11 @@ This module defines the mapping between Datastore and Python objects.
 """
 import StringIO
 from caravel.storage import photos
+import caravel
 from google.appengine.ext import db
 import re
 import inflect
+import hashlib
 INFLECT_ENGINE = inflect.engine()
 
 class DerivedProperty(db.Property):
@@ -58,8 +60,8 @@ class Versioned(db.Expando):
 
     def migrate(self):
         while self.version < self.SCHEMA_VERSION:
-            self.migrations.get(self.version, lambda _: None)(self)
             self.version += 1
+            self.migrations.get(self.version, lambda _: None)(self)
 
     def __repr__(self):
         return "<{} key={!r}>".format(self.__class__.__name__, self.key())
@@ -80,7 +82,7 @@ def fold_query_term(word):
     return singularized
 
 class Listing(Versioned):
-    SCHEMA_VERSION = 6
+    SCHEMA_VERSION = 8
     CATEGORIES = [
         ("apartments", "Apartments"),
         ("subleases", "Subleases"),
@@ -180,5 +182,12 @@ def from_single_thumbnail_to_many(listing):
 
 @Listing.migration(to_version=6)
 def recompute_keywords(listing):
-    listing.keywords = None # forces us to recompute it
-    listing.keywords = listing.keywords
+    descriptor = Listing.__dict__["keywords"]
+    listing.keywords = descriptor.derive_func(listing)
+        # force recomputation
+
+@Listing.migration(to_version=8)
+def recompute_admin_keys(listing):
+    if not listing.admin_key:
+        listing.admin_key = hashlib.sha1(caravel.app.secret_key +
+            ":" + listing.key().name()).hexdigest()
