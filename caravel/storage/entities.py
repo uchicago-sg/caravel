@@ -181,8 +181,8 @@ def from_single_thumbnail_to_many(listing):
 
 @Listing.migration(to_version=6)
 def recompute_keywords(listing):
-    listing.keywords = None # forces us to recompute it
-    listing.keywords = listing.keywords
+    listing.keywords = Listing.keywords.derive_func(listing, Listing)
+    # force recomputation
 
 @Listing.migration(to_version=7)
 def recompute_admin_keys(listing):
