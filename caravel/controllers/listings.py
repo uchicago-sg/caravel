@@ -11,7 +11,7 @@ import itertools
 import sendgrid
 
 from caravel import app, policy
-from caravel.storage import helpers, entities, config
+from caravel.storage import helpers, entities, config, dos
 from caravel.controllers import forms
 
 @app.after_request
@@ -78,10 +78,13 @@ def show_listing(permalink):
         # Track what requests are sent to which people.
         helpers.add_inqury(listing, buyer, message)
 
-        # Block spam messages.
-        if buyer.strip() == "marketplace@lists.uchicago.edu":
+        # Block spam inquiries.
+        if (buyer.strip() == "marketplace@lists.uchicago.edu" or
+            dos.rate_limit(buyer.strip(), 2, 60) or
+            dos.rate_limit(request.remote_addr, 2, 60)):
+
             message = "MESSAGE BLOCKED!\n\n" + str(message)
-            seller = buyer
+            seller = "marketplace@lists.uchicago.edu"
 
         # Send a listing to the person.
         email = sendgrid.Mail()
@@ -116,11 +119,18 @@ def claim_listing(permalink):
     if not listing:
         abort(404)
 
+    # Prevent button spamming.
+    seller = listing.seller
+    title = listing.title
+    if dos.rate_limit(listing.seller, 2, 60):
+        seller = "marketplace@lists.uchicago.edu"
+        title = "SPAM REQUEST: " + listing.title
+
     # Send the user an email to let them edit the listing.
     message = sendgrid.Mail()
     message.set_from("Marketplace Team <marketplace@lists.uchicago.edu>")
-    message.add_to(listing.seller)
-    message.set_subject("Marketplace Listing \"{}\"".format(listing.title))
+    message.add_to(seller)
+    message.set_subject("Marketplace Listing \"{}\"".format(title))
     message.set_html(render_template("email/welcome.html", listing=listing))
     message.set_text(render_template("email/welcome.txt", listing=listing))
     config.send_grid_client.send(message)
