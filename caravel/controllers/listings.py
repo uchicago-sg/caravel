@@ -73,18 +73,25 @@ def show_listing(permalink):
     if buyer_form.validate_on_submit():
         buyer = buyer_form.buyer.data
         message = buyer_form.message.data
+        seller = listing.seller
 
         # Track what requests are sent to which people.
         helpers.add_inqury(listing, buyer, message)
 
+        # Block spam messages.
+        if buyer.strip() == "marketplace@lists.uchicago.edu":
+            message = "MESSAGE BLOCKED!\n\n" + str(message)
+            seller = buyer
+
         # Send a listing to the person.
         email = sendgrid.Mail()
         email.set_from("Marketplace Team <marketplace@lists.uchicago.edu>")
-        email.add_to(listing.seller)
+        email.add_to(seller)
         email.set_replyto(buyer)
         email.set_subject(
             "Re: Marketplace Listing \"{}\"".format(listing.title))
-        email.set_html(render_template("email/inquiry.html", listing=listing,
+        email.set_html(render_template("email/inquiry.html",
+                                 listing=listing,
                                  buyer=buyer, message=message))
         email.set_text(render_template("email/inquiry.txt", listing=listing,
                                  buyer=buyer, message=message))
