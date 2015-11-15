@@ -8,7 +8,9 @@ Your listing has been created. Please click the link below to edit it.
 Important: you'll need to click this link at least once for your listing to
 be viewable by others -- this is to protect against spam.
 
-If you didn't create this listing, you can safely ignore this email.
+If you didn't create this listing, you can safely ignore this email. It was
+created by {{ request.remote_addr }}; please contact us if anything seems
+strange.
 
 Cheers,
 The Marketplace Team
