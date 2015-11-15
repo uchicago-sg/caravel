@@ -1,0 +1,7 @@
+This iteration of Marketplace (codenamed "Caravel"), was built in Sep 2015
+by George Teo and Jeremy Archer, after a lively discussion in a Tokyo Starbucks.
+
+If you'd like to contribute code, visit our Github page at
+  https://github.com/uchicago-sg/caravel
+
+Cheers!
