@@ -75,7 +75,7 @@ def public_url(path):
         return ""
 
     # TEMPORARY: Allows serving version to handle new image format.
-    if not path.endswith("-large"):
+    if not path.endswith("-large") and not path.endswith("-small"):
         path += "-large"
 
     # Return existing version of site.
