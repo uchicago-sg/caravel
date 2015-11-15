@@ -5,7 +5,7 @@ Listings are placed by sellers when they want to sell things.
 import uuid, time
 
 from flask import render_template, request, abort, redirect, url_for, session
-from flask import flash
+from flask import flash, g
 import itertools
 
 import sendgrid
@@ -14,10 +14,18 @@ from caravel import app, policy
 from caravel.storage import helpers, entities, config
 from caravel.controllers import forms
 
+from google.appengine.api import users
+
 @app.after_request
 def show_disclaimer(response):
     session["seen_disclaimer"] = True
     return response
+
+@app.before_request
+def expose_admin_status():
+    g.is_admin = users.is_current_user_admin()
+    if "external" in request.args:
+        g.is_admin = False
 
 @app.route("/")
 def search_listings():
