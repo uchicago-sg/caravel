@@ -88,8 +88,9 @@ def show_listing(permalink):
 
         # Block spam inquiries.
         if (buyer.strip() == "marketplace@lists.uchicago.edu" or
-            dos.rate_limit(buyer.strip(), 2, 60) or
-            dos.rate_limit(request.remote_addr, 2, 60)):
+            dos.rate_limit(buyer.strip(), 4, 60) or
+            dos.rate_limit(request.remote_addr, 4, 60) or
+            dos.rate_limit(listing.seller, 20, 3600 * 24)):
 
             message = "MESSAGE BLOCKED!\n\n" + str(message)
             seller = "marketplace@lists.uchicago.edu"
@@ -130,7 +131,8 @@ def claim_listing(permalink):
     # Prevent button spamming.
     seller = listing.seller
     title = listing.title
-    if dos.rate_limit(listing.seller, 2, 60):
+    if (dos.rate_limit(listing.seller, 4, 60) or
+        dos.rate_limit(listing.key().name, 2, 60)):
         seller = "marketplace@lists.uchicago.edu"
         title = "SPAM REQUEST: " + listing.title
 
@@ -293,3 +295,10 @@ def logout():
     session.clear()
     return redirect(url_for("search_listings"))
 
+@app.route('/about')
+def about():
+    return render_template("about.html")
+
+@app.route('/help')
+def helppage():
+    return render_template("help.html")
