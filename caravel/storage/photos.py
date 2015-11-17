@@ -2,13 +2,14 @@
 The photos module manages the uploading, resizing, and serving of pictures.
 """
 
-import time, uuid, os, logging, re, cloudstorage
+import time, uuid, os, logging, re, cloudstorage, re
 from google.appengine.api import images
 
 from caravel import app
 
 PHOTO_LIFETIME = 60 * 24 * 60 * 60 # 60 days
-GCS_BUCKET = "hosted-caravel.appspot.com"
+APP_ID = os.environ.get("APPLICATION_ID", "app")
+GCS_BUCKET = re.sub(r'[^a-zA-Z\-]', '', APP_ID.split("~")[1]) + ".appspot.com"
 SIZES = {'small': (300, 300, True), 'large': (600, 600, False)}
 
 def collect_garbage():
