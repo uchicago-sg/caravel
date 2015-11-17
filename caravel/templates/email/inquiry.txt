@@ -2,7 +2,7 @@ Hello again!
 
 We've received a new inquiry for LISTINGNAME:
 
-  Buyer: {{ buyer }}
+  Buyer: {{ buyer }} (IP: {{ request.remote_addr }})
   
   {{ message.replace("\n", "\n  ") }}
 
