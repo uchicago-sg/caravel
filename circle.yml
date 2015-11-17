@@ -10,15 +10,13 @@ test:
 
 deployment:
   development:
-    branch: /^(?!master)$/
+    branch: /.*/
     commands:
       - rm -Rf venv/
       - ~/google_appengine/appcfg.py update . -A caravel-code-reviews --version=$(git rev-parse --abbrev-ref HEAD) --oauth2_refresh_token=$OAUTH2_REFRESH_TOKEN
-      - curl https://$(git rev-parse --abbrev-ref HEAD)-dot-hosted-caravel.appspot.com >/dev/null
-  
+
   production:
     branch: /^master$/
     commands:
       - rm -Rf venv/
       - ~/google_appengine/appcfg.py update . --version=master --oauth2_refresh_token=$OAUTH2_REFRESH_TOKEN
-      - curl https://$(git rev-parse --abbrev-ref HEAD)-dot-hosted-caravel.appspot.com >/dev/null
