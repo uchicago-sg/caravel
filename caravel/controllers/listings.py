@@ -182,8 +182,7 @@ def edit_listing(permalink):
             if not image or (hasattr(image, "filename") and not image.filename):
                 continue
             photos.append(image)
-
-        listing.photo_urls = photos
+        listing.photos = photos
 
     # Allow authors to edit listings.
     if is_valid:
@@ -203,8 +202,8 @@ def edit_listing(permalink):
     form.categories.data = listing.categories
     form.price.data = listing.price / 100.0
     for index, entry in enumerate(form.photos.entries):
-        if index < len(listing.photo_urls):
-            entry["image"].data = listing.photo_urls[index]
+        if index < len(listing.photos):
+            entry["image"].data = listing.photos[index]
         else:
             entry["image"].data = None
 
@@ -241,7 +240,7 @@ def new_listing():
                 continue
             photos.append(image)
 
-        listing.photo_urls = photos
+        listing.photos = photos
 
     # Allow anyone to create listings.
     if is_valid:
@@ -282,9 +281,8 @@ def new_listing():
 
     # Display the photo URL of any uploaded photos.
     for index, entry in enumerate(form.photos.entries):
-        if index < len(listing.photo_urls):
-            print listing.photo_urls
-            entry["image"].data = listing.photo_urls[index]
+        if index < len(listing.photos):
+            entry["image"].data = listing.photos[index]
         else:
             entry["image"].data = None
 
