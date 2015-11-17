@@ -93,7 +93,8 @@ def batchcache(func):
         # Fill in results that aren't in the cache.
         for key, (vargs, kwargs) in zip(keys, args):
             if key in cached:
-                logging.debug("CacheGet({!r}) = {!r}".format(key, cached[key]))
+                logging.debug("CacheGet({!r}) = {!r}...".format(key,
+                    cached[key][:80]))
                 results[key] = DBDecoder().decode(cached[key])
             else:
                 results[key] = None
