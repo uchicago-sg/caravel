@@ -295,4 +295,8 @@ def logout():
 
 @app.route('/about')
 def about():
+    return render_template("about.html")
+
+@app.route('/help')
+def helppage():
     return render_template("help.html")
