@@ -18,6 +18,15 @@
       <div class="col-md-9">
     {% endif %}
       <h2>{{ listing.title }}</h2>
+      {% if g.is_admin %}
+      <p class="alert alert-info">
+        <strong>Debug Infromation:</strong>
+          (hide with ?external; only for admins)<br/>
+        {%- for key, value in listing.properties().items()|sort -%}
+          {{ key }}: <code>{{ listing[key] }}</code><br/>
+        {%- endfor -%}
+      </p>
+      {% endif %}
       <p>
         {% for category in listing.categories %}
           <span class="label label-default">{{ category }}</span>
