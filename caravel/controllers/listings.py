@@ -221,7 +221,7 @@ def new_listing():
     listing = entities.Listing(
         key_name=str(uuid.uuid4()), # FIXME: add proper permalink generator.
         title=form.title.data,
-        price=int(form.price.data * 100),
+        price=int(form.price.data * 100) if form.price.data else 0,
         body=form.description.data,
         categories=form.categories.data or [],
         seller=form.seller.data,
