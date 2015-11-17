@@ -44,7 +44,7 @@ var fetchMore = coalesce(function(complete) {
 
         // Append the results to the existing results <div>
         var frag;
-        if (parameterString.indexOf("v=List") >= 0) {
+        if (parameterString.indexOf("v=ls") >= 0) {
             frag = document.createElement("table");
             frag.setAttribute("class", "table listing-table table-margin");
         }
