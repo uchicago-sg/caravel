@@ -65,7 +65,7 @@ def pull_from_old_marketplace(permalink, _urlopen=urllib2.urlopen):
     images = re.finditer(r"<a class='fancybox-image' href='([^']*)'", html)
     prefix = "http://marketplace.uchicago.edu"
 
-    listing.photo_urls = [_urlopen(prefix + m.group(1)) for m in images]
+    listing.photos = [_urlopen(prefix + m.group(1)) for m in images]
 
     # Extract the current category from the production site.
     category = re.search(r'<a href=".*categories.*">([^<]*)</a>', html)
