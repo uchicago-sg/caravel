@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+{% block title %}About{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+  <h2>Help</h2>
+  <article>
+    <p>
+      <b>Welcome to the new and improved UChicago Marketplace!</b>
+      Please use this page to familiarize yourself with the new site.
+    </p>
+
+    <h2>How does it work?</h2>
+      <p>The new Marketplace offers a new streamlined interface that may be initially unfamiliar, but will hopefully make your experience better once you get use to it.</p>
+
+      <h3>Searching for Listings</h3>
+        <p>Search can be done entirely via search bar or the category tags above the search bar</p>
+        <ul>
+          <li>Keyword search in the search bar<br><img src="/static/images/about/keywordsearch.png"/></li>
+          <li>Category search via the category tags above the search bar or by typing the category into the search bar<br><img src="/static/images/about/categorysearch.png"/></li>
+          <li>Seller search by typing the seller's email address in the search bar<br><img src="/static/images/about/usersearch.png"/></li>
+        </ul>
+
+      <h3>Making an inquiry/contacting seller</h3>
+        <p>Once you find something that you're interested in purchasing, contact the seller by making an inquiry in the "Contact Seller" box and click send. <p>
+        <img src="/static/images/about/contactseller.png" style="height:25em"/>
+
+      <h3>Seller responding to inquiry</h3>
+        <p>If you're the seller, you will receive an email if somebody is interested in your item. Simply reply to the email to contact the potential buyer.</p>
+        <img src="/static/images/about/sellerreply.png" style="height:25em;"/>
+
+      <h3>Posting new listing</h3>
+        <p>To post a new listing, click the "New Listing" button next to the search bar and fill out the form. <br>
+        Once you've clicked "Save" at the bottom of the form, you will receive an email. You <b>must</b> click the "Edit 'Listing Name'" button to make the listing visible to the public. </p>
+        <img src="/static/images/about/newlisting.png" style="height:25em;"/>
+
+      <h3>Editing/Deleting a listing</h3>
+        <p>To edit/delete an existing listing, you have to be "logged in". There is <b>no</b> "Login" button on the new Marketplace.
+          Instead, search for the listing to edit/delete by searching for your email address in the search bar.
+          Once you're at the listing page, click "This is mine".
+        </p>
+        <img src="/static/images/about/contactseller.png" style="height:25em;"/>
+        <p>You will then receive an email with a button to click to "Edit your Listing".</p>
+        <img src="/static/images/about/newlisting.png" style="height:25em;"/>
+        <p>The link should bring you back to the listing that you want to edit/delete by clicking on "Edit" or "Unpublish"</p>
+        <img src="/static/images/about/editdelete.png" style="height:15em;"/>
+        <p>Now you are "logged in" as long as you don't close the browser window. You can now view, edit, and delete your listings without going through your email until you close your browser.</p>
+        <img src="/static/images/about/loggedin.png" style="height:10em;"/>
+
+
+
+{#    <div>#}
+{#      <h2>Expiration and Renewal</h2>#}
+{##}
+{#      <p>The new Marketplace implements an expiration and renewal system:</p>#}
+{#      <ul>#}
+{#        <li>Each listing is publicly available for one week.</li>#}
+{#        <li>After one week, the listing will be renewable (making it available for another week) but not public. These#}
+{#          listings will appear only on the original seller&#8217;s profile.#}
+{#        </li>#}
+{#        <li>After two weeks without renewal, the listing automatically expires. Expired listings are not public and <em>cannot#}
+{#          be renewed</em>. These listings will appear only on the original seller&#8217;s profile.#}
+{#        </li>#}
+{#      </ul>#}
+{#      <h2>Starred Listings</h2>#}
+{##}
+{#      <p>The #{link_to 'starring mechanism', starred_listings_path} allows users to keep track of arbitrary listings,#}
+{#        much like a shopping cart. This operation <em>does not</em> require a user account. Starred listings generally#}
+{#        persist until the browser is closed or cookies are cleared.</p>#}
+{##}
+{#      <h2>Search</h2>#}
+{##}
+{#      <p>The Marketplace offers both a simple search bar that appears at the top of most pages and an #{link_to#}
+{#        'advanced search page', search_listings_path} also accessible from the simple search bar. Advanced search allows#}
+{#        users to find listings by specific keywords, categories, sellers, prices, dates, and more. Users may also#}
+{#        subscribe to an advanced search as an Atom feed.</p>#}
+{##}
+{#      <h2>User Accounts</h2>#}
+{##}
+{#      <p>#{link_to 'User Accounts', "/register"} guarantee that Marketplace listings are posted by members of the#}
+{#        University community and that those members are held accountable for offensive or inappropriate material. As#}
+{#        such, users must create an account using their University email address (<b>@uchicago.edu</b>, <b>@uchospitals.edu</b>,#}
+{#        or <b>@chicagobooth.edu</b>) before posting a listing. Other members of the community are welcome to browse and#}
+{#        even create accounts, but cannot post listings at this time. If you have a University ID (cNetID, UCHAD, etc.)#}
+{#        but no University email address, <a href="mailto:marketplace@lists.uchicago.edu" alt="UChicago Marketplace">email#}
+{#          the moderators</a> with your ID and full name, and a moderator will help you set up an account. To reiterate:#}
+{#        <em>If you do not have a University ID, then you are not eligible to post listings.</em></p>#}
+{##}
+{#      <h2>Help and Feedback</h2>#}
+{##}
+{#      <p>If you have any concerns, criticisms, or complaints about the new design, you may contact the moderators,#}
+{#        developers, and maintainers directly by sending an email to the <a href="mailto:marketplace@lists.uchicago.edu"#}
+{#                                                                           alt="UChicago Marketplace">Marketplace#}
+{#          List</a>. This list is private, and your message will not be published.</p>#}
+{##}
+{#      <h2>Development</h2>#}
+{##}
+{#      <p>The Marketplace was developed by two students Jeremy Archer and George Teo with the support of <a#}
+{#          href="http://sg.uchicago.edu/" title="Student Government">Student Government</a>. The source code is <a#}
+{#          href="https://github.com/uchicago-sg/marketplace" title="Marketplace Source">freely available on GitHub</a>#}
+{#        under a <a href="https://github.com/uchicago-sg/marketplace/blob/master/License" title="License">three-clause#}
+{#          BSD license</a>.</p>#}
+{#    </div>#}
+  </article>
+{% endblock %}

@@ -293,3 +293,6 @@ def logout():
     session.clear()
     return redirect(url_for("search_listings"))
 
+@app.route('/about')
+def about():
+    return render_template("help.html")
