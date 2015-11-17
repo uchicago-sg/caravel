@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block title %}About{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+    <h2>About</h2>
+
+    <div>
+      <h3>Expiration and Renewal</h3>
+
+      <p>The new Marketplace implements an expiration and renewal system:</p>
+      <ul>
+        <li>Each listing is publicly available for one week.</li>
+        <li>After one week, the listing will be renewable (making it available for another week) but not public. These
+          listings will appear only on the original seller&#8217;s profile.
+        </li>
+        <li>After two weeks without renewal, the listing automatically expires. Expired listings are not public and <em>cannot
+          be renewed</em>. These listings will appear only on the original seller&#8217;s profile.
+        </li>
+      </ul>
+
+      <h3>Help and Feedback</h3>
+
+      <p>If you have any concerns, criticisms, or complaints about the new design, you may contact the moderators,
+        developers, and maintainers directly by sending an email to the <a href="mailto:marketplace@lists.uchicago.edu"
+                                                                           alt="UChicago Marketplace">Marketplace
+          List</a>. This list is private, and your message will not be published.</p>
+
+      <h3>Development</h3>
+
+      <p>The Marketplace was developed by two students Jeremy Archer and George Teo with the support of <a
+          href="http://sg.uchicago.edu/" title="Student Government">Student Government</a>. The source code is <a
+          href="https://github.com/uchicago-sg/caravel" title="Marketplace Source">freely available on GitHub</a>
+        under a <a href="https://github.com/uchicago-sg/marketplace/blob/master/License" title="License">three-clause
+          BSD license</a>.</p>
+    </div>
+{% endblock %}
