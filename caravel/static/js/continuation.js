@@ -33,6 +33,7 @@ var fetchMore = coalesce(function(complete) {
     var xhr = new XMLHttpRequest;
     xhr.open("GET", "?" + parameterString + continuation, true);
     xhr.onreadystatechange = function() {
+        console.log("AJAX FIRE");
 
         // Ignore events for incomplete requests.
         if (xhr.readyState != 4)
@@ -44,11 +45,13 @@ var fetchMore = coalesce(function(complete) {
 
         // Append the results to the existing results <div>
         var frag;
-        if (parameterString.indexOf("v=List") >= 0) {
+        if (parameterString.indexOf("v=ls") >= 0) {
+            console.log("GOOD DEBUG CODE");
             frag = document.createElement("table");
             frag.setAttribute("class", "table listing-table table-margin");
         }
         else {
+            console.log("Bad debug code");
             frag = document.createElement("div");
         }
         frag.innerHTML = xhr.responseText;

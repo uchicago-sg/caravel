@@ -4,59 +4,24 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-  <h2>About Marketplace</h2>
-  <article>
+    <h2>About</h2>
+
     <div>
-      <h2>Expiration and Renewal</h2>
+      <h3>Help and Feedback</h3>
 
-      <p>The new Marketplace implements an expiration and renewal system:</p>
-      <ul>
-        <li>Each listing is publicly available for one week.</li>
-        <li>After one week, the listing will be renewable (making it available for another week) but not public. These
-          listings will appear only on the original seller&#8217;s profile.
-        </li>
-        <li>After two weeks without renewal, the listing automatically expires. Expired listings are not public and <em>cannot
-          be renewed</em>. These listings will appear only on the original seller&#8217;s profile.
-        </li>
-      </ul>
-      <h2>Starred Listings</h2>
-
-      <p>The #{link_to 'starring mechanism', starred_listings_path} allows users to keep track of arbitrary listings,
-        much like a shopping cart. This operation <em>does not</em> require a user account. Starred listings generally
-        persist until the browser is closed or cookies are cleared.</p>
-
-      <h2>Search</h2>
-
-      <p>The Marketplace offers both a simple search bar that appears at the top of most pages and an #{link_to
-        'advanced search page', search_listings_path} also accessible from the simple search bar. Advanced search allows
-        users to find listings by specific keywords, categories, sellers, prices, dates, and more. Users may also
-        subscribe to an advanced search as an Atom feed.</p>
-
-      <h2>User Accounts</h2>
-
-      <p>#{link_to 'User Accounts', "/register"} guarantee that Marketplace listings are posted by members of the
-        University community and that those members are held accountable for offensive or inappropriate material. As
-        such, users must create an account using their University email address (<b>@uchicago.edu</b>, <b>@uchospitals.edu</b>,
-        or <b>@chicagobooth.edu</b>) before posting a listing. Other members of the community are welcome to browse and
-        even create accounts, but cannot post listings at this time. If you have a University ID (cNetID, UCHAD, etc.)
-        but no University email address, <a href="mailto:marketplace@lists.uchicago.edu" alt="UChicago Marketplace">email
-          the moderators</a> with your ID and full name, and a moderator will help you set up an account. To reiterate:
-        <em>If you do not have a University ID, then you are not eligible to post listings.</em></p>
-
-      <h2>Help and Feedback</h2>
-
+      <p> If you need some help with the new Marketplace, visit the <a href="{{ url_for('helppage') }}" class="hidden-link">Help page</a>.</p>
+      
       <p>If you have any concerns, criticisms, or complaints about the new design, you may contact the moderators,
         developers, and maintainers directly by sending an email to the <a href="mailto:marketplace@lists.uchicago.edu"
                                                                            alt="UChicago Marketplace">Marketplace
           List</a>. This list is private, and your message will not be published.</p>
 
-      <h2>Development</h2>
+      <h3>Development</h3>
 
       <p>The Marketplace was developed by two students Jeremy Archer and George Teo with the support of <a
           href="http://sg.uchicago.edu/" title="Student Government">Student Government</a>. The source code is <a
-          href="https://github.com/uchicago-sg/marketplace" title="Marketplace Source">freely available on GitHub</a>
+          href="https://github.com/uchicago-sg/caravel" title="Marketplace Source">freely available on GitHub</a>
         under a <a href="https://github.com/uchicago-sg/marketplace/blob/master/License" title="License">three-clause
           BSD license</a>.</p>
     </div>
-  </article>
 {% endblock %}
