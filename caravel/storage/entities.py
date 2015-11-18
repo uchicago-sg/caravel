@@ -165,7 +165,7 @@ class Listing(Versioned):
 
         # Recompute .keywords on save.
         descriptor = self.__class__.__dict__["keywords"]
-        listing.keywords = descriptor.derive_func(self)
+        self.keywords = descriptor.derive_func(self)
         
         super(Listing, self).put(*vargs, **kwargs)
 
