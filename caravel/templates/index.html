@@ -6,17 +6,21 @@
 {% endblock %}
 {% block content %}
   <div class="row" id="listings">
-    {% if view != "ls" %}
-      {% for listing in listings %}
-        {%- include "listings/thumbnail.html" -%}
-      {% endfor %}
+    {% if not listings %}
+      {% include "search_fail.html" %}
     {% else %}
-      <table class="table table-striped table-margin">
-      {% include "list_header.html" %}
-      {% for listing in listings %}
+      {% if view != "ls" %}
+        {% for listing in listings %}
+          {%- include "listings/thumbnail.html" -%}
+        {% endfor %}
+      {% else %}
+        <table class="table table-striped table-margin">
+        {% include "list_header.html" %}
+        {% for listing in listings %}
           {% include "listings/list.html" %}
-      {% endfor %}
-      </table>
+        {% endfor %}
+        </table>
+      {% endif %}
     {% endif %}
   </div>
 {% endblock %}
