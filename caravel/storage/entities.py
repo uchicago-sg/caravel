@@ -72,6 +72,10 @@ def fold_query_term(word):
     Returns the canonical representation of the given query word.
     """
 
+    # block out None values.
+    if word is None:
+        return ""
+
     # if email or keyword do nothing:
     if "@" in word or ":" in word:
         return word
@@ -104,7 +108,7 @@ class Listing(Versioned):
     title = db.StringProperty(default="")
     body = db.TextProperty(default="")
     price = db.IntegerProperty(default=0) # in cents of a U.S. dollar
-    posting_time = db.FloatProperty(default=0) # set to 0 iff not yet published
+    posting_time = db.FloatProperty(default=0.0) # 0 iff not yet published
     categories = db.StringListProperty() # stored as keys of CATEGORIES
     admin_key = db.StringProperty(default="") # how to administer this listing
     buyers = db.StringListProperty() # how many people are interested

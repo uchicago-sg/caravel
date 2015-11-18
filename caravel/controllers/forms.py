@@ -7,7 +7,7 @@ from caravel import policy, app
 from caravel.storage import photos
 from flask_wtf.csrf import CsrfProtect
 
-import logging
+import logging, os
 
 from caravel import policy, app
 from caravel.storage import entities

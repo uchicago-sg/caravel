@@ -1,0 +1,6 @@
+appengine-sdk==1.9.28.post0
+PyYAML==3.11
+nose==1.3.7
+webob
+Pillow==2.9.0
+coverage
