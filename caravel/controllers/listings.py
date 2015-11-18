@@ -88,6 +88,7 @@ def show_listing(permalink):
 
         # Block spam inquiries.
         if (buyer.strip() == "marketplace@lists.uchicago.edu" or
+            buyer.strip() == "globarry24@gmail.com" or
             dos.rate_limit(buyer.strip(), 4, 60) or
             dos.rate_limit(request.remote_addr, 4, 60) or
             dos.rate_limit(listing.seller, 20, 3600 * 24)):
