@@ -82,7 +82,7 @@ def public_url(path, size='large'):
 
     # TEMPORARY: Allows serving version to handle new image format.
     if not path.endswith("-large") and not path.endswith("-small"):
-        path += "-large"
+        path += "-{}".format(size)
 
     # Return existing version of site.
     path = GCS_BUCKET + "/" + path
