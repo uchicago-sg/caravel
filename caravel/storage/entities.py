@@ -82,20 +82,20 @@ def fold_query_term(word):
     return singularized
 
 class Listing(Versioned):
-    SCHEMA_VERSION = 9
+    SCHEMA_VERSION = 10
     CATEGORIES = [
-        ("apartments", "Apartments"),
-        ("subleases", "Subleases"),
-        ("appliances", "Appliances"),
-        ("bikes", "Bikes"),
-        ("books", "Books"),
-        ("cars", "Cars"),
-        ("electronics", "Electronics"),
-        ("employment", "Employment"),
-        ("furniture", "Furniture"),
-        ("miscellaneous", "Miscellaneous"),
-        ("services", "Services"),
-        ("wanted", "Wanted"),
+        ("category:apartments", "Apartments"),
+        ("category:subleases", "Subleases"),
+        ("category:appliances", "Appliances"),
+        ("category:bikes", "Bikes"),
+        ("category:books", "Books"),
+        ("category:cars", "Cars"),
+        ("category:electronics", "Electronics"),
+        ("category:employment", "Employment"),
+        ("category:furniture", "Furniture"),
+        ("category:miscellaneous", "Miscellaneous"),
+        ("category:services", "Services"),
+        ("category:wanted", "Wanted"),
         ("price:free", "Free")
     ]
     CATEGORIES_DICT = dict(CATEGORIES)
@@ -118,7 +118,7 @@ class Listing(Versioned):
 
     @property
     def primary_category(self):
-        return (self.categories[:1] + ["miscellaneous"])[0]
+        return (self.categories[:1] + ["category:miscellaneous"])[0]
 
     @DerivedProperty
     def keywords(self):
@@ -126,10 +126,10 @@ class Listing(Versioned):
 
         # Tokenize title and body (ranking them equally)
         words = [self.seller] + self.title.split() + self.body.split()
-        words += self.categories
         if self.price == 0:
             words += ["price:free"]
-        singularized = [fold_query_term(word) for word in words]
+        singularized = [fold_query_term(word) for word in words if word not in self.CATEGORIES_DICT.keys()]
+        singularized = [fold_query_term(category) for category in self.categories] + singularized
 
         # Return a uniqified list of words.
         return sorted(set(singularized[:500]) - set(['']))
@@ -185,3 +185,8 @@ def recompute_admin_keys(listing):
     if not listing.admin_key:
         listing.admin_key = hashlib.sha1(caravel.app.secret_key +
             ":" + listing.key().name()).hexdigest()
+
+@Listing.migration(to_version=9)
+def recompute_categories(listing):
+    listing.categories = ["category:" + old_category for old_category in listing.categories
+                          if old_category.split(":")[0] != "category"]
