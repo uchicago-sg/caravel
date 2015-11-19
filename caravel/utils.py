@@ -2,7 +2,9 @@ from caravel import app
 from caravel.storage import entities
 from flask import request
 
-import math, time
+import math
+import time
+
 
 @app.template_global()
 def modify_search(add=[], remove=[]):
@@ -21,11 +23,13 @@ def modify_search(add=[], remove=[]):
 
     return " ".join(query)
 
+
 @app.context_processor
 def inject_categories():
     """Adds the categories into the view."""
     return {'categories': entities.Listing.CATEGORIES,
             'categories_dict': entities.Listing.CATEGORIES_DICT}
+
 
 @app.template_filter("as_duration")
 def as_duration(abs_time_in_seconds):

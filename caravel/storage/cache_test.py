@@ -2,6 +2,7 @@ import collections
 from caravel.storage.cache import cache, batchcache, DBEncoder, DBDecoder
 from google.appengine.ext import db
 
+
 def test_cache_behavior():
     invocations = collections.Counter()
 
@@ -35,8 +36,10 @@ def test_cache_behavior():
     assert invocations["d"] == 2
     assert len(invocations) == 3
 
+
 class Entity(db.Model):
     a = db.StringProperty()
+
 
 def test_encode_entity():
     ent = Entity(a="foo bar", key_name="key")
@@ -44,5 +47,5 @@ def test_encode_entity():
     ent2 = DBDecoder().decode(DBEncoder().encode(ent))
     assert ent2.key().name() == "key"
     assert ent2.a == "foo bar"
-    
+
     assert DBDecoder().decode(DBEncoder().encode({"x": 1}))["x"] == 1

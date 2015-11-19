@@ -13,20 +13,22 @@ def test_lookups():
     helpers.invalidate_listing(a)
     assert helpers.lookup_listing("foo").title == "listb"
 
+
 def test_search():
     entities.Listing(title="title for test",
-        posting_time=1.0e5, key_name="entfortest").put()
+                     posting_time=1.0e5, key_name="entfortest").put()
 
     assert tuple(helpers.fetch_shard("title")) == ("entfortest",)
     assert (tuple(x.permalink for x in helpers.run_query("title for test")) ==
-        ("entfortest",))
+            ("entfortest",))
 
     ent = entities.Listing(title="new title",
-        posting_time=1.0e5, key_name="entfortest")
+                           posting_time=1.0e5, key_name="entfortest")
     ent.put()
     helpers.invalidate_listing(ent)
 
     assert not helpers.run_query("title for test")
+
 
 def test_inquiries():
     ent = entities.Listing(title="car", key_name="entfortest")

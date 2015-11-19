@@ -1,14 +1,17 @@
 from caravel import app
 from caravel.storage import entities, config
-import time, re
+import time
+import re
+
 
 def test_search():
-    entities.Listing(title="integtesta",
-        posting_time=time.time() - 35000, key_name="listinga").put()
-    
+    entities.Listing(
+        title="integtesta", posting_time=time.time() - 35000,
+        key_name="listinga").put()
+
     client = app.test_client()
     page = client.get("/?q=integtesta")
-    
+
     assert "integtesta" in page.data
     assert "10h ago" in page.data
     assert "$0.00" in page.data
@@ -17,9 +20,10 @@ def test_search():
     page = client.get("/?offset=1")
     assert "integtesta" not in page.data
 
+
 def test_show():
     entities.Listing(title="integtestb", body="integbody", admin_key="4",
-        key_name="listingb", seller="e@mail").put()
+                     key_name="listingb", seller="e@mail").put()
 
     client = app.test_client()
     page = client.get("/listingb")
@@ -33,9 +37,10 @@ def test_show():
     assert "integtestb" in page.data
     assert "integbody" in page.data
 
+
 def test_inquiry():
     entities.Listing(title="integtestb", posting_time=1.,
-        key_name="listingc", seller="seller@foo.com").put()
+                     key_name="listingc", seller="seller@foo.com").put()
 
     emails = []
     client = config.send_grid_client
@@ -45,7 +50,7 @@ def test_inquiry():
         client = app.test_client()
         page = client.get("/listingc")
         csrf_token = re.search(r'csrf_token".*"(.*)"', page.data).group(1)
-        
+
         page = client.post("/listingc", data=dict(
             buyer="buyer@foo.com",
             message="message goes here",
@@ -68,6 +73,7 @@ def test_inquiry():
     finally:
         client.send = _send
 
+
 def test_new_listing():
     emails = []
     client = config.send_grid_client
@@ -77,7 +83,7 @@ def test_new_listing():
         client = app.test_client()
         page = client.get("/new")
         csrf_token = re.search(r'csrf_token".*"(.*)"', page.data).group(1)
-        
+
         page = client.post("new", data=dict(
             csrf_token=csrf_token,
             title="thenewlisting",
@@ -95,7 +101,7 @@ def test_new_listing():
         assert "thenewlisting" in emails[0].html
 
         path = re.search(r'http://localhost(/.*)"', emails[0].html).group(1)
-        client.get(path).data # create listing
+        client.get(path).data  # create listing
         assert "thenewlisting" in client.get(path).data
 
         path2 = re.search(r'http://localhost(/.*)', emails[0].text).group(1)

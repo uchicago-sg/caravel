@@ -2,16 +2,23 @@
 The photos module manages the uploading, resizing, and serving of pictures.
 """
 
-import time, uuid, os, logging, re, cloudstorage, re
+import time
+import uuid
+import os
+import logging
+import re
+import cloudstorage
+import re
 from google.appengine.api import images
 
 from caravel import app
 
-PHOTO_LIFETIME = 60 * 24 * 60 * 60 # 60 days
+PHOTO_LIFETIME = 60 * 24 * 60 * 60  # 60 days
 APP_ID = os.environ.get("APPLICATION_ID", "app")
 GCS_BUCKET = re.sub(r'[^a-zA-Z\-]', '', APP_ID.split("~")[1]) + ".appspot.com"
 SIZES = {'small': (300, 300, True), 'large': (600, 600, False)}
-  # (width, height, crop_to_fit) -- anything not present is (0, 0, False)
+# (width, height, crop_to_fit) -- anything not present is (0, 0, False)
+
 
 def collect_garbage():
     """
@@ -33,7 +40,8 @@ def collect_garbage():
             try:
                 cloudstorage.delete(photo.filename)
             except cloudstorage.NotFoundError:
-                pass # ignore concurrent removals.
+                pass  # ignore concurrent removals.
+
 
 def upload(image_data, *sizes):
     """
@@ -44,7 +52,7 @@ def upload(image_data, *sizes):
     guid = uuid.uuid4()
 
     if not sizes:
-        sizes = ['original'] # no cropping or resizing
+        sizes = ['original']  # no cropping or resizing
 
     for size in sizes:
         # Choose image size, or default to original.
@@ -69,6 +77,7 @@ def upload(image_data, *sizes):
         output_file.close()
 
     return "{}-{}".format(now, guid)
+
 
 @app.template_global()
 def public_url(path, size='large'):

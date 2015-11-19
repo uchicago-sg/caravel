@@ -2,10 +2,11 @@ from google.appengine.api import memcache
 from caravel.storage import dos
 import time
 
+
 def test_rate_limit():
     now = 0
     _time, time.time = time.time, lambda: now
-    
+
     try:
         trace = []
         for i in xrange(5):

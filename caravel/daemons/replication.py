@@ -2,12 +2,17 @@
 The replication daemon pulls the latest listings from the old site.
 """
 
-import json, time, datetime, re, urllib2
+import json
+import time
+import datetime
+import re
+import urllib2
 from flask import request
 from caravel import app
 from caravel.storage import entities, helpers
 from google.appengine.ext import deferred
 from google.appengine.api import taskqueue, urlfetch
+
 
 @app.route("/_pull", methods=["GET"])
 def pull_from_legacy_site():
@@ -16,8 +21,9 @@ def pull_from_legacy_site():
         pull_from_old_marketplace,
         permalink=request.args.get("permalink", ""),
         _retry_options=taskqueue.TaskRetryOptions(task_retry_limit=5)
-    ) # need to defer to prevent the prod site from deadlocking
+    )  # need to defer to prevent the prod site from deadlocking
     return "ok"
+
 
 def pull_from_old_marketplace(permalink, _urlopen=urllib2.urlopen):
     """

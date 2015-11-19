@@ -2,7 +2,8 @@
 Listings are placed by sellers when they want to sell things.
 """
 
-import uuid, time
+import uuid
+import time
 
 from flask import render_template, request, abort, redirect, url_for, session
 from flask import flash, g
@@ -16,16 +17,19 @@ from caravel.controllers import forms
 
 from google.appengine.api import users
 
+
 @app.after_request
 def show_disclaimer(response):
     session["seen_disclaimer"] = True
     return response
+
 
 @app.before_request
 def expose_admin_status():
     g.is_admin = users.is_current_user_admin()
     if "external" in request.args:
         g.is_admin = False
+
 
 @app.route("/")
 def search_listings():
@@ -47,7 +51,8 @@ def search_listings():
     template = ("" if "continuation" not in request.args else "_continuation")
 
     return render_template("index{}.html".format(template),
-        listings=listings, view=view, query=query)
+                           listings=listings, view=view, query=query)
+
 
 @app.route("/<permalink>", methods=["GET", "POST"])
 def show_listing(permalink):
@@ -68,14 +73,14 @@ def show_listing(permalink):
 
             flash("Your listing has been published.")
             return redirect(url_for("show_listing", permalink=permalink,
-                                                    q=request.args.get("q")))
+                                    q=request.args.get("q")))
 
     # Otherwise, hide the listing.
     elif not listing.posting_time:
         abort(404)
 
-    # Display a form for buyers to place an offer. 
-    buyer_form = forms.BuyerForm() 
+    # Display a form for buyers to place an offer.
+    buyer_form = forms.BuyerForm()
 
     # Handle submissions on the form.
     if buyer_form.validate_on_submit():
@@ -88,10 +93,10 @@ def show_listing(permalink):
 
         # Block spam inquiries.
         if (buyer.strip() == "marketplace@lists.uchicago.edu" or
-            buyer.strip() == "globarry24@gmail.com" or
-            dos.rate_limit(buyer.strip(), 4, 60) or
-            dos.rate_limit(request.remote_addr, 4, 60) or
-            dos.rate_limit(listing.seller, 20, 3600 * 24)):
+                buyer.strip() == "globarry24@gmail.com" or
+                dos.rate_limit(buyer.strip(), 4, 60) or
+                dos.rate_limit(request.remote_addr, 4, 60) or
+                dos.rate_limit(listing.seller, 20, 3600 * 24)):
 
             message = "MESSAGE BLOCKED!\n\n" + str(message)
             seller = "marketplace@lists.uchicago.edu"
@@ -104,10 +109,10 @@ def show_listing(permalink):
         email.set_subject(
             "Re: Marketplace Listing \"{}\"".format(listing.title))
         email.set_html(render_template("email/inquiry.html",
-                                 listing=listing,
-                                 buyer=buyer, message=message))
+                                       listing=listing,
+                                       buyer=buyer, message=message))
         email.set_text(render_template("email/inquiry.txt", listing=listing,
-                                 buyer=buyer, message=message))
+                                       buyer=buyer, message=message))
         config.send_grid_client.send(email)
 
         return redirect(url_for("show_listing", permalink=permalink))
@@ -119,6 +124,7 @@ def show_listing(permalink):
     # Display the resulting template.
     return render_template("listing_show.html", listing=listing,
                            buyer_form=buyer_form)
+
 
 @app.route("/<permalink>/claim", methods=["POST"])
 def claim_listing(permalink):
@@ -133,7 +139,7 @@ def claim_listing(permalink):
     seller = listing.seller
     title = listing.title
     if (dos.rate_limit(listing.seller, 4, 60) or
-        dos.rate_limit(listing.key().name, 2, 60)):
+            dos.rate_limit(listing.key().name, 2, 60)):
         seller = "marketplace@lists.uchicago.edu"
         title = "SPAM REQUEST: " + listing.title
 
@@ -149,6 +155,7 @@ def claim_listing(permalink):
     flash("We've emailed you a link to edit this listing.")
 
     return redirect(url_for("show_listing", permalink=listing.permalink))
+
 
 @app.route("/<permalink>/edit", methods=["GET", "POST"])
 def edit_listing(permalink):
@@ -182,7 +189,8 @@ def edit_listing(permalink):
             if not photo.data:
                 continue
             image = photo.data["image"]
-            if not image or (hasattr(image, "filename") and not image.filename):
+            if not image or(
+                    hasattr(image, "filename") and not image.filename):
                 continue
             photos.append(image)
         listing.photos = photos
@@ -212,6 +220,7 @@ def edit_listing(permalink):
 
     return render_template("listing_form.html", type="Edit", form=form)
 
+
 @app.route("/new", methods=["GET", "POST"])
 def new_listing():
     """Creates or removes this listing."""
@@ -221,7 +230,7 @@ def new_listing():
 
     # Create a temporary listing so that photos can be uploaded.
     listing = entities.Listing(
-        key_name=str(uuid.uuid4()), # FIXME: add proper permalink generator.
+        key_name=str(uuid.uuid4()),  # FIXME: add proper permalink generator.
         title=form.title.data,
         price=int(form.price.data * 100) if form.price.data else 0,
         body=form.description.data,
@@ -239,7 +248,8 @@ def new_listing():
             if not photo.data:
                 continue
             image = photo.data["image"]
-            if not image or (hasattr(image, "filename") and not image.filename):
+            if not image or(
+                    hasattr(image, "filename") and not image.filename):
                 continue
             photos.append(image)
 
@@ -260,7 +270,8 @@ def new_listing():
         message.set_from("Marketplace Team <marketplace@lists.uchicago.edu>")
         message.add_to(listing.seller)
         message.set_subject("Marketplace Listing \"{}\"".format(listing.title))
-        message.set_html(render_template("email/welcome.html", listing=listing))
+        message.set_html(
+            render_template("email/welcome.html", listing=listing))
         message.set_text(render_template("email/welcome.txt", listing=listing))
         config.send_grid_client.send(message)
 
@@ -272,7 +283,7 @@ def new_listing():
         if session.get("email") == listing.seller:
             flash("Your listing has been published.")
             return redirect(url_for("show_listing",
-                     permalink=listing.permalink))
+                                    permalink=listing.permalink))
         else:
             flash("Your listing has been created. "
                   "Click the link in your email to publish it.")
@@ -291,14 +302,17 @@ def new_listing():
 
     return render_template("listing_form.html", type="New", form=form)
 
+
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for("search_listings"))
 
+
 @app.route('/about')
 def about():
     return render_template("about.html")
+
 
 @app.route('/help')
 def helppage():

@@ -7,6 +7,7 @@ from google.appengine.ext import db
 from caravel.storage import entities, helpers
 from caravel import app
 
+
 @app.route("/_internal/migrate_schema")
 def migrate_schema():
     q = entities.Listing.all()

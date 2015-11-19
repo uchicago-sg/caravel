@@ -2,14 +2,20 @@
 The cache uses memcached to dramatically reduce the number of database queries.
 """
 
-import functools, logging, json, os, sys
+import functools
+import logging
+import json
+import os
+import sys
 from json import JSONEncoder, JSONDecoder
 
 from google.appengine.api import memcache
 from google.appengine.ext import db
 from google.appengine.datastore.entity_pb import EntityProto
 
+
 class DBEncoder(JSONEncoder):
+
     """Packs an entity as a JSON record."""
 
     def default(self, obj):
@@ -25,7 +31,9 @@ class DBEncoder(JSONEncoder):
 
         return obj
 
+
 class DBDecoder(JSONDecoder):
+
     """Unpacks an entity from a JSON record."""
 
     def __init__(self, *vargs, **kwargs):
@@ -46,6 +54,7 @@ class DBDecoder(JSONDecoder):
 
         return obj
 
+
 def cache(func):
     """
     Wraps a regular function as batch cache.
@@ -57,6 +66,7 @@ def cache(func):
         return map(lambda (v, kw): func(*v, **kw), vargs)
 
     return inner
+
 
 def batchcache(func):
     """
@@ -86,15 +96,16 @@ def batchcache(func):
 
         cached = memcache.get_multi(keys)
         writeback = {}
-        results = {} 
+        results = {}
         arguments = []
         correspondence = []
 
         # Fill in results that aren't in the cache.
         for key, (vargs, kwargs) in zip(keys, args):
             if key in cached:
-                logging.debug("CacheGet({!r}) = {!r}...".format(key,
-                    cached[key][:80]))
+                logging.debug(
+                    "CacheGet({!r}) = {!r}...".format(
+                        key, cached[key][: 80]))
                 results[key] = DBDecoder().decode(cached[key])
             else:
                 results[key] = None
@@ -129,5 +140,5 @@ def batchcache(func):
 
     inner.invalidate = invalidate
     inner.batch = batch
-    
+
     return inner

@@ -3,7 +3,8 @@ Caravel is an open source marketplace; it powers //marketplace.uchicago.edu.
 Please see README.md for details.
 """
 
-import sys, os
+import sys
+import os
 sys.path.append(os.path.dirname(__file__) + "/../vendor")
 
 if "APPLICATION_ID" not in os.environ:

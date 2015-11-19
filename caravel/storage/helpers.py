@@ -4,6 +4,7 @@ from google.appengine.ext import db
 import heapq
 import logging
 
+
 @batchcache
 def lookup_listing(args=[]):
     """
@@ -21,6 +22,7 @@ def lookup_listing(args=[]):
 
     return records
 
+
 def invalidate_listing(listing):
     """
     Marks the cache as having lost the given listing.
@@ -30,6 +32,7 @@ def invalidate_listing(listing):
     for keyword in listing.keywords:
         fetch_shard.invalidate(keyword)
     fetch_shard.invalidate("")
+
 
 @cache
 def fetch_shard(shard):
@@ -43,6 +46,7 @@ def fetch_shard(shard):
     keys = [k.name() for k in query.fetch(1000)]
     logging.debug("FetchShard({!r}) = {!r}".format(shard, keys))
     return keys
+
 
 def run_query(query="", offset=0, length=24):
     """
@@ -58,7 +62,7 @@ def run_query(query="", offset=0, length=24):
     # Retrieve the keys for entities that match all terms.
     shards = [fetch_shard(word) for word in words]
 
-    # Extract all elements from each shard. 
+    # Extract all elements from each shard.
     all_shards = set(shards[0])
     for shard in shards[1:]:
         all_shards = all_shards & set(shard)
@@ -77,6 +81,7 @@ def run_query(query="", offset=0, length=24):
             continue
         results.append(listing)
     return results
+
 
 def add_inqury(listing, buyer, message):
     """
