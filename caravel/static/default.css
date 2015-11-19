@@ -51,7 +51,7 @@ a.no-underline {
     #categories {
         font-size: 0.9em;
     }
-    
+
     #categories a {
         padding: 5px;
     }
@@ -69,6 +69,15 @@ a.no-underline {
 
 .abouthelp a{
     border: white;
+}
+
+.search-fail{
+    margin: 10px;
+}
+
+.search-fail h4{
+    text-align: center;
+    margin: 10px;
 }
 
 /* For show page */
