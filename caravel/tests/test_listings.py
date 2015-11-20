@@ -7,7 +7,7 @@ import re
 def test_search():
     entities.Listing(
         title="integtesta", posting_time=time.time() - 35000,
-        key_name="listinga").put()
+        key_name="test_listing_search").put()
 
     client = app.test_client()
     page = client.get("/?q=integtesta")
@@ -15,11 +15,10 @@ def test_search():
     assert "integtesta" in page.data
     assert "10h ago" in page.data
     assert "$0.00" in page.data
-    assert "/listinga" in page.data
+    assert "/test_listing_search" in page.data
 
-    page = client.get("/?offset=1")
-    assert "integtesta" not in page.data
-
+    page = client.get("/?q=integtesta&offset=1")
+    assert "test_listing_search" not in page.data
 
 def test_show():
     entities.Listing(title="integtestb", body="integbody", admin_key="4",

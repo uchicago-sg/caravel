@@ -6,7 +6,7 @@ dependencies:
 
 test:
   override:
-    - nosetests .
+    - nose2 --coverage=caravel/ --with-coverage --log-level ERROR
 
 deployment:
   app_engine:
