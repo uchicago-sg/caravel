@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 # Imported for side effects:
 from caravel.storage import config, photos
-from caravel.controllers import listings
+from caravel.controllers import listings, api
 from caravel.daemons import replication, migration, delete_old_photos
 from caravel import utils
 
