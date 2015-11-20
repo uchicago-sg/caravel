@@ -82,7 +82,7 @@ def fold_query_term(word):
     return singularized
 
 class Listing(Versioned):
-    SCHEMA_VERSION = 8
+    SCHEMA_VERSION = 9
     CATEGORIES = [
         ("apartments", "Apartments"),
         ("subleases", "Subleases"),
@@ -159,6 +159,15 @@ class Listing(Versioned):
             thumbnails.append(photo + "-small") # for old releases
         self.photos_ = photo_list
         self.thumbnails_ = thumbnails
+
+    def put(self, *vargs, **kwargs):
+        """Called when this listing is saved to the datastore."""
+
+        # Recompute .keywords on save.
+        descriptor = self.__class__.__dict__["keywords"]
+        self.keywords = descriptor.derive_func(self)
+        
+        super(Listing, self).put(*vargs, **kwargs)
 
 @Listing.migration(to_version=1)
 def from_single_thumbnail_to_many(listing):

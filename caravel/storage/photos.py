@@ -11,6 +11,7 @@ PHOTO_LIFETIME = 60 * 24 * 60 * 60 # 60 days
 APP_ID = os.environ.get("APPLICATION_ID", "app")
 GCS_BUCKET = re.sub(r'[^a-zA-Z\-]', '', APP_ID.split("~")[1]) + ".appspot.com"
 SIZES = {'small': (300, 300, True), 'large': (600, 600, False)}
+  # (width, height, crop_to_fit) -- anything not present is (0, 0, False)
 
 def collect_garbage():
     """
@@ -43,7 +44,7 @@ def upload(image_data, *sizes):
     guid = uuid.uuid4()
 
     if not sizes:
-        sizes = ['original']
+        sizes = ['original'] # no cropping or resizing
 
     for size in sizes:
         # Choose image size, or default to original.
@@ -82,7 +83,7 @@ def public_url(path, size='large'):
 
     # TEMPORARY: Allows serving version to handle new image format.
     if not path.endswith("-large") and not path.endswith("-small"):
-        path += "-large"
+        path += "-{}".format(size)
 
     # Return existing version of site.
     path = GCS_BUCKET + "/" + path
