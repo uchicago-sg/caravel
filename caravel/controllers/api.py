@@ -23,7 +23,8 @@ def _externalize(listing):
         "postingTime": listing.posting_time,
         "categories": [
             {
-                "name": category
+                "name": category,
+                "URL": url_for("api_all_listings", q=category, _external=True)
             } for category in listing.categories
         ],
         "price": (listing.price / 100.0),
