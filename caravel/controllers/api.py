@@ -20,7 +20,7 @@ def _externalize(listing):
             "show_listing", permalink=listing.permalink, _external=True),
         "title": listing.title,
         "body": listing.body,
-        "postingTimeInSSince1970": listing.posting_time,
+        "postingTime": listing.posting_time,
         "categories": [
             {
                 "name": category
