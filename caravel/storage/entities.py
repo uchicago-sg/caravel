@@ -134,11 +134,10 @@ class Listing(Versioned):
 
         # Tokenize title and body (ranking them equally)
         words = [self.seller] + self.title.split() + self.body.split()
+        words = set(words) - set(self.CATEGORIES_DICT.keys())
         if self.price == 0:
             words += ["price:free"]
-        singularized = [fold_query_term(word) for word in words if word not in self.CATEGORIES_DICT.keys()]
-        singularized = [fold_query_term(category) for category in self.categories] + singularized
-
+        singularized = [fold_query_term(word) for word in self.categories + words]
         # Return a uniqified list of words.
         return sorted(set(singularized[:500]) - set(['']))
 
@@ -196,7 +195,7 @@ def recompute_admin_keys(listing):
         listing.admin_key = hashlib.sha1(caravel.app.secret_key +
             ":" + listing.key().name()).hexdigest()
 
-@Listing.migration(to_version=9)
+@Listing.migration(to_version=10)
 def recompute_categories(listing):
     listing.categories = ["category:" + old_category for old_category in listing.categories
                           if old_category.split(":")[0] != "category"]
