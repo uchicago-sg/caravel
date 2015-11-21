@@ -8,16 +8,13 @@ from caravel.storage import photos
 from flask_wtf.csrf import CsrfProtect
 
 import logging
-import os
 
 from caravel import policy, app
 from caravel.storage import entities
 
-
-class CheckboxSelectMultipleField(SelectMultipleField):
+class CheckboxesField(SelectMultipleField):
     option_widget = CheckboxInput()
     widget = ListWidget(prefix_label=False)
-
 
 class StatefulFileField(StringField):
     FILLED_IN = '''<div class="thumbnail">
@@ -48,46 +45,63 @@ class StatefulFileField(StringField):
                 kwargs.update(type='file')
                 return HTMLString(self.UNFILLED.format(
                     attributes=html_params(**kwargs)))
-
+        
         except Exception, e:
             logging.exception(e)
 
+class ValidatedForm(Form):
+    """
+    A ValidatedForm is one that has validation separate from its fields.
 
-class BuyerForm(Form):
+    Validation is performed in the post_validate() function right before the 
+    form is about to be saved.
+    """
+
+    def validate(self):
+        """Override the default validation hook."""
+
+        result = super(ValidatedForm, self).validate()
+        if result and hasattr(self, "post_validate"):
+            try:
+                self.post_validate()
+            except ValidationError, e:
+                
+                # Add the error to the first visible form entry.
+                for field in self._fields.values():
+                    if field.widget.input_type != "hidden":
+                        field.errors.append(str(e))
+                        break
+                else:
+                    raise e
+
+                # Recompute self.errors, in case it isn't showing up.
+                self._errors = None
+                return False
+        return result
+
+class BuyerForm(ValidatedForm):
     buyer = StringField("Email", description="UChicago Email Preferred",
-                        validators=[Email()])
+                validators=[Email()])
     message = TextAreaField("Message")
     submit = SubmitField("Send")
-
-    def validate_buyer(self, field):
-        if not policy.is_authorized_buyer(field.data or ""):
-            raise ValidationError("Only @uchicago.edu addresses are allowed.")
-
 
 class ImageEntry(Form):
     image = StatefulFileField("Image")
 
-
-class EditListingForm(Form):
-    title = StringField("Listing Title",
-                        validators=[DataRequired()])
+class EditListingForm(ValidatedForm):
+    CHOICES = entities.Listing.CATEGORIES[:]
+    CHOICES.remove(("price:free", "Free"))
+    
+    title = StringField("Listing Title", validators=[DataRequired()])
     price = DecimalField("Price", places=2, default=0)
     description = TextAreaField("Description", validators=[DataRequired()])
-    categories = CheckboxSelectMultipleField(
-        "Categories",
-        choices=[(x, y) for x, y in entities.Listing.CATEGORIES
-                 if x != "price:free"],
-        validators=[DataRequired()])
+    categories = CheckboxesField("Categories", choices=CHOICES,
+                                               validators=[DataRequired()])
     photos = FieldList(FormField(ImageEntry), min_entries=5)
     submit = SubmitField("Post")
 
-
 class NewListingForm(EditListingForm):
     seller = StringField("Email", description="UChicago Email Required",
-                         validators=[Email()])
-
-    def validate_seller(self, field):
-        if not policy.is_authorized_seller(field.data or ""):
-            raise ValidationError("Only @uchicago.edu addresses are allowed.")
+                                  validators=[Email()])
 
 CsrfProtect(app)
