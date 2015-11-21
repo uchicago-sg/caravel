@@ -10,7 +10,9 @@ import inflect
 import hashlib
 INFLECT_ENGINE = inflect.engine()
 
+
 class DerivedProperty(db.Property):
+
     """
     A DerivedProperty allows one to create a property that is computed on
     demand when saving a property.
@@ -32,6 +34,7 @@ class DerivedProperty(db.Property):
             pass
 
         return self.derive_func(model_instance)
+
 
 class Versioned(db.Expando):
     version = db.IntegerProperty(default=1)
@@ -72,6 +75,10 @@ def fold_query_term(word):
     Returns the canonical representation of the given query word.
     """
 
+    # block out None values.
+    if word is None:
+        return ""
+
     # if email or keyword do nothing:
     if "@" in word or ":" in word:
         return word
@@ -80,6 +87,7 @@ def fold_query_term(word):
     stripped = re.sub(r'[^a-z0-9]', '', word.lower())
     singularized = INFLECT_ENGINE.singular_noun(stripped) or stripped
     return singularized
+
 
 class Listing(Versioned):
     SCHEMA_VERSION = 9
@@ -100,14 +108,14 @@ class Listing(Versioned):
     ]
     CATEGORIES_DICT = dict(CATEGORIES)
 
-    seller = db.StringProperty() # an email address
+    seller = db.StringProperty()  # an email address
     title = db.StringProperty(default="")
     body = db.TextProperty(default="")
-    price = db.IntegerProperty(default=0) # in cents of a U.S. dollar
-    posting_time = db.FloatProperty(default=0) # set to 0 iff not yet published
-    categories = db.StringListProperty() # stored as keys of CATEGORIES
-    admin_key = db.StringProperty(default="") # how to administer this listing
-    buyers = db.StringListProperty() # how many people are interested
+    price = db.IntegerProperty(default=0)  # in cents of a U.S. dollar
+    posting_time = db.FloatProperty(default=0.0)  # 0 iff not yet published
+    categories = db.StringListProperty()  # stored as keys of CATEGORIES
+    admin_key = db.StringProperty(default="")  # how to administer this listing
+    buyers = db.StringListProperty()  # how many people are interested
 
     photos_ = db.StringListProperty(indexed=False, name="photos")
     thumbnails_ = db.StringListProperty(indexed=False, name="thumbnails")
@@ -156,7 +164,7 @@ class Listing(Versioned):
             if hasattr(photo, 'read'):
                 photo = photos.upload(photo.read(), 'small', 'large')
             photo_list.append(photo)
-            thumbnails.append(photo + "-small") # for old releases
+            thumbnails.append(photo + "-small")  # for old releases
         self.photos_ = photo_list
         self.thumbnails_ = thumbnails
 
@@ -174,14 +182,16 @@ def from_single_thumbnail_to_many(listing):
     if hasattr(listing, "thumbnail_url") and listing.thumbnail_url:
         listing.thumbnails_ = [listing.thumbnail_url]
 
+
 @Listing.migration(to_version=6)
 def recompute_keywords(listing):
     descriptor = Listing.__dict__["keywords"]
     listing.keywords = descriptor.derive_func(listing)
-        # force recomputation
+    # force recomputation
+
 
 @Listing.migration(to_version=8)
 def recompute_admin_keys(listing):
     if not listing.admin_key:
-        listing.admin_key = hashlib.sha1(caravel.app.secret_key +
-            ":" + listing.key().name()).hexdigest()
+        listing.admin_key = hashlib.sha1(
+            caravel.app.secret_key + ":" + listing.key().name()).hexdigest()

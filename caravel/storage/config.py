@@ -10,9 +10,12 @@ from caravel import app
 from flask_bootstrap import Bootstrap
 import sendgrid
 
+
 class Parameter(db.Model):
+
     """A parameter is a constant value that is set by default."""
     value = db.StringProperty()
+
 
 def lookup(key, default):
     """Look up the given key, or return the default."""

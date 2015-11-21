@@ -1,6 +1,6 @@
 Hello again!
 
-We've received a new inquiry for LISTINGNAME:
+We've received a new inquiry for {{ listing.title }}:
 
   Buyer: {{ buyer }} (IP: {{ request.remote_addr }})
   

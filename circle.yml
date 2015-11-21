@@ -2,11 +2,11 @@ dependencies:
   pre:
     - curl -o ~/google_appengine_1.9.25.zip https://storage.googleapis.com/appengine-sdks/featured/google_appengine_1.9.25.zip
     - unzip -q -d ~ ~/google_appengine_1.9.25.zip
-    - pip install Pillow==2.9.0
+    - pip install -r requirements_dev.txt
 
 test:
   override:
-    - PATH=$PATH:~/google_appengine ./smoke_test.py
+    - nose2 --coverage=caravel/ --with-coverage --log-level ERROR
 
 deployment:
   app_engine:
