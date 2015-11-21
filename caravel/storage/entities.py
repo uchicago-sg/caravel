@@ -134,7 +134,7 @@ class Listing(Versioned):
 
         # Tokenize title and body (ranking them equally)
         words = [self.seller] + self.title.split() + self.body.split()
-        words = set(words) - set(self.CATEGORIES_DICT.keys())
+        words = list(set(words) - set(self.CATEGORIES_DICT.keys()))
         if self.price == 0:
             words += ["price:free"]
         singularized = [fold_query_term(word) for word in self.categories + words]
