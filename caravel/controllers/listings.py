@@ -9,10 +9,8 @@ from flask import render_template, request, abort, redirect, url_for, session
 from flask import flash, g
 import itertools
 
-import sendgrid
-
 from caravel import app, policy
-from caravel.storage import helpers, entities, config, dos
+from caravel.storage import helpers, entities, config, dos, email
 from caravel.controllers import forms
 
 from google.appengine.api import users
@@ -102,18 +100,13 @@ def show_listing(permalink):
             seller = "marketplace@lists.uchicago.edu"
 
         # Send a listing to the person.
-        email = sendgrid.Mail()
-        email.set_from("Marketplace Team <marketplace@lists.uchicago.edu>")
-        email.add_to(seller)
-        email.set_replyto(buyer)
-        email.set_subject(
-            "Re: Marketplace Listing \"{}\"".format(listing.title))
-        email.set_html(render_template("email/inquiry.html",
-                                       listing=listing,
-                                       buyer=buyer, message=message))
-        email.set_text(render_template("email/inquiry.txt", listing=listing,
-                                       buyer=buyer, message=message))
-        config.send_grid_client.send(email)
+        email.send_mail(
+            to=seller,
+            reply_to=buyer,
+            subject="Re: Marketplace Listing \"{}\"".format(listing.title),
+            html=render_template("email/inquiry.html", **locals()),
+            text=render_template("email/inquiry.txt", **locals()),
+        )
 
         return redirect(url_for("show_listing", permalink=permalink))
 
@@ -144,13 +137,12 @@ def claim_listing(permalink):
         title = "SPAM REQUEST: " + listing.title
 
     # Send the user an email to let them edit the listing.
-    message = sendgrid.Mail()
-    message.set_from("Marketplace Team <marketplace@lists.uchicago.edu>")
-    message.add_to(seller)
-    message.set_subject("Marketplace Listing \"{}\"".format(title))
-    message.set_html(render_template("email/welcome.html", listing=listing))
-    message.set_text(render_template("email/welcome.txt", listing=listing))
-    config.send_grid_client.send(message)
+    email.send_mail(
+        to=seller,
+        subject="Marketplace Listing \"{}\"".format(title),
+        html=render_template("email/welcome.html", listing=listing),
+        text=render_template("email/welcome.txt", listing=listing)
+    )
 
     flash("We've emailed you a link to edit this listing.")
 
@@ -266,14 +258,12 @@ def new_listing():
         helpers.invalidate_listing(listing)
 
         # Send the user an email to let them edit the listing.
-        message = sendgrid.Mail()
-        message.set_from("Marketplace Team <marketplace@lists.uchicago.edu>")
-        message.add_to(listing.seller)
-        message.set_subject("Marketplace Listing \"{}\"".format(listing.title))
-        message.set_html(
-            render_template("email/welcome.html", listing=listing))
-        message.set_text(render_template("email/welcome.txt", listing=listing))
-        config.send_grid_client.send(message)
+        email.send_mail(
+            to=listing.seller,
+            subject="Marketplace Listing \"{}\"".format(listing.title),
+            html=render_template("email/welcome.html", listing=listing),
+            text=render_template("email/welcome.txt", listing=listing)
+        )
 
         # If running locally, print a link to this listing.
         print url_for("show_listing", permalink=listing.key().name(),
