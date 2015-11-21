@@ -23,8 +23,9 @@ def test_properties():
     )
 
     assert ent.permalink == "xyz"
-    assert ent.primary_category == "miscellaneous"
-    ent.categories = ["books", "cars"]
-    assert ent.primary_category == "books"
+    assert ent.primary_category == "category:miscellaneous"
+    ent.categories = ["category:books", "category:cars"]
+    assert ent.primary_category == "category:books"
     assert set(ent.keywords) == set(["ma", "listing", "body", "text", "e@mail",
-                                     "book", "car", "price:free"])
+                                     "category:books", "category:car",
+                                     "price:free"])
