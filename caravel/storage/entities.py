@@ -139,6 +139,7 @@ class Listing(Versioned):
             words += ["price:free"]
         singularized = [fold_query_term(word) for word in self.categories + words]
         # Return a uniqified list of words.
+        print singularized # Debug code
         return sorted(set(singularized[:500]) - set(['']))
 
     @property
