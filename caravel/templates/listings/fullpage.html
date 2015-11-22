@@ -29,7 +29,7 @@
       {% endif %}
       <p>
         {% for category in listing.categories %}
-          <span class="label label-default">{{ category }}</span>
+          <span class="label label-default">{{ listing.CATEGORIES_DICT.get(category, category) }}</span>
         {% endfor %}
         <span class="label label-success">
           {{ '${:,.2f}'.format(listing.price / 100) }}</span>

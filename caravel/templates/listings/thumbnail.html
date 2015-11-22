@@ -5,7 +5,8 @@
       {% if listing.photos %}
         <img src="{{ public_url(listing.photos[0], 'small') }}"/>
       {% else %}
-        <img src="/static/images/{{ listing.primary_category }}.png"/>
+        <img src="/static/images/{{
+            listing.primary_category.split(':')[1] }}.png"/>
       {% endif %}
     </a>
     <div class="caption">

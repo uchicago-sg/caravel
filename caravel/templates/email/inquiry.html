@@ -31,8 +31,11 @@
                       background-color: #f8f8f8;">
           <tr>
             <td style="padding: 1em;write-space:pre;">
-              Buyer: {{ buyer }} (IP: {{ request.remote_addr }})<br/>
-              <br/>{{ message }}</td>
+              Buyer: {{ buyer }}
+              {% if not is_signed_in %}
+                (IP: {{ request.remote_addr }})
+              {% endif %}<br/><br/>
+              {{ message }}</td>
           </tr>
         </table>
       </td>

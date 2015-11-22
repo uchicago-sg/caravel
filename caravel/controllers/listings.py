@@ -2,32 +2,24 @@
 Listings are placed by sellers when they want to sell things.
 """
 
-import uuid
-import time
+import uuid, time
 
 from flask import render_template, request, abort, redirect, url_for, session
-from flask import flash, g
+from flask import flash
 import itertools
 
+from google.appengine.api import mail
+
 from caravel import app, policy
-from caravel.storage import helpers, entities, config, dos, email
+from caravel.storage import helpers, entities
 from caravel.controllers import forms
 
-from google.appengine.api import users
-
+from wtforms.validators import ValidationError
 
 @app.after_request
 def show_disclaimer(response):
     session["seen_disclaimer"] = True
     return response
-
-
-@app.before_request
-def expose_admin_status():
-    g.is_admin = users.is_current_user_admin()
-    if "external" in request.args:
-        g.is_admin = False
-
 
 @app.route("/")
 def search_listings():
@@ -49,8 +41,7 @@ def search_listings():
     template = ("" if "continuation" not in request.args else "_continuation")
 
     return render_template("index{}.html".format(template),
-                           listings=listings, view=view, query=query)
-
+        listings=listings, view=view, query=query)
 
 @app.route("/<permalink>", methods=["GET", "POST"])
 def show_listing(permalink):
@@ -71,42 +62,31 @@ def show_listing(permalink):
 
             flash("Your listing has been published.")
             return redirect(url_for("show_listing", permalink=permalink,
-                                    q=request.args.get("q")))
+                                                    q=request.args.get("q")))
 
     # Otherwise, hide the listing.
     elif not listing.posting_time:
         abort(404)
 
-    # Display a form for buyers to place an offer.
+    # Display a form for buyers to place an offer. 
     buyer_form = forms.BuyerForm()
+
+    buyer = buyer_form.buyer.data
+    message = buyer_form.message.data
+    seller = listing.seller
+
+    # Validate emails with the submission of the form.
+    buyer_form.post_validate = (
+        lambda: policy.place_inquiry(listing, buyer, message))
 
     # Handle submissions on the form.
     if buyer_form.validate_on_submit():
-        buyer = buyer_form.buyer.data
-        message = buyer_form.message.data
-        seller = listing.seller
 
         # Track what requests are sent to which people.
         helpers.add_inqury(listing, buyer, message)
 
-        # Block spam inquiries.
-        if (buyer.strip() == "marketplace@lists.uchicago.edu" or
-                buyer.strip() == "globarry24@gmail.com" or
-                dos.rate_limit(buyer.strip(), 4, 60) or
-                dos.rate_limit(request.remote_addr, 4, 60) or
-                dos.rate_limit(listing.seller, 20, 3600 * 24)):
-
-            message = "MESSAGE BLOCKED!\n\n" + str(message)
-            seller = "marketplace@lists.uchicago.edu"
-
-        # Send a listing to the person.
-        email.send_mail(
-            to=seller,
-            reply_to=buyer,
-            subject="Re: Marketplace Listing \"{}\"".format(listing.title),
-            html=render_template("email/inquiry.html", **locals()),
-            text=render_template("email/inquiry.txt", **locals()),
-        )
+        # Provide a flash message.
+        flash("Your inquiry has been sent.")
 
         return redirect(url_for("show_listing", permalink=permalink))
 
@@ -118,7 +98,6 @@ def show_listing(permalink):
     return render_template("listing_show.html", listing=listing,
                            buyer_form=buyer_form)
 
-
 @app.route("/<permalink>/claim", methods=["POST"])
 def claim_listing(permalink):
     """Allow a seller to claim a listing whose email they have lost."""
@@ -128,26 +107,15 @@ def claim_listing(permalink):
     if not listing:
         abort(404)
 
-    # Prevent button spamming.
-    seller = listing.seller
-    title = listing.title
-    if (dos.rate_limit(listing.seller, 4, 60) or
-            dos.rate_limit(listing.key().name, 2, 60)):
-        seller = "marketplace@lists.uchicago.edu"
-        title = "SPAM REQUEST: " + listing.title
-
-    # Send the user an email to let them edit the listing.
-    email.send_mail(
-        to=seller,
-        subject="Marketplace Listing \"{}\"".format(title),
-        html=render_template("email/welcome.html", listing=listing),
-        text=render_template("email/welcome.txt", listing=listing)
-    )
-
-    flash("We've emailed you a link to edit this listing.")
+    # Follow policy when sending an email to the user.
+    try:
+        policy.claim_listing(listing)
+    except ValidationError, e:
+        flash(str(e), "error")
+    else:
+        flash("We've emailed you a link to edit this listing.")
 
     return redirect(url_for("show_listing", permalink=listing.permalink))
-
 
 @app.route("/<permalink>/edit", methods=["GET", "POST"])
 def edit_listing(permalink):
@@ -181,10 +149,10 @@ def edit_listing(permalink):
             if not photo.data:
                 continue
             image = photo.data["image"]
-            if not image or(
-                    hasattr(image, "filename") and not image.filename):
+            if not image or (hasattr(image, "filename") and not image.filename):
                 continue
             photos.append(image)
+
         listing.photos = photos
 
     # Allow authors to edit listings.
@@ -212,7 +180,6 @@ def edit_listing(permalink):
 
     return render_template("listing_form.html", type="Edit", form=form)
 
-
 @app.route("/new", methods=["GET", "POST"])
 def new_listing():
     """Creates or removes this listing."""
@@ -232,6 +199,9 @@ def new_listing():
         admin_key=str(uuid.uuid4())
     )
 
+    # Ensure that validations check with policy.
+    form.post_validate = lambda: policy.claim_listing(listing)
+
     # Allow uploading and saving the given request.
     is_valid = form.validate_on_submit()
     if request.method == "POST":
@@ -240,8 +210,7 @@ def new_listing():
             if not photo.data:
                 continue
             image = photo.data["image"]
-            if not image or(
-                    hasattr(image, "filename") and not image.filename):
+            if not image or (hasattr(image, "filename") and not image.filename):
                 continue
             photos.append(image)
 
@@ -249,31 +218,16 @@ def new_listing():
 
     # Allow anyone to create listings.
     if is_valid:
-        listing.title = form.title.data
-        listing.body = form.description.data
-        listing.categories = form.categories.data
-        listing.price = int(form.price.data * 100)
+        
+        # Update the listing on the server.
         listing.put()
-
         helpers.invalidate_listing(listing)
-
-        # Send the user an email to let them edit the listing.
-        email.send_mail(
-            to=listing.seller,
-            subject="Marketplace Listing \"{}\"".format(listing.title),
-            html=render_template("email/welcome.html", listing=listing),
-            text=render_template("email/welcome.txt", listing=listing)
-        )
-
-        # If running locally, print a link to this listing.
-        print url_for("show_listing", permalink=listing.key().name(),
-                      key=listing.admin_key, _external=True)
 
         # Only allow the user to see the listing if they are signed in.
         if session.get("email") == listing.seller:
             flash("Your listing has been published.")
             return redirect(url_for("show_listing",
-                                    permalink=listing.permalink))
+                     permalink=listing.permalink))
         else:
             flash("Your listing has been created. "
                   "Click the link in your email to publish it.")
@@ -292,17 +246,14 @@ def new_listing():
 
     return render_template("listing_form.html", type="New", form=form)
 
-
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for("search_listings"))
 
-
 @app.route('/about')
 def about():
     return render_template("about.html")
-
 
 @app.route('/help')
 def helppage():
