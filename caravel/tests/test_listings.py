@@ -1,126 +1,170 @@
-from caravel import app
 from caravel.storage import entities, config
+from caravel.tests import helper
+
 import time
 import re
 
+class TestListings(helper.CaravelTestCase):
+    def test_search(self):
+        # View all listings, in order.
+        self.assertEqual(self.clean(self.get("/").data),
+            "New Listing Listing tA 5h ago Cars $3.10 Listing tB 2d ago "
+            "Apartments $71.10")
 
-def test_search():
-    entities.Listing(
-        title="integtesta", posting_time=time.time() - 35000,
-        key_name="test_listing_search").put()
+        # Listings at an offset.
+        self.assertEqual(self.clean(self.get("/?offset=1").data),
+            "New Listing Listing tB 2d ago Apartments $71.10")
 
-    client = app.test_client()
-    page = client.get("/?q=integtesta")
+        # Just a subset of listings.
+        self.assertEqual(self.clean(self.get("/?q=body+ta").data),
+            "New Listing Listing tA 5h ago Cars $3.10")
 
-    assert "integtesta" in page.data
-    assert "10h ago" in page.data
-    assert "$0.00" in page.data
-    assert "/test_listing_search" in page.data
+        # Make sure links work.
+        self.assertIn("/listing_a", self.get("/?q=body+ta").data)
 
-    page = client.get("/?q=integtesta&offset=1")
-    assert "test_listing_search" not in page.data
-
-def test_show():
-    entities.Listing(title="integtestb", body="integbody", admin_key="4",
-                     key_name="listingb", seller="e@mail").put()
-
-    client = app.test_client()
-    page = client.get("/listingb")
-
-    assert page.status == "404 NOT FOUND"
-
-    client.get("/listingb?key=4")
-    page = client.get("/listingb")
-
-    assert "e@mail" in page.data
-    assert "integtestb" in page.data
-    assert "integbody" in page.data
-
-
-def test_inquiry():
-    entities.Listing(title="integtestb", posting_time=1.,
-                     key_name="listingc", seller="seller@foo.com").put()
-
-    emails = []
-    client = config.send_grid_client
-    _send, client.send = client.send, emails.append
-
-    try:
-        client = app.test_client()
-        page = client.get("/listingc")
-        csrf_token = re.search(r'csrf_token".*"(.*)"', page.data).group(1)
-
-        page = client.post("/listingc", data=dict(
+    def test_inquiry(self):
+        # Submit an inquiry.
+        self.post("/listing_b", data=dict(
             buyer="buyer@foo.com",
             message="message goes here",
-            csrf_token=csrf_token,
+            csrf_token=self.csrf_token("/listing_b"),
         ))
 
-        assert len(emails) == 1
+        # Verify that the UI is updated.
+        self.assertEqual(self.clean(self.get("/listing_b").data),
+            "New Listing Your inquiry has been sent. Listing tB Apartments "
+            "$71.10 Body of bB Contact Seller This listing has 1 inqury. Email "
+            "UChicago Email Preferred Message")
 
-        assert emails[0].to[0] == "seller@foo.com"
-        assert emails[0].reply_to == "buyer@foo.com"
+        # Verify that the proper email was sent.
+        self.assertEqual(self.emails[0].to[0], "seller-b@uchicago.edu")
+        self.assertEqual(self.emails[0].reply_to, "buyer@foo.com")
+        self.assertEqual(self.emails[0].from_email,
+            "marketplace@lists.uchicago.edu")
+        self.assertEqual(self.emails[0].subject,
+            "Re: Marketplace Listing \"Listing tB\"")
 
-        assert "integtestb" in emails[0].html
-        assert "buyer@foo.com" in emails[0].html
-        assert "message goes here" in emails[0].html
+        # Verify that the right message text was sent.
+        self.assertEqual(self.emails[0].text,
+            "Hello again!\n\n"
+            "We've received a new inquiry for Listing tB:\n\n"
+            "  Buyer: buyer@foo.com (IP: None)\n"
+            "  \n"
+            "  message goes here\n\n"
+            "Simply reply to this email if you'd like to get in contact.\n\n"
+            "Cheers,\n"
+            "The Marketplace Team"
+        )
 
-        assert "integtestb" in emails[0].text
-        assert "buyer@foo.com" in emails[0].text
-        assert "message goes here" in emails[0].text
+        # Verify that the right messge HTML was sent.
+        self.assertEqual(self.clean(self.emails[0].html),
+            "My Test Email Marketplace Hello again! We've received a new "
+            "inquiry for Listing tB: Buyer: buyer@foo.com (IP: None) message "
+            "goes here Simply reply to this email if you'd like to get in "
+            "contact. Cheers, The Marketplace Team")
 
-    finally:
-        client.send = _send
-
-
-def test_new_listing():
-    emails = []
-    client = config.send_grid_client
-    _send, client.send = client.send, emails.append
-
-    try:
-        # Try to post an invalid listing.
-        client = app.test_client()
-        page = client.get("/new")
-        csrf_token = re.search(r'csrf_token".*"(.*)"', page.data).group(1)
-
-        page = client.post("new", data=dict(
-            csrf_token=csrf_token,
-            title="thenewlisting",
-            description="foobar",
-            seller="foo@notuchicago.edu",
-            categories="books"
-        ))
-
-        assert page.status == "200 OK"
-        assert "Campus address required"
-
-        # Post a valid listing.
-        page = client.get("/new")
-        csrf_token = re.search(r'csrf_token".*"(.*)"', page.data).group(1)
-
-        page = client.post("new", data=dict(
-            csrf_token=csrf_token,
-            title="thenewlisting",
-            description="foobar",
-            seller="foo@uchicago.edu",
+    def test_new_listing(self):
+        # Try creating a new listing as an authenticated user.
+        self.post("/new", data=dict(
+            csrf_token=self.csrf_token("/new"),
+            title="Listing tD",
+            description="Listing bD",
+            seller="seller-d@uchicago.edu",
             categories="category:books"
         ))
 
-        assert page.status == "302 FOUND"
-        assert len(emails) == 1
+        # Verify that the listing does not exist yet.
+        self.assertEqual(self.clean(self.get("/").data),
+            "New Listing Your listing has been created. Click the link in "
+            "your email to publish it. Listing tA 5h ago Cars $3.10 Listing "
+            "tB 2d ago Apartments $71.10")
 
-        assert emails[0].to[0] == "foo@uchicago.edu"
-        assert emails[0].from_email == "marketplace@lists.uchicago.edu"
+        # Ensure that we were sent a link to edit a listing.
+        self.assertEqual(self.emails[0].to[0], "seller-d@uchicago.edu")
+        self.assertEqual(self.emails[0].from_email,
+            "marketplace@lists.uchicago.edu")
+        self.assertEqual(self.emails[0].subject,
+            "Marketplace Listing \"Listing tD\"")
 
-        assert "thenewlisting" in emails[0].html
+        self.assertEqual(self.emails[0].text,
+            "Hello there, and welcome to Marketplace!\n\n"
+            "Your listing has been created. Please click the link below "
+            "to edit it.\n\n"
+            "  http://localhost/ZZ-ZZ-ZZ?key=ZZ-ZZ-ZZ\n\n"
+            "Important: you'll need to click this link at least once for "
+            "your listing to\nbe viewable by others -- this is to protect "
+            "against spam.\n\nIf you didn't create this listing, you can "
+            "safely ignore this email. It was\ncreated by None; please contact "
+            "us if anything seems\nstrange.\n\n"
+            "Cheers,\n"
+            "The Marketplace Team")
 
-        path = re.search(r'http://localhost(/.*)"', emails[0].html).group(1)
-        client.get(path).data  # create listing
-        assert "thenewlisting" in client.get(path).data
+        # Verify that the email looks fine.
+        self.assertEqual(self.clean(self.emails[0].html),
+            "Welcome to Marketplace Marketplace Hello there, and welcome to "
+            "Marketplace! Your listing has been created. Please click the "
+            "button below to edit it. Edit \"Listing tD\" Important: you'll "
+            "need to click this link at least once for your listing to be "
+            "viewable by others &mdash; this is to protect against spam. If "
+            "you didn't create this listing, you can safely ignore this email. "
+            "It was created by None; please contact us if anything seems "
+            "strange. Cheers, The Marketplace Team")
 
-        path2 = re.search(r'http://localhost(/.*)', emails[0].text).group(1)
-        assert path2 == path
+        # Click the link in the message.
+        page = self.get("/ZZ-ZZ-ZZ?key=ZZ-ZZ-ZZ")
 
-    finally:
-        client.send = _send
+        # Listing is now published.
+        self.assertEqual(self.clean(self.get("/ZZ-ZZ-ZZ").data),
+            "New Listing Logged in as seller-d@uchicago.edu My Listings Logout "
+            "Your listing has been published. Listing tD Books $0.00 Listing "
+            "bD Manage Listing Edit")
+
+        # Listing shows up in searches.
+        self.assertEqual(self.clean(self.get("/").data),
+            "New Listing Logged in as seller-d@uchicago.edu My Listings Logout "
+            "Listing tD now ago Books $0.00 Listing tA 5h ago Cars $3.10 "
+            "Listing tB 2d ago Apartments $71.10")
+
+    def test_claim_listing(self):
+        # View a listing and click "Claim"
+        self.post("/listing_a/claim", data=dict(
+            csrf_token=self.csrf_token("/listing_a")
+        ))
+
+        # Ensure that the flash shows up.
+        self.assertEqual(self.clean(self.get("/listing_a").data),
+            "New Listing We&#39;ve emailed you a link to edit this listing. "
+            "Listing tA Cars $3.10 Body of bA Contact Seller Email UChicago "
+            "Email Preferred Message")
+
+        # Ensure that the message is as we expect.
+        self.assertEqual(self.emails[0].to[0], "seller-a@uchicago.edu")
+        self.assertEqual(self.emails[0].from_email,
+            "marketplace@lists.uchicago.edu")
+        self.assertEqual(self.emails[0].subject,
+            "Marketplace Listing \"Listing tA\"")
+
+        # Verify the textual contents of the message.
+        self.assertEqual(self.emails[0].text,
+            "Hello there, and welcome to Marketplace!\n\n"
+            "Your listing has been created. Please click the link below "
+            "to edit it.\n\n"
+            "  http://localhost/listing_a?key=a_key\n\n"
+            "Important: you'll need to click this link at least once for "
+            "your listing to\nbe viewable by others -- this is to protect "
+            "against spam.\n\nIf you didn't create this listing, you can "
+            "safely ignore this email. It was\ncreated by None; please contact "
+            "us if anything seems\nstrange.\n\n"
+            "Cheers,\n"
+            "The Marketplace Team")
+
+        # Verify that the email looks fine.
+        self.assertEqual(self.clean(self.emails[0].html),
+            "Welcome to Marketplace Marketplace Hello there, and welcome to "
+            "Marketplace! Your listing has been created. Please click the "
+            "button below to edit it. Edit \"Listing tA\" Important: you'll "
+            "need to click this link at least once for your listing to be "
+            "viewable by others &mdash; this is to protect against spam. If "
+            "you didn't create this listing, you can safely ignore this email. "
+            "It was created by None; please contact us if anything seems "
+            "strange. Cheers, The Marketplace Team")

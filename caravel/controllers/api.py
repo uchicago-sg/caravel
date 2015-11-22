@@ -54,7 +54,7 @@ def api_all_listings():
     if offset < 0:
         offset = 0
 
-    limit = int(request.args.get("offset", "100"))
+    limit = int(request.args.get("limit", "100"))
     if limit < 0:
         limit = 0
     if limit > 100:
@@ -71,7 +71,7 @@ def api_all_listings():
     externalized = [_externalize(listing) for listing in listings]
 
     pages = {}
-    if len(listings) == 50:
+    if len(listings) == limit:
         pages["nextURL"] = url_for("api_all_listings",
             offset=offset + limit, _external=True)
     if offset != 0:
