@@ -14,6 +14,8 @@ from caravel import app, policy
 from caravel.storage import helpers, entities
 from caravel.controllers import forms
 
+from wtforms.validators import ValidationError
+
 @app.after_request
 def show_disclaimer(response):
     session["seen_disclaimer"] = True
@@ -82,6 +84,10 @@ def show_listing(permalink):
 
         # Track what requests are sent to which people.
         helpers.add_inqury(listing, buyer, message)
+
+        # Provide a flash message.
+        flash("Your inquiry has been sent.")
+
         return redirect(url_for("show_listing", permalink=permalink))
 
     # Have the form email default to the value from the session.
@@ -103,7 +109,7 @@ def claim_listing(permalink):
 
     # Follow policy when sending an email to the user.
     try:
-        policy.claim_listing(permalink)
+        policy.claim_listing(listing)
     except ValidationError, e:
         flash(str(e), "error")
     else:
