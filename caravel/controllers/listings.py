@@ -111,7 +111,7 @@ def claim_listing(permalink):
     try:
         policy.claim_listing(listing)
     except ValidationError, e:
-        flash(str(e), "error")
+        flash(str(e), "danger")
     else:
         flash("We've emailed you a link to edit this listing.")
 

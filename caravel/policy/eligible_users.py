@@ -62,13 +62,13 @@ def is_banned(email):
 
     return email in BLACKLISTED_ACCOUNTS
 
-def block(should_block):
+def block(should_block, error=None):
     """
     Blocks a user from performing the given action.
     """
 
     if should_block:
-        raise ValidationError, PLEASE_TRY_AGAIN_LATER
+        raise ValidationError, (error or PLEASE_TRY_AGAIN_LATER)
 
 def place_inquiry(listing, buyer, message):
     """
@@ -83,7 +83,7 @@ def place_inquiry(listing, buyer, message):
 
     # Make sure the user only submits a fixed count at given time.
     principal = [buyer, listing.permalink, request.remote_addr]
-    block(is_too_frequent(principal, [(10, 60), (100, 24 * 3600)]))
+    block(is_too_frequent(principal, [(4, 60), (100, 24 * 3600)]))
 
     # Send a message to the user with a link to edit the listing.
     is_signed_in = signed_in(listing)
@@ -101,14 +101,14 @@ def claim_listing(listing):
     """
 
     # Block inquiries from non-UChicago email addresses.
-    block(not is_campus_address(listing.seller))
+    block(not is_campus_address(listing.seller),
+        error="Please only post listings with a UChicago email address.")
 
     # Block addresses commonly used for posting spam.
     block(is_from_tor())
 
     # Make sure the user only submits a fixed count at given time.
-    if listing.permalink:
-        block(is_too_frequent([listing.permalink], [(1, 24 * 3600)]))
+    block(is_too_frequent([listing.permalink], [(1, 24 * 3600)]))
     block(is_too_frequent([request.remote_addr], [(4, 60)]))
 
     # Send a message to the user with a link to edit the listing.

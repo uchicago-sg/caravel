@@ -2,6 +2,7 @@ import unittest
 import time
 import re
 import uuid
+from contextlib import contextmanager
 
 from google.appengine.ext import db
 from google.appengine.api import memcache
@@ -96,3 +97,12 @@ class CaravelTestCase(unittest.TestCase):
 
     def post(self, *vargs, **kwargs):
         return self.http_client.post(*vargs, **kwargs)
+
+    @contextmanager
+    def current_time(self, now):
+        _time, time.time = time.time, lambda: now
+
+        try:
+            yield
+        finally:
+            time.time = _time
