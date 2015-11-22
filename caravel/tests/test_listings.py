@@ -88,7 +88,7 @@ def test_new_listing():
             title="thenewlisting",
             description="foobar",
             seller="foo@uchicago.edu",
-            categories="books"
+            categories="category:books"
         ))
 
         assert page.status == "302 FOUND"
