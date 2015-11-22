@@ -7,7 +7,7 @@ from google.appengine.ext import db
 from google.appengine.api import memcache
 
 from caravel import app
-from caravel.storage import config, entities
+from caravel.storage import config, entities, slack
 
 class CaravelTestCase(unittest.TestCase):
     def setUp(self):
@@ -22,6 +22,11 @@ class CaravelTestCase(unittest.TestCase):
         self.emails = []
         sendgrid = config.send_grid_client
         self._send, sendgrid.send = sendgrid.send, self.emails.append
+
+        # Capture outgoing Slack messages.
+        self.chats = []
+        self._send_chat = slack.send_chat
+        slack.send_chat = lambda **kw: self.chats.append(kw)
 
         # Ensure that UUIDs are deterministic.
         self._uuid4 = uuid.uuid4
@@ -71,9 +76,10 @@ class CaravelTestCase(unittest.TestCase):
         db.delete(db.Query(keys_only=True))
         memcache.flush_all()
 
-        # Un-stub uuid generation features.
+        # Un-stub mocks.
         uuid.uuid4 = self._uuid4
         config.send_grid_client.send = self._send
+        slack.send_chat = self._send_chat
 
     # Test helper functions.
     def clean(self, markup):

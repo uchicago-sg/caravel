@@ -1,9 +1,9 @@
-from caravel.storage import dos, email, config
+from caravel.storage import dos, email, config, slack, photos
 
 import itertools
 
 from wtforms.validators import ValidationError
-from flask import session, redirect, request, render_template
+from flask import session, redirect, request, render_template, url_for
 
 PLEASE_TRY_AGAIN_LATER = "Please slow down and try again later."
 INVALID_EMAIL = "You can only submit listings from a UChicago email address."
@@ -95,6 +95,14 @@ def place_inquiry(listing, buyer, message):
         text=render_template("email/inquiry.txt", **locals()),
     )
 
+    # Post to Slack about this listing.
+    slack.send_chat(
+        text="Inquiry by {}".format(buyer),
+        username=listing.title,
+        icon_url=(photos.public_url(listing.photos[0], "small")
+                    if listing.photos else None)
+    )
+
 def claim_listing(listing):
     """
     Control the creation of new listings.
@@ -118,4 +126,14 @@ def claim_listing(listing):
         subject=u"Marketplace Listing \"{}\"".format(listing.title),
         html=render_template("email/welcome.html", **locals()),
         text=render_template("email/welcome.txt", **locals()),
+    )
+
+    # Inform the moderators about the new listing.
+    link = url_for("show_listing", permalink=listing.permalink,
+                                   key=listing.admin_key, _external=True)
+    slack.send_chat(
+        text="Posted by {listing.seller} (<{link}|approve>)".format(**locals()),
+        username=listing.title,
+        icon_url=(photos.public_url(listing.photos[0], "small")
+                    if listing.photos else None)
     )
