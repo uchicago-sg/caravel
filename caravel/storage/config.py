@@ -26,5 +26,6 @@ def get_tor_addresses():
 
 send_grid_client = sendgrid.SendGridClient(lookup("sendgrid_client", ""))
 app.secret_key = lookup("session_secret", base64.b64encode(os.urandom(32)))
+slack_url = lookup("slack_url", "")
 
 Bootstrap(app)
