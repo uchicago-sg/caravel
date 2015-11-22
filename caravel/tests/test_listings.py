@@ -79,7 +79,23 @@ def test_new_listing():
     _send, client.send = client.send, emails.append
 
     try:
+        # Try to post an invalid listing.
         client = app.test_client()
+        page = client.get("/new")
+        csrf_token = re.search(r'csrf_token".*"(.*)"', page.data).group(1)
+
+        page = client.post("new", data=dict(
+            csrf_token=csrf_token,
+            title="thenewlisting",
+            description="foobar",
+            seller="foo@notuchicago.edu",
+            categories="books"
+        ))
+
+        assert page.status == "200 OK"
+        assert "Campus address required"
+
+        # Post a valid listing.
         page = client.get("/new")
         csrf_token = re.search(r'csrf_token".*"(.*)"', page.data).group(1)
 
