@@ -27,5 +27,5 @@ def test_properties():
     ent.categories = ["category:books", "category:cars"]
     assert ent.primary_category == "category:books"
     assert set(ent.keywords) == set(["ma", "listing", "body", "text", "e@mail",
-                                     "category:books", "category:car",
+                                     "category:books", "category:cars",
                                      "price:free"])
