@@ -13,7 +13,8 @@ WHITELISTED_ACCOUNTS = [
 ]
 
 BLACKLISTED_ACCOUNTS = [
-    "globarry24@gmail.com"
+    "globarry24@gmail.com",
+    "valenciae49@yahoo.com"
 ]
 
 def signed_in(inquiry):
