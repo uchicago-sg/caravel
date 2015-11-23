@@ -89,7 +89,7 @@ def place_inquiry(listing, buyer, message):
     email.send_mail(
         to=listing.seller,
         reply_to=buyer,
-        subject="Re: Marketplace Listing \"{}\"".format(listing.title),
+        subject=u"Re: Marketplace Listing \"{}\"".format(listing.title),
         html=render_template("email/inquiry.html", **locals()),
         text=render_template("email/inquiry.txt", **locals()),
     )
@@ -114,7 +114,7 @@ def claim_listing(listing):
     is_signed_in = signed_in(listing)
     email.send_mail(
         to=listing.seller,
-        subject="Marketplace Listing \"{}\"".format(listing.title),
+        subject=u"Marketplace Listing \"{}\"".format(listing.title),
         html=render_template("email/welcome.html", **locals()),
         text=render_template("email/welcome.txt", **locals()),
     )

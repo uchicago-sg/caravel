@@ -18,7 +18,7 @@ class TestListings(helper.CaravelTestCase):
         }
 
         listing_a = {
-            u"body": u"Body of bA",
+            u"body": u"Body of \u2606A",
             u"categories": [cars],
             u"photos": [],
             u"htmlURL": u"http://localhost/listing_a",
@@ -26,11 +26,11 @@ class TestListings(helper.CaravelTestCase):
             u"jsonURL": u"http://localhost/api/v1/listing_a.json",
             u"postingTime": self.listing_a.posting_time,
             u"price": 3.1,
-            u"title": u"Listing tA"
+            u"title": u"Listing \u2606A"
         }
 
         listing_b = {
-            u"body": u"Body of bB",
+            u"body": u"Body of \u2606B",
             u"categories": [apartments],
             u"photos": [],
             u"htmlURL": u"http://localhost/listing_b",
@@ -38,7 +38,7 @@ class TestListings(helper.CaravelTestCase):
             u"jsonURL": u"http://localhost/api/v1/listing_b.json",
             u"postingTime": self.listing_b.posting_time,
             u"price": 71.1,
-            u"title": u"Listing tB"
+            u"title": u"Listing \u2606B"
         }
 
         # Try to retreive all listings.

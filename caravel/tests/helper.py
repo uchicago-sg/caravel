@@ -29,8 +29,8 @@ class CaravelTestCase(unittest.TestCase):
 
         # Create simple entities to play with.
         self.listing_a = entities.Listing(
-            title="Listing tA",
-            body="Body of bA",
+            title=u"Listing \u2606A",
+            body=u"Body of \u2606A",
             posting_time=time.time() - 4 * 3600,
             seller="seller-a@uchicago.edu",
             price=310,
@@ -40,8 +40,8 @@ class CaravelTestCase(unittest.TestCase):
         self.listing_a.put()
 
         self.listing_b = entities.Listing(
-            title="Listing tB",
-            body="Body of bB",
+            title=u"Listing \u2606B",
+            body=u"Body of \u2606B",
             posting_time=time.time() - 24 * 3600,
             seller="seller-b@uchicago.edu",
             price=7110,
@@ -50,8 +50,8 @@ class CaravelTestCase(unittest.TestCase):
         self.listing_b.put()
         
         self.listing_c = entities.Listing(
-            title="Listing tC",
-            body="Body of bC",
+            title=u"Listing \u2606C",
+            body=u"Body of \u2606C",
             posting_time=0.,
             seller="seller-c@uchicago.edu",
             price=9105,
