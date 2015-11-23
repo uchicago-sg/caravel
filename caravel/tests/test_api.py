@@ -20,7 +20,12 @@ class TestListings(helper.CaravelTestCase):
         listing_a = {
             u"body": u"Body of \u2606A",
             u"categories": [cars],
-            u"photos": [],
+            u"photos": [
+                {u"large": u"/_ah/gcs/test.appspot.com/listing-a-large",
+                 u"small": u"/_ah/gcs/test.appspot.com/listing-a-small"},
+                {u"large": u"/_ah/gcs/test.appspot.com/listing-a2-large",
+                 u"small": u"/_ah/gcs/test.appspot.com/listing-a2-small"},
+            ],
             u"htmlURL": u"http://localhost/listing_a",
             u"inquiries": 0,
             u"jsonURL": u"http://localhost/api/v1/listing_a.json",
@@ -32,7 +37,12 @@ class TestListings(helper.CaravelTestCase):
         listing_b = {
             u"body": u"Body of \u2606B",
             u"categories": [apartments],
-            u"photos": [],
+            u"photos": [
+                {u"large": u"/_ah/gcs/test.appspot.com/listing-b-large",
+                 u"small": u"/_ah/gcs/test.appspot.com/listing-b-small"},
+                {u"large": u"/_ah/gcs/test.appspot.com/listing-b2-large",
+                 u"small": u"/_ah/gcs/test.appspot.com/listing-b2-small"},
+            ],
             u"htmlURL": u"http://localhost/listing_b",
             u"inquiries": 0,
             u"jsonURL": u"http://localhost/api/v1/listing_b.json",

@@ -35,6 +35,7 @@ class CaravelTestCase(unittest.TestCase):
             seller="seller-a@uchicago.edu",
             price=310,
             categories=["category:cars"],
+            photos=["listing-a", "listing-a2"],
             admin_key="a_key",
             key_name="listing_a")
         self.listing_a.put()
@@ -46,6 +47,7 @@ class CaravelTestCase(unittest.TestCase):
             seller="seller-b@uchicago.edu",
             price=7110,
             categories=["category:apartments"],
+            photos=["listing-b", "listing-b2"],
             key_name="listing_b")
         self.listing_b.put()
         
@@ -56,6 +58,7 @@ class CaravelTestCase(unittest.TestCase):
             seller="seller-c@uchicago.edu",
             price=9105,
             categories=["category:appliances"],
+            photos=[],
             admin_key="adminkey",
             key_name="listing_c")
         self.listing_c.put()
@@ -81,6 +84,9 @@ class CaravelTestCase(unittest.TestCase):
         markup = re.sub(r'Marketplace is.*lists.uchicago.edu\. ', '', markup)
         markup = re.sub(r'(^.*UChicago Marketplace)|(&#169;.*$)', '', markup)
         return markup.strip()
+
+    def extract_photos(self, markup):
+        return re.findall(r'<img[ \t]+src="([^"]+)"', markup)
 
     def csrf_token(self, url):
         return re.search(r'csrf_token".*"(.*)"', self.get(url).data).group(1)
