@@ -6,7 +6,8 @@ dependencies:
 
 test:
   override:
-    - nose2 --coverage=caravel/ --with-coverage --log-level ERROR
+    - coverage run --source=caravel $(which nose2) --log-capture
+    - coveralls
 
 deployment:
   app_engine:
