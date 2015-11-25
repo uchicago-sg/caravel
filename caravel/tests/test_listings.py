@@ -1,6 +1,7 @@
 from caravel.storage import entities, config
 from caravel.tests import helper
 
+import StringIO
 import time
 import re
 
@@ -21,6 +22,13 @@ class TestListings(helper.CaravelTestCase):
 
         # Make sure links work.
         self.assertIn("/listing_a", self.get("/?q=body+%E2%98%86a").data)
+
+        # Make sure the right photos show up.
+        self.assertEqual(self.extract_photos(self.get("/").data), [
+            "/static/images/logo.jpg",
+            "/_ah/gcs/test.appspot.com/listing-a-small",
+            "/_ah/gcs/test.appspot.com/listing-b-small"
+        ])
 
     def test_inquiry(self):
         # Submit an inquiry.
@@ -65,13 +73,14 @@ class TestListings(helper.CaravelTestCase):
 
     def test_new_listing(self):
         # Try creating a new listing as an authenticated user.
-        self.post("/new", data=dict(
-            csrf_token=self.csrf_token("/new"),
-            title=u"Listing \u2606D",
-            description=u"Listing \u2606D",
-            seller="seller-d@uchicago.edu",
-            categories="category:books"
-        ))
+        self.post("/new", data={
+            "csrf_token": self.csrf_token("/new"),
+            "title": u"Listing \u2606D",
+            "description": u"Listing \u2606D",
+            "seller": "seller-d@uchicago.edu",
+            "categories": "category:books",
+            "photos-0-image": ("caravel/tests/test-pattern.gif", "t.jpg")
+        })
 
         # Verify that the listing does not exist yet.
         self.assertEqual(self.clean(self.get("/").data),
@@ -121,12 +130,26 @@ class TestListings(helper.CaravelTestCase):
             "\xe2\x98\x86D Books $0.00 Listing \xe2\x98\x86D Manage "
             "Listing Edit")
 
+        # Listing has the correct photo.
+        photos = self.extract_photos(self.get("/ZZ-ZZ-ZZ").data)
+        now = int(photos[1].split("/")[4].split("-")[0])
+        self.assertEqual(photos,
+            ["/static/images/logo.jpg",
+             "/_ah/gcs/test.appspot.com/{}-ZZ-ZZ-ZZ-large".format(now)])
+
         # Listing shows up in searches.
         self.assertEqual(self.clean(self.get("/").data),
             "New Listing Logged in as seller-d@uchicago.edu My Listings "
             "Logout Listing \xe2\x98\x86D now ago Books $0.00 Listing "
             "\xe2\x98\x86A 5h ago Cars $3.10 Listing \xe2\x98\x86B 2d "
             "ago Apartments $71.10")
+
+        # Listing has correct photo in listings.
+        self.assertEqual(self.extract_photos(self.get("/").data),
+            ["/static/images/logo.jpg",
+             "/_ah/gcs/test.appspot.com/{}-ZZ-ZZ-ZZ-small".format(now),
+             "/_ah/gcs/test.appspot.com/listing-a-small",
+             "/_ah/gcs/test.appspot.com/listing-b-small"])
 
     def test_claim_listing(self):
         # View a listing and click "Claim"
