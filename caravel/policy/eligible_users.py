@@ -68,7 +68,7 @@ def block(should_block, error=None):
     """
 
     if should_block:
-        raise ValidationError, (error or PLEASE_TRY_AGAIN_LATER)
+        raise ValidationError(error or PLEASE_TRY_AGAIN_LATER)
 
 def place_inquiry(listing, buyer, message):
     """
