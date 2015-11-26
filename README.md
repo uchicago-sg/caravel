@@ -1,6 +1,10 @@
 Caravel
 =======
 
+[![Coverage Status](https://coveralls.io/repos/uchicago-sg/caravel/badge.svg?branch=master&service=github)](https://coveralls.io/github/uchicago-sg/caravel?branch=master)
+[![Circle CI](https://circleci.com/gh/uchicago-sg/caravel.svg?style=shield)](https://circleci.com/gh/uchicago-sg/caravel)
+[![Code Climate](https://codeclimate.com/github/uchicago-sg/caravel/badges/gpa.svg)](https://codeclimate.com/github/uchicago-sg/caravel)
+
 This project is a lighter weight alternative to Dhaka, the previous iteration
 of the UChicago Marketplace. It is specifically designed for long-term, zero
 maintenance operation.
