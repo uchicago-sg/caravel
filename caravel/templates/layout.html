@@ -33,8 +33,9 @@
 <body>
     <div class="container">
       {% include "header.html" %}
-      {% for message in get_flashed_messages() %}
-        <div class="alert alert-info" role="alert">{{ message }}</div>
+      {% for category, message in get_flashed_messages(with_categories=true) %}
+        <div class="alert alert-info alert-{{ category }}" role="alert">
+          {{ message }}</div>
       {% endfor %}
       {% if not session["seen_disclaimer"] %}
         <div class="alert alert-warning" role="alert">

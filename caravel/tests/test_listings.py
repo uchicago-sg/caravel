@@ -71,6 +71,13 @@ class TestListings(helper.CaravelTestCase):
             u"message\u2606 goes here Simply reply to this email if you'd "
             u"like to get in contact. Cheers, The Marketplace Team")
 
+        # Verify that we were sent a chat message.
+        self.assertEqual(self.chats, [{
+            "icon_url": u"/_ah/gcs/test.appspot.com/listing-b-small",
+            "text": u"Inquiry by buyer@foo.com",
+            "username": u"Listing \u2606B"
+        }])
+
     def test_new_listing(self):
         # Try creating a new listing as an authenticated user.
         self.post("/new", data={
@@ -87,6 +94,14 @@ class TestListings(helper.CaravelTestCase):
             "New Listing Your listing has been created. Click the link in "
             "your email to publish it. Listing \xe2\x98\x86A 5h ago Cars "
             "$3.10 Listing \xe2\x98\x86B 2d ago Apartments $71.10")
+
+        # Verify that we were sent a chat message.
+        self.assertEqual(self.chats, [{
+            "icon_url": None,
+            "text": (u"Posted by seller-d@uchicago.edu "
+                      u"(<http://localhost/ZZ-ZZ-ZZ?key=ZZ-ZZ-ZZ|approve>)"),
+            "username": u"Listing \u2606D"
+        }])
 
         # Ensure that we were sent a link to edit a listing.
         self.assertEqual(self.emails[0].to[0], "seller-d@uchicago.edu")
@@ -195,3 +210,11 @@ class TestListings(helper.CaravelTestCase):
             u"safely ignore this email. "
             u"It was created by None; please contact us if anything seems "
             u"strange. Cheers, The Marketplace Team")
+
+        # Verify that we were sent a chat message.
+        self.assertEqual(self.chats, [{
+            "icon_url": u"/_ah/gcs/test.appspot.com/listing-a-small",
+            "text": ("Posted by seller-a@uchicago.edu "
+                     "(<http://localhost/listing_a?key=a_key|approve>)"),
+            "username": u"Listing \u2606A"
+        }])
