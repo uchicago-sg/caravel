@@ -12,6 +12,13 @@ WHITELISTED_ACCOUNTS = [
     "eahme1@ikumon.com"
 ]
 
+WHITELISTED_DOMAINS = [
+    "uchicago.edu",
+    "uchospitals.edu",
+    "chicagobooth.edu",
+    "ucls.uchicago.edu"
+]
+
 BLACKLISTED_ACCOUNTS = [
     "globarry24@gmail.com",
     "valenciae49@yahoo.com"
@@ -48,7 +55,7 @@ def is_campus_address(email):
 
     try:
         user, domain = email.split("@")
-        if domain in ("uchicago.edu", "uchospitals.edu", "chicagobooth.edu"):
+        if domain in WHITELISTED_DOMAINS:
             return True
     except ValueError:
         pass
