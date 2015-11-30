@@ -7,7 +7,7 @@ dependencies:
 test:
   override:
     - coverage run --source=caravel $(which nose2) --log-capture
-    - coveralls
+    - coveralls || true
 
 deployment:
   app_engine:
