@@ -1,4 +1,4 @@
-from flask.ext.wtf import Form
+from flask.ext.wtf import Form, RecaptchaField
 from wtforms import StringField, SubmitField, TextAreaField, DecimalField
 from wtforms import FileField, FieldList, FormField, SelectMultipleField
 from wtforms.validators import Email, DataRequired, ValidationError
@@ -83,6 +83,7 @@ class BuyerForm(ValidatedForm):
     buyer = StringField("Email", description="UChicago Email Preferred",
                 validators=[Email()])
     message = TextAreaField("Message")
+    captcha = RecaptchaField()
     submit = SubmitField("Send")
 
 class ImageEntry(Form):

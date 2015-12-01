@@ -30,13 +30,13 @@ class TestListings(helper.CaravelTestCase):
             "/_ah/gcs/test.appspot.com/listing-b-small"
         ])
 
-    def test_inquiry(self):
+    def test_post_inquiry(self):
         # Submit an inquiry.
-        self.post("/listing_b", data=dict(
-            buyer="buyer@foo.com",
-            message=u"message\u2606 goes here",
-            csrf_token=self.csrf_token("/listing_b"),
-        ))
+        result = self.post("/listing_b", data={
+            "buyer": "buyer@foo.com",
+            "message": u"message\u2606 goes here",
+            "csrf_token": self.csrf_token("/listing_b"),
+        })
 
         # Verify that the UI is updated.
         self.assertEqual(self.clean(self.get("/listing_b").data),
@@ -168,7 +168,7 @@ class TestListings(helper.CaravelTestCase):
 
     def test_claim_listing(self):
         # View a listing and click "Claim"
-        self.post("/listing_a/claim", data=dict(
+        result = self.post("/listing_a/claim", data=dict(
             csrf_token=self.csrf_token("/listing_a")
         ))
 
