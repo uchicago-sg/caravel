@@ -169,7 +169,8 @@ class upload_docs(upload):
             conn.putheader('Authorization', auth)
             conn.endheaders()
             conn.send(body)
-        except socket.error as e:
+        except socket.error:
+            e = sys.exc_info()[1]
             self.announce(str(e), log.ERROR)
             return
 
