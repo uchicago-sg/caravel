@@ -9,7 +9,8 @@ PLEASE_TRY_AGAIN_LATER = "Please slow down and try again later."
 INVALID_EMAIL = "You can only submit listings from a UChicago email address."
 
 WHITELISTED_ACCOUNTS = [
-    "eahme1@ikumon.com"
+    "eahme1@ikumon.com",
+    "inglesidecourtcondoassociation@gmail.com",
 ]
 
 WHITELISTED_DOMAINS = [
