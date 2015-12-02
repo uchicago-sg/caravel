@@ -2,6 +2,7 @@
 
 Build .egg distributions"""
 
+# This module should be kept compatible with Python 2.3
 from distutils.errors import DistutilsSetupError
 from distutils.dir_util import remove_tree, mkpath
 from distutils import log
@@ -405,6 +406,10 @@ def scan_module(egg_dir, base, name, stubs):
             if bad in symbols:
                 log.warn("%s: module MAY be using inspect.%s", module, bad)
                 safe = False
+    if '__name__' in symbols and '__main__' in symbols and '.' not in module:
+        if sys.version[:3] == "2.4":  # -m works w/zipfiles in 2.5
+            log.warn("%s: top-level module may be 'python -m' script", module)
+            safe = False
     return safe
 
 
@@ -436,7 +441,7 @@ INSTALL_DIRECTORY_ATTRS = [
 ]
 
 
-def make_zipfile(zip_filename, base_dir, verbose=0, dry_run=0, compress=True,
+def make_zipfile(zip_filename, base_dir, verbose=0, dry_run=0, compress=None,
                  mode='w'):
     """Create a zip file from all the files under 'base_dir'.  The output
     zip file will be named 'base_dir' + ".zip".  Uses either the "zipfile"
@@ -458,7 +463,11 @@ def make_zipfile(zip_filename, base_dir, verbose=0, dry_run=0, compress=True,
                     z.write(path, p)
                 log.debug("adding '%s'" % p)
 
-    compression = zipfile.ZIP_DEFLATED if compress else zipfile.ZIP_STORED
+    if compress is None:
+        # avoid 2.3 zipimport bug when 64 bits
+        compress = (sys.version >= "2.4")
+
+    compression = [zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED][bool(compress)]
     if not dry_run:
         z = zipfile.ZipFile(zip_filename, mode, compression=compression)
         for dirname, dirs, files in os.walk(base_dir):

@@ -27,5 +27,8 @@ def get_tor_addresses():
 send_grid_client = sendgrid.SendGridClient(lookup("sendgrid_client", ""))
 app.secret_key = lookup("session_secret", base64.b64encode(os.urandom(32)))
 slack_url = lookup("slack_url", "")
+app.config["RECAPTCHA_PUBLIC_KEY"] = lookup("recaptcha_public_key", "")
+app.config["RECAPTCHA_PRIVATE_KEY"] = lookup("recaptcha_private_key", "")
+app.config["RECAPTCHA_DATA_ATTRS"] = {"size": "compact"}
 
 Bootstrap(app)

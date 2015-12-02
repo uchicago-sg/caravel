@@ -1,3 +1,5 @@
+import sys
+
 try:
     import distutils.msvc9compiler
 except ImportError:
@@ -27,15 +29,13 @@ def patch_for_specialized_compiler():
 def find_vcvarsall(version):
     Reg = distutils.msvc9compiler.Reg
     VC_BASE = r'Software\%sMicrosoft\DevDiv\VCForPython\%0.1f'
-    key = VC_BASE % ('', version)
     try:
         # Per-user installs register the compiler path here
-        productdir = Reg.get_value(key, "installdir")
+        productdir = Reg.get_value(VC_BASE % ('', version), "installdir")
     except KeyError:
         try:
             # All-user installs on a 64-bit system register here
-            key = VC_BASE % ('Wow6432Node\\', version)
-            productdir = Reg.get_value(key, "installdir")
+            productdir = Reg.get_value(VC_BASE % ('Wow6432Node\\', version), "installdir")
         except KeyError:
             productdir = None
 
@@ -50,7 +50,8 @@ def find_vcvarsall(version):
 def query_vcvarsall(version, *args, **kwargs):
     try:
         return unpatched['query_vcvarsall'](version, *args, **kwargs)
-    except distutils.errors.DistutilsPlatformError as exc:
+    except distutils.errors.DistutilsPlatformError:
+        exc = sys.exc_info()[1]
         if exc and "vcvarsall.bat" in exc.args[0]:
             message = 'Microsoft Visual C++ %0.1f is required (%s).' % (version, exc.args[0])
             if int(version) == 9:

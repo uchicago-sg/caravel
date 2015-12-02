@@ -84,7 +84,7 @@ class CaravelTestCase(unittest.TestCase):
 
     # Test helper functions.
     def clean(self, markup):
-        markup = re.sub(r'<script.*/script>', ' ', markup, flags=re.DOTALL)
+        markup = re.sub(r'<script.*?/script>', ' ', markup, flags=re.DOTALL)
         markup = re.sub(r'<!--.*-->', '', markup, flags=re.DOTALL)
         markup = re.sub(r'<[^>]+>', ' ', markup)
         markup = re.sub(r'[ \t\r\n]+', ' ', markup)
