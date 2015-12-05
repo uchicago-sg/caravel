@@ -6,7 +6,7 @@ dependencies:
 
 test:
   override:
-    - coverage run --source=caravel $(which nose2) --log-capture
+    - coverage run --source=caravel $(which nose2) --log-capture --plugin nose2.plugins.doctests --with-doctest
     - coveralls || true
 
 deployment:

@@ -33,7 +33,19 @@ def inject_categories():
 
 @app.template_filter("as_duration")
 def as_duration(abs_time_in_seconds):
-    """Returns a formatted string for this duration."""
+    """
+    Returns a formatted string for this duration.
+
+    >>> import time
+    >>> as_duration(time.time() + 14400)
+    'now'
+    >>> as_duration(time.time())
+    'now'
+    >>> as_duration(time.time() - 600)
+    '11m'
+    >>> as_duration(time.time() - 14400)
+    '5h'
+    """
 
     durations = (
         ('s', 1),
