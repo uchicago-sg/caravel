@@ -17,7 +17,6 @@ WHITELISTED_DOMAINS = [
     "uchicago.edu",
     "uchospitals.edu",
     "chicagobooth.edu",
-    "ucls.uchicago.edu"
 ]
 
 BLACKLISTED_ACCOUNTS = [
@@ -49,6 +48,15 @@ def is_from_tor():
 def is_campus_address(email):
     """
     Ensures that the given email is an on-campus address.
+
+    >>> is_campus_address("globarry24@gmail.com")
+    False
+    >>> is_campus_address("foobar@bsd.uchicago.edu")
+    True
+    >>> is_campus_address("foobar@notuchicago.edu")
+    False
+    >>> is_campus_address("eahme1@ikumon.com")
+    True
     """
 
     if is_banned(email):
@@ -56,8 +64,9 @@ def is_campus_address(email):
 
     try:
         user, domain = email.split("@")
-        if domain in WHITELISTED_DOMAINS:
-            return True
+        for suffix in WHITELISTED_DOMAINS:
+            if domain == suffix or domain.endswith("." + suffix):
+                return True
     except ValueError:
         pass
 
