@@ -42,7 +42,7 @@ class TestListings(helper.CaravelTestCase):
         self.assertEqual(self.clean(self.get("/listing_b").data),
             "New Listing Your inquiry has been sent. Listing \xe2\x98\x86B "
             "Apartments $71.10 Body of \xe2\x98\x86B Contact Seller This "
-            "listing has 1 inqury. Email UChicago Email Preferred Message")
+            "listing has 1 inqury. Email Sign in with CNetID or Message")
 
         # Verify that the proper email was sent.
         self.assertEqual(self.emails[0].to[0], "seller-b@uchicago.edu")
@@ -176,7 +176,7 @@ class TestListings(helper.CaravelTestCase):
         self.assertEqual(self.clean(self.get("/listing_a").data),
             "New Listing We&#39;ve emailed you a link to edit this listing. "
             "Listing \xe2\x98\x86A Cars $3.10 Body of \xe2\x98\x86A Contact "
-            "Seller Email UChicago Email Preferred Message")
+            "Seller Email Sign in with CNetID or Message")
 
         # Ensure that the message is as we expect.
         self.assertEqual(self.emails[0].to[0], "seller-a@uchicago.edu")

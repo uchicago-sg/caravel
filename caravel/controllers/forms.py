@@ -11,6 +11,7 @@ import logging
 
 from caravel import policy, app
 from caravel.storage import entities
+from caravel.controllers import custom_fields
 
 class CheckboxesField(SelectMultipleField):
     option_widget = CheckboxInput()
@@ -80,8 +81,8 @@ class ValidatedForm(Form):
         return result
 
 class BuyerForm(ValidatedForm):
-    buyer = StringField("Email", description="UChicago Email Preferred",
-                validators=[Email()])
+    buyer = custom_fields.PrincipalField("Email",
+                validators=[DataRequired(), Email()])
     message = TextAreaField("Message")
     captcha = RecaptchaField()
     submit = SubmitField("Send")
@@ -102,7 +103,7 @@ class EditListingForm(ValidatedForm):
     submit = SubmitField("Post")
 
 class NewListingForm(EditListingForm):
-    seller = StringField("Email", description="UChicago Email Required",
-                                  validators=[Email()])
+    seller = custom_fields.PrincipalField("Email",
+                                  validators=[DataRequired(), Email()])
 
 CsrfProtect(app)

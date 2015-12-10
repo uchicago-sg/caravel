@@ -103,6 +103,11 @@ form .thumbnail {
     max-width: 200px;
 }
 
+.form-control.inline-user-control {
+	display: inline-block;
+	width: auto;
+}
+
 /* Footer */
 .copyright {
     margin-top: 15px;
