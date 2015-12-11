@@ -1,0 +1,12 @@
+Hello there, and welcome to Marketplace!
+
+Your listing has been created. Please click the link below to edit it.
+
+  {{ url_for("show_listing", listing=listing, _external=True) }}
+
+Your listing is published. Any interest expressed through the "Contact Seller"
+form will come as a follow-up to this message. Users with CNetIDs can also
+contact you directly.
+
+Cheers,
+The Marketplace Team

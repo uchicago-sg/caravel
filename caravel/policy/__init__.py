@@ -1,1 +1,0 @@
-from eligible_users import place_inquiry, claim_listing

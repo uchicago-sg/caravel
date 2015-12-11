@@ -2,11 +2,9 @@ Hello again!
 
 We've received a new inquiry for {{ listing.title }}:
 
-  Buyer: {{ buyer }} {% if not is_signed_in -%}
-    (IP: {{ request.remote_addr }})
-  {%- endif %}
+  Buyer: {{ inquiry.principal.email }}
   
-  {{ message.replace("\n", "\n  ") }}
+  {{ inquiry.message.replace("\n", "\n  ") }}
 
 Simply reply to this email if you'd like to get in contact.
 

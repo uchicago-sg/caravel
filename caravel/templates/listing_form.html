@@ -14,15 +14,16 @@
           {{ form.hidden_tag() }}
           {{ wtf.form_errors(form, hiddens="only") }}
           {{ wtf.form_field(form.title) }}
-          {% if form.seller %}
-            {{ wtf.form_field(form.seller) }}
+          {% if form.principal %}
+            {{ wtf.form_field(form.principal) }}
           {% endif %}
           {{ wtf.form_field(form.categories) }}
           {{ wtf.form_field(form.price) }}
-          {{ wtf.form_field(form.description) }}
-          {% for image in form.photos %}
+          {{ wtf.form_field(form.body) }}
+          {% for image in form.uploaded_photos %}
             {{ wtf.form_field(image.image) }}
           {% endfor %}
+          {{ form.recaptcha() }}
           <input type="submit" class="btn btn-primary" value="Save"/>
           <a href="javascript:history.back()" class="btn btn-default">Cancel</a>
         </form>

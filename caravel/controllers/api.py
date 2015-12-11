@@ -2,39 +2,39 @@
 Listings are placed by sellers when they want to sell things.
 """
 
-import uuid, time
+import uuid, time, calendar
 
 from flask import render_template, request, abort, redirect, url_for, session
 from flask import flash, g, jsonify
 
-from caravel import app
-from caravel.storage import helpers, entities, photos, dos
+from caravel import app, model
+from caravel.storage import dos
 
 def _externalize(listing):
     """Returns a safe JSON blob representing the given listing."""
 
     return {
         "jsonURL": url_for(
-            "api_one_listing", permalink=listing.permalink, _external=True),
+            "api_one_listing", listing=listing, _external=True),
         "htmlURL": url_for(
-            "show_listing", permalink=listing.permalink, _external=True),
+            "show_listing", listing=listing, _external=True),
         "title": listing.title,
         "body": listing.body,
-        "postingTime": listing.posting_time,
+        "postingTime": calendar.timegm(listing.posted_at.timetuple()),
         "categories": [
             {
                 "name": category,
-                "URL": url_for("api_all_listings", q=category, _external=True)
+                "URL": url_for("api_all_listings",
+                    q="category:{}".format(category), _external=True)
             } for category in listing.categories
         ],
-        "price": (listing.price / 100.0),
-        "inquiries": len(listing.buyers),
+        "price": listing.price,
         "photos": [
             {
-                "small": photos.public_url(photo, "small"),
-                "large": photos.public_url(photo, "large"),
-            }
-        for photo in listing.photos]
+                "small": photo.public_url("small"),
+                "large": photo.public_url("large")
+            } for photo in listing.photos
+        ]
     }
 
 @app.route("/api")
@@ -65,7 +65,8 @@ def api_all_listings():
         abort(403)
 
     # Compute the results matching that query.
-    listings = helpers.run_query(query, offset, limit)
+    listings = model.Listing.query().order(-model.Listing.posted_at)
+    listings = listings.fetch(limit)
 
     # Display only whitelisted properties as JSON.
     externalized = [_externalize(listing) for listing in listings]
@@ -86,14 +87,9 @@ def api_all_listings():
         **pages
     )
 
-@app.route("/api/v1/<permalink>.json")
-def api_one_listing(permalink):
+@app.route("/api/v1/<listing:listing>.json")
+def api_one_listing(listing):
     """Display a single listing matching the given query."""
-
-    # Parse filtering options from query.
-    listing = helpers.lookup_listing(permalink)
-    if not listing or not listing.posting_time:
-        abort(404)
 
     # Return JSON if requested.
     return jsonify(_externalize(listing))

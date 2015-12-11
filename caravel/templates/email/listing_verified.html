@@ -2,9 +2,6 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Welcome to Marketplace</title>
-  <!-- Because Gmail is psychotic, you must resist the temptation to use
-       <style> tags- trust me, I wish there were a better way. -->
 </head>
 <body style="padding: 0; margin: 0;" bgcolor="#ffffff">
   <table width="100%" bgcolor="#ffffff"
@@ -27,8 +24,7 @@
     <tr>
       <td style="font: 18px Arial, sans-serif;
                  padding: 1em;">
-        <a href="{{ url_for('show_listing', permalink=listing.key().name(),
-                            key=listing.admin_key, _external=True) }}"
+        <a href="{{ url_for('show_listing', listing=listing, _external=True) }}"
            style="padding: 0.5em;
                   background-color: #39c;
                   color: white;
@@ -38,12 +34,10 @@
     <tr>
       <td style="font: 18px Arial, sans-serif;
                  padding: 1em;">
-          <strong>Important: you'll need to click this link at least
-          once</strong> for your listing to be viewable by others &mdash; this
-          is to protect against spam.<br/>
-          If you didn't create this listing, you can safely ignore this email.
-          <br/>It was created by {{ request.remote_addr }}; please contact us if
-          anything seems strange.<br/>
+          <strong>Your listing is published.</strong> Any
+          interest expressed through the "Contact Seller" form will come as a 
+          follow-up to this message. Users with CNetIDs can also contact you
+          directly.
           <br/><br/>
           Cheers,<br/>
           The Marketplace Team

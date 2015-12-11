@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block title %}Moderate Inquiries{% endblock %}
+{% block head %}
+  {{ super() }}
+  <script src="/static/js/moderation.js"></script>
+{% endblock %}
+{% block content %}
+  <h2>Inquiries</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>User Agent</th>
+        <th>IP</th>
+        <th>Email</th>
+        <th>Listing</th>
+        <th>Message</th>
+        <th>Moderation</th>
+      </tr>
+    </thead>
+    {% for inquiry in inquiries %}
+    <tr>
+      <td>{{ user_agent(inquiry.principal.device.user_agent) }}</td>
+      <td>{{ inquiry.principal.device.ip_address }}</td>
+      <td>{{ inquiry.principal.email }}</td>
+      <td><a href="{{ url_for('show_listing',
+            listing=inquiry.listing.get()) }}">
+          {{ inquiry.listing.get().title }}</td>
+      <td>{{ inquiry.message }}</td>
+      <td><a data-approve="{{ inquiry.key.urlsafe() }}"
+             class="btn btn-success">Approve</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  <h2>Listings</h2>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>User Agent</th>
+        <th>IP</th>
+        <th>Email</th>
+        <th>Title</th>
+        <th>Body</th>
+        <th>Moderation</th>
+      </tr>
+    </thead>
+    {% for listing in listings %}
+    <tr>
+      <td>{{ user_agent(listing.principal.device.user_agent) }}</td>
+      <td>{{ listing.principal.device.ip_address }}</td>
+      <td>{{ listing.principal.email }}</td>
+      <td>{{ listing.title }}</td>
+      <td>{{ listing.body }}</td>
+      <td><a data-approve="{{ listing.key.urlsafe() }}"
+             class="btn btn-success">Approve</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  <script type="text/javascript">
+    enableModeration("{{ csrf_token() }}")</script>
+{% endblock %}

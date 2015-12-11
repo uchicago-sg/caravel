@@ -1,14 +1,15 @@
 import unittest
-import time
+import datetime
 import re
 import uuid
+import time
 from contextlib import contextmanager
 
 from google.appengine.ext import db
-from google.appengine.api import memcache
+from google.appengine.api import memcache, users
 
-from caravel import app
-from caravel.storage import config, entities, slack
+from caravel import app, model, utils
+from caravel.storage import config
 
 class CaravelTestCase(unittest.TestCase):
     def setUp(self):
@@ -25,49 +26,49 @@ class CaravelTestCase(unittest.TestCase):
         self._send, sendgrid.send = sendgrid.send, self.emails.append
 
         # Capture outgoing Slack messages.
-        self.chats = []
-        self._send_chat = slack.send_chat
-        slack.send_chat = lambda **kw: self.chats.append(kw)
+        # self.chats = []
+        # self._send_chat = slack.send_chat
+        # slack.send_chat = lambda **kw: self.chats.append(kw)
 
         # Ensure that UUIDs are deterministic.
         self._uuid4 = uuid.uuid4
         uuid.uuid4 = lambda: "ZZ-ZZ-ZZ"
 
+        # Allocate a test session.
+        device = utils.Device(
+            nonce="foobar",
+            user_agent="mozilla",
+            ip_address="1.2.3.4"
+        )
+
         # Create simple entities to play with.
-        self.listing_a = entities.Listing(
+        self.listing_a = model.Listing(
             title=u"Listing \u2606A",
             body=u"Body of \u2606A",
-            posting_time=time.time() - 4 * 3600,
-            seller="seller-a@uchicago.edu",
-            price=310,
-            categories=["category:cars"],
-            photos=["listing-a", "listing-a2"],
-            admin_key="a_key",
-            key_name="listing_a")
+            posted_at=datetime.datetime.now() - datetime.timedelta(hours=4),
+            principal=utils.Principal("seller-a@uchicago.edu", device,
+                                      "GOOGLE_APPS"),
+            run_trigger=True,
+            version=11,
+            price=3.10,
+            categories=["cars"],
+            photos=[model.Photo("listing-a"), model.Photo("listing-a2")],
+            id="listing_a")
         self.listing_a.put()
 
-        self.listing_b = entities.Listing(
+        self.listing_b = model.Listing(
             title=u"Listing \u2606B",
             body=u"Body of \u2606B",
-            posting_time=time.time() - 24 * 3600,
-            seller="seller-b@uchicago.edu",
-            price=7110,
-            categories=["category:apartments"],
-            photos=["listing-b", "listing-b2"],
-            key_name="listing_b")
+            posted_at=datetime.datetime.now() - datetime.timedelta(hours=24),
+            principal=utils.Principal("seller-b@uchicago.edu", device,
+                                      "GOOGLE_APPS"),
+            price=71.10,
+            run_trigger=True,
+            version=11,
+            categories=["apartments"],
+            photos=[model.Photo("listing-b"), model.Photo("listing-b2")],
+            id="listing_b")
         self.listing_b.put()
-        
-        self.listing_c = entities.Listing(
-            title=u"Listing \u2606C",
-            body=u"Body of \u2606C",
-            posting_time=0.,
-            seller="seller-c@uchicago.edu",
-            price=9105,
-            categories=["category:appliances"],
-            photos=[],
-            admin_key="adminkey",
-            key_name="listing_c")
-        self.listing_c.put()
 
         # Allow very large diffs.
         self.maxDiff = None
@@ -80,7 +81,7 @@ class CaravelTestCase(unittest.TestCase):
         # Un-stub mocks.
         uuid.uuid4 = self._uuid4
         config.send_grid_client.send = self._send
-        slack.send_chat = self._send_chat
+        # slack.send_chat = self._send_chat
 
     # Test helper functions.
     def clean(self, markup):
@@ -95,6 +96,9 @@ class CaravelTestCase(unittest.TestCase):
     def extract_photos(self, markup):
         return re.findall(r'<img[ \t]+src="([^"]+)"', markup)
 
+    def ajax_csrf_token(self, url):
+        return re.search(r'Moderation\("(.*)"\)', self.get(url).data).group(1)
+
     def csrf_token(self, url):
         return re.search(r'csrf_token".*"(.*)"', self.get(url).data).group(1)
 
@@ -103,6 +107,24 @@ class CaravelTestCase(unittest.TestCase):
 
     def post(self, *vargs, **kwargs):
         return self.http_client.post(*vargs, **kwargs)
+
+    @contextmanager
+    def google_apps_user(self, email, is_admin=True):
+        class FakeUser():
+            def email(self):
+                return email
+
+        _current_user = users.get_current_user
+        users.get_current_user = lambda: FakeUser()
+
+        _is_admin = users.is_current_user_admin
+        users.is_current_user_admin = lambda: is_admin
+
+        try:
+            yield
+        finally:
+            users.get_current_user = _current_user 
+            users.is_current_user_admin = _is_admin
 
     @contextmanager
     def current_time(self, now):

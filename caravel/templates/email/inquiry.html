@@ -2,9 +2,6 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>My Test Email</title>
-  <!-- Because Gmail is psychotic, you must resist the temptation to use
-       <style> tags- trust me, I wish there were a better way. -->
 </head>
 <body style="padding: 0; margin: 0;" bgcolor="#ffffff">
   <table width="100%" bgcolor="#ffffff"
@@ -31,11 +28,8 @@
                       background-color: #f8f8f8;">
           <tr>
             <td style="padding: 1em;write-space:pre;">
-              Buyer: {{ buyer }}
-              {% if not is_signed_in %}
-                (IP: {{ request.remote_addr }})
-              {% endif %}<br/><br/>
-              {{ message }}</td>
+              Buyer: {{ inquiry.principal.email }}<br/><br/>
+              {{ inquiry.message }}</td>
           </tr>
         </table>
       </td>
