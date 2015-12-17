@@ -1,5 +1,5 @@
 <ul class="nav nav-tabs nav-justified" id="categories">
-  {% for tag, label in categories %}
+  {% for tag, label in categories_list + [("price:free", "Free")] %}
     {% if tag in request.args.get('q', '') %}
     <li class="active">
       <a href="{{ url_for('search_listings',
@@ -11,7 +11,8 @@
     {% else %}
     <li>
       <a href="{{ url_for('search_listings',
-                    q=modify_search(add=[tag], remove=categories_dict.keys()),
+                    q=modify_search(add=[tag],
+                        remove=categories_dict.keys() + ['price:free']),
                     v=request.args.v) }}">
         {{ label }}
       </a>
@@ -59,7 +60,7 @@
                   btn-{% if request.args.get('v') == 'ls' %}primary{% else
                      %}default{% endif %}"></a>
       </div>
-    {% if session["email"] %}
+    {% if current_user %}
       <div class="btn-group">
         <button class="btn btn-default dropdown-toggle user-button btn-user-right"
             type="button"  data-toggle="dropdown">
@@ -67,14 +68,20 @@
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
-          <li class="dropdown-header">Logged in as {{ session["email"] }}</li>
+          <li class="dropdown-header">Logged in as
+            {{ current_user.email() }}</li>
           <li><a href="{{ url_for('search_listings',
-                            q=modify_search(add=[session['email']]),
+                            q=modify_search(add=[current_user.email()]),
                             v=request.args.v) }}">
               My Listings</a></li>
-          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+          <li><a href="{{ logout_url() }}">Logout</a></li>
         </ul>
       </div>
+    {% else %}
+      <a class="btn btn-success user-button btn-user-right"
+          type="button" href="{{ login_url() }}">
+        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+      </a>
     {% endif %}
     </div>
   </div>

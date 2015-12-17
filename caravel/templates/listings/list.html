@@ -7,7 +7,7 @@
       {% endif %}
   </td>
   <td class="list-title">
-      <a class="hidden-link" href="{{ url_for('show_listing', permalink=listing.permalink,
+      <a class="hidden-link" href="{{ url_for('show_listing', listing=listing,
                  q=request.args['q']) }}">
         {{ listing.title }}
       </a>
@@ -17,7 +17,7 @@
   </td>
   <td class="list-category">
     {% for category in listing.categories %}
-        <p> {{listing.CATEGORIES_DICT.get(category, category)}}</p>
+        <p>{{ category }}</p>
     {% endfor %}
   </td>
 </tr>

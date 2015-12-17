@@ -7,8 +7,8 @@
       <div>
     {% endif %}
       {% for photo in listing.photos %}
-        <a href="{{ public_url(photo, 'large') }}" class="thumbnail">
-          <img src="{{ public_url(photo, 'large') }}"/>
+        <a href="{{ photo.public_url('large') }}" class="thumbnail">
+          <img src="{{ photo.public_url('large') }}"/>
         </a>
       {% endfor %}
     </div>
@@ -18,40 +18,36 @@
       <div class="col-md-9">
     {% endif %}
       <h2>{{ listing.title }}</h2>
-      {% if g.is_admin %}
-      <p class="alert alert-info">
-        <strong>Debug Infromation:</strong>
-          (hide with ?external; only for admins)<br/>
-        {%- for key, value in listing.properties().items()|sort -%}
-          {{ key }}: <code>{{ listing[key] }}</code><br/>
-        {%- endfor -%}
-      </p>
-      {% endif %}
       <p>
         {% for category in listing.categories %}
-          <span class="label label-default">{{ listing.CATEGORIES_DICT.get(category, category) }}</span>
+          <span class="label label-default">{{ category }}</span>
         {% endfor %}
-        <span class="label label-success">
-          {{ '${:,.2f}'.format(listing.price / 100) }}</span>
+      </p>
+      <p>Posted <strong>{{ listing.posted_at|as_duration }}</strong>
+          by {% if current_user %}
+            <a href="mailto:{{ listing.principal.email }}">
+              {{ listing.principal.email }}</a>
+          {%- else -%}
+            [address hidden] (<a href="{{ login_url() }}">sign in</a> to view)
+          {%- endif -%}.
+          Price: <strong>{{ '${:,.2f}'.format(listing.price) }}</strong>
       </p>
       <p style="white-space:pre-wrap">{{ listing.body }}</p>
     </div>
     <div class="col-md-3">
-    {% if listing.seller == session["email"] %}
+    {% if current_user and listing.principal.email == current_user.email() %}
       <div class="panel panel-default">
         <div class="panel-heading">
           <h3 class="panel-title">Manage Listing</h3>
         </div>
         <form class="panel-body" method="post" action="{{
-                                  url_for('edit_listing',
-                                      permalink=listing.permalink) }}">
+                                  url_for('edit_listing', listing=listing) }}">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
           <a class="btn btn-default"
-                href="{{ url_for('edit_listing',
-                         permalink=listing.permalink) }}">
+                href="{{ url_for('edit_listing', listing=listing) }}">
             Edit</a>
-          <input type="submit" class="btn btn-danger"
-              name="unpublish" value="Unpublish"/>
+          {# <input type="submit" class="btn btn-danger"
+              name="unpublish" value="Unpublish"/> #}
         </div>
       </div>
      
@@ -74,8 +70,9 @@
             {% endif %}
           </p>
           {% endif %}
-          {{ wtf.quick_form(buyer_form) }}
+          {{ wtf.quick_form(form) }}
           <p>
+          {#
           <form method="post"
                 action="{{ url_for('claim_listing',
                            permalink=listing.permalink) }}">
@@ -83,6 +80,7 @@
             <input type="submit" class="btn btn-default" value="This is mine"/>
           </form>
           </p>
+          #}
         {% endif %}
         </div>
       </div>

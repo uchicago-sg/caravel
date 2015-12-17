@@ -1,8 +1,10 @@
 from google.appengine.api import memcache
 from caravel.storage import dos
 from caravel.tests import helper
+
 import time
 import uuid
+import unittest
 
 class TestListings(helper.CaravelTestCase):
     def test_rate_limit(self):
@@ -21,6 +23,7 @@ class TestListings(helper.CaravelTestCase):
         self.assertEquals(trace, [
             False, False, False, True, True, False, False])
 
+    @unittest.skip("Listing creation blocked")
     def test_posting_limit(self):
         # Try to create lots of listings.
         created = 0
@@ -40,6 +43,7 @@ class TestListings(helper.CaravelTestCase):
         self.assertEquals(created, 4)
         self.assertEquals(len(self.emails), 4)
 
+    @unittest.skip("claim listing disabled")
     def test_claim_listing(self):
         # Try to spam the "Claim Listing" button.
         for i in xrange(10):
@@ -50,6 +54,7 @@ class TestListings(helper.CaravelTestCase):
         # Make sure we only get one message.
         self.assertEquals(len(self.emails), 1)
 
+    @unittest.skip("send inquiry features disabled")
     def test_send_inquiry(self):
         # Try to spam the "Inquire About Listing" button.
         for i in xrange(10):
