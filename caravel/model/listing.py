@@ -3,7 +3,7 @@ from caravel.utils import Principal, Device
 from caravel.model.moderation import ModeratedMixin
 from caravel.model.temporal import TimeOrderMixin
 from caravel.model.categories import CategoriesMixin
-from caravel.model.attachments import PhotosMixin
+from caravel.model.attachments import PhotosMixin, Photo
 from caravel.model.migration import SchemaMixin
 from caravel.model.priced import PriceMixin
 from caravel.model.principal import PrincipalMixin
@@ -62,4 +62,6 @@ def to_ndb_schema(listing):
     listing.categories = [re.sub(r'^category:', '', x) for x in
                              listing.categories]
 
-    # listing.photos = [Photo(x) for x in listing.photos_]
+    listing.photos = [
+        Photo(re.sub(r'-large$', '', p.path)) for p in listing.photos]
+    listing.run_trigger = True

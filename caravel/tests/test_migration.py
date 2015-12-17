@@ -72,6 +72,8 @@ class TestListings(helper.CaravelTestCase):
         listing = Listing.get_by_key_name("my-listing-name")
         self.assertEquals(listing.version, 11)
 
+        # Verify that no emails were sent.
+        self.assertEquals(self.emails, [])
 
     def test_migrate_from_super_old(self):
 
@@ -100,3 +102,5 @@ class TestListings(helper.CaravelTestCase):
         self.assertEquals(listing.body, u"Body of Legacy \xe2\x98\x86")
         self.assertEquals(listing.categories, ["miscellaneous"])
 
+        # Verify that no emails were sent.
+        self.assertEquals(self.emails, [])
