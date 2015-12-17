@@ -8,6 +8,7 @@ from caravel.model.migration import SchemaMixin
 from caravel.model.priced import PriceMixin
 from caravel.model.principal import PrincipalMixin
 from caravel.model.side_effects import SideEffectsMixin
+from caravel.model.full_text import FullTextMixin
 from caravel import utils
 
 import datetime
@@ -22,7 +23,7 @@ class _Listing(CategoriesMixin, PhotosMixin, PrincipalMixin, TimeOrderMixin,
     title = ndb.StringProperty()
     body = ndb.TextProperty()
 
-class Listing(SideEffectsMixin, _Listing):
+class Listing(SideEffectsMixin, FullTextMixin, _Listing):
     def side_effects(self):
         """
         Sends an email to the creator of this listing.
@@ -35,6 +36,17 @@ class Listing(SideEffectsMixin, _Listing):
             text=render_template("email/listing_verified.txt", listing=self)
         )
     
+    def _keywords(self):
+        """Generates keywords for this listing."""
+
+        keywords = (
+            self._tokenize("title", self.title) +
+            self._tokenize("body", self.body) +
+            self._tokenize("category", " ".join(self.categories))
+        )
+        if self.price == 0:
+            keywords.append("price:free")
+        return keywords
 
 class UnapprovedListing(_Listing):
     TYPE_ONCE_APPROVED = Listing

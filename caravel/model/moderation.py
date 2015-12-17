@@ -38,18 +38,23 @@ class ModeratedMixin(ndb.Model):
 
             # Change the type of this class.
             self.__class__ = self.TYPE_ONCE_APPROVED
+            self._properties = self.__class__._properties
 
             # Update the key of this entity.
             flat = list(self.key.flat())
             flat[-2] = str(self.__class__.__name__)
             self.key = ndb.Key(flat=flat)
 
-            # Re-invoke iff the type has changed.
-            return self._pre_put_hook()
+            # Re-invoke hooks iff the type has changed.
+            self._prepare_for_put()
+            self._pre_put_hook()
 
         else:
 
             return super(ModeratedMixin, self)._pre_put_hook()
+
+    def _post_put_hook(self, future):
+        super(ModeratedMixin, self)._post_put_hook(future)
 
     def approved(self):
         """
