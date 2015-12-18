@@ -247,6 +247,10 @@ form .thumbnail {
     border-radius: 5px;
 }
 
+.btn.signin {
+    margin-bottom: 3px;
+}
+
 /* About and show page*/
 .help-page-tall{
     height: 25em;

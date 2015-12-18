@@ -62,4 +62,4 @@ class SchemaMixin(ndb.Expando):
             entity.version = 0
         entity.run_migrations()
         return entity
-    
+

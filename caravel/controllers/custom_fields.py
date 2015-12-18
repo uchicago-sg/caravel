@@ -1,6 +1,8 @@
 from google.appengine.api import users
 
 import re
+import threading
+
 import wtforms
 from wtforms import widgets, ValidationError
 
@@ -18,6 +20,26 @@ class OnlyValid(object):
 
         if not field.data or not field.data.valid:
             raise ValidationError("Invalid credential.")
+
+class MatchesPrincipal(threading.local):
+    """Ensures that only the existing Principal is used."""
+
+    def __init__(self):
+        self.principal = None
+
+    def __call__(self, form, field):
+        """Ensure that only the given user is used for authentication."""
+
+        if not self.principal:
+            raise Exception("No principal specified.")
+
+        if not field.data or not field.data.can_act_as(self.principal):
+            if not field.data:
+                raise ValidationError("Please enter an email.")
+            elif field.data.email == self.principal.email:
+                raise ValidationError("Please sign in with your CNetID.")
+            else:
+                raise ValidationError("Please use the same account for edits.")
 
 class PrincipalField(wtforms.StringField):
     """A PrincipalField is one that represents an email address."""
@@ -81,7 +103,7 @@ class PrincipalField(wtforms.StringField):
                 )
 
             return Markup(
-                "<div><a href='{}' class='btn btn-success'>Sign in with "
+                "<div><a href='{}' class='signin btn btn-success'>Sign in with "
                 "CNetID</a>{}</div>"
             ).format(users.create_login_url(request.url), alternative)
 

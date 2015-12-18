@@ -4,7 +4,7 @@ from wtforms.fields import (StringField, SubmitField, SelectMultipleField,
                             DecimalField, FieldList, FormField, TextAreaField)
 from wtforms.widgets import CheckboxInput, ListWidget
 from wtforms.validators import DataRequired, Email
-from caravel.controllers.custom_fields import (PrincipalField, PhotoField,                                                     OnlyValid)
+from caravel.controllers.custom_fields import (PrincipalField, PhotoField,                                                     OnlyValid, MatchesPrincipal)
 from caravel import model
 
 class CheckboxesField(SelectMultipleField):
@@ -33,11 +33,11 @@ class ListingForm(flask_wtf.Form):
     
 
 class NewListingForm(ListingForm):
-    principal = PrincipalField("Seller",
-        validators=[DataRequired(), OnlyValid()])
+    principal = PrincipalField("Seller", validators=[DataRequired()])
     submit = SubmitField("Create")
 
 class EditListingForm(ListingForm):
+    principal = PrincipalField("Seller", validators=[MatchesPrincipal()])
     submit = SubmitField("Update")
 
 class InquiryForm(flask_wtf.Form):
