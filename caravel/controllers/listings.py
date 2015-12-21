@@ -49,11 +49,11 @@ def modify_search(add=[], remove=[]):
 
 @app.template_global()
 def login_url():
-    return users.create_login_url(request.url)
+    return users.create_login_url(request.url.encode("utf-8"))
 
 @app.template_global()
 def logout_url():
-    return users.create_logout_url(request.url)
+    return users.create_logout_url(request.url.encode("utf-8"))
 
 @app.context_processor
 def inject_globals():
@@ -121,8 +121,7 @@ def search_listings():
     limit = 24
 
     # Compute the results matching that query.
-    listings = model.Listing.query().order(-model.Listing.posted_at)
-    listings = listings.fetch(limit + offset)[offset:offset + limit]
+    listings = list(model.Listing.matching(query))[offset:offset + limit]
 
     # Render a chrome-less template for AJAH continuation.
     template = ("" if "continuation" not in request.args else "_continuation")

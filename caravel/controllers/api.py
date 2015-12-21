@@ -65,8 +65,7 @@ def api_all_listings():
         abort(403)
 
     # Compute the results matching that query.
-    listings = model.Listing.query().order(-model.Listing.posted_at)
-    listings = listings.fetch(limit)
+    listings = list(model.Listing.matching(query))[offset:offset + limit]
 
     # Display only whitelisted properties as JSON.
     externalized = [_externalize(listing) for listing in listings]

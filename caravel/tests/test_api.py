@@ -61,26 +61,26 @@ class TestListings(helper.CaravelTestCase):
             }
         )
 
-        # self.assertEquals(
-        #     json.loads(self.get("/api/v1/listings.json?offset=1").data),
-        #     {
-        #         u"limit": 100,
-        #         u"offset": 1,
-        #         u"listings": [listing_b],
-        #         u"previousURL":
-        #             u"http://localhost/api/v1/listings.json?offset=0"
-        #     }
-        # )
-        #
-        # self.assertEquals(
-        #     json.loads(self.get("/api/v1/listings.json?limit=1").data),
-        #     {
-        #         u"limit": 1,
-        #         u"offset": 0,
-        #         u"listings": [listing_a],
-        #         u"nextURL": u"http://localhost/api/v1/listings.json?offset=1"
-        #     }
-        # )
+        self.assertEquals(
+            json.loads(self.get("/api/v1/listings.json?offset=1").data),
+            {
+                u"limit": 100,
+                u"offset": 1,
+                u"listings": [listing_b],
+                u"previousURL":
+                    u"http://localhost/api/v1/listings.json?offset=0"
+            }
+        )
+
+        self.assertEquals(
+            json.loads(self.get("/api/v1/listings.json?limit=1").data),
+            {
+                u"limit": 1,
+                u"offset": 0,
+                u"listings": [listing_a],
+                u"nextURL": u"http://localhost/api/v1/listings.json?offset=1"
+            }
+        )
 
         # Check that one listing appears is as it should be.
         self.assertEquals(

@@ -8,20 +8,19 @@ import time
 import re
 
 class TestListings(helper.CaravelTestCase):
-    @unittest.skip("Search features broken")
     def test_search(self):
         # View all listings, in order.
         self.assertEqual(self.clean(self.get("/").data),
-            "New Listing Listing \xe2\x98\x86A 5h ago Cars $3.10 Listing "
-            "\xe2\x98\x86B 2d ago Apartments $71.10")
+            "New Listing Listing \xe2\x98\x86A $3.10 cars 5h ago Listing "
+            "\xe2\x98\x86B $71.10 apartments 2d ago")
 
         # Listings at an offset.
         self.assertEqual(self.clean(self.get("/?offset=1").data),
-            "New Listing Listing \xe2\x98\x86B 2d ago Apartments $71.10")
+            "New Listing Listing \xe2\x98\x86B $71.10 apartments 2d ago")
 
         # Just a subset of listings.
         self.assertEqual(self.clean(self.get("/?q=body+%E2%98%86a").data),
-            "New Listing Listing \xe2\x98\x86A 5h ago Cars $3.10")
+            "New Listing Listing \xe2\x98\x86A $3.10 cars 5h ago")
 
         # Make sure links work.
         self.assertIn("/listing_a", self.get("/?q=body+%E2%98%86a").data)

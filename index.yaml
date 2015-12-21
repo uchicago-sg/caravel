@@ -13,5 +13,6 @@ indexes:
 - kind: Listing
   properties:
   - name: keywords
-  - name: posting_time
+  - name: posted_at
     direction: desc
+
