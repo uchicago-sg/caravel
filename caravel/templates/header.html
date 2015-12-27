@@ -46,8 +46,10 @@
       </div>
     </form>
     <div class="user-button-container">
+      {% if not is_from_tor() %}
       <a href="{{ url_for('new_listing') }}" class="btn btn-default btn-user">
         New Listing</a>
+      {% endif %}
       <div class="btn-group btn-user">
         <a href="{{ url_for('search_listings', q=request.args.q,
                       v='th') }}"
