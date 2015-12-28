@@ -49,7 +49,8 @@ class SchemaMixin(ndb.Expando):
         """
 
         super(SchemaMixin, klass)._post_get_hook(key, future)
-        future.get_result().run_migrations()
+        if future.get_result():
+            future.get_result().run_migrations()
 
     @classmethod
     def _from_pb(klass, *vargs, **kwargs):

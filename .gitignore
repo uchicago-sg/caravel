@@ -3,3 +3,4 @@
 .idea
 *.so
 .DS_Store
+venv/
