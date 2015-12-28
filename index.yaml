@@ -15,4 +15,3 @@ indexes:
   - name: keywords
   - name: posted_at
     direction: desc
-

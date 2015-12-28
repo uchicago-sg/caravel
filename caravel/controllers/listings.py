@@ -7,7 +7,7 @@ from flask import flash
 
 from werkzeug.routing import BaseConverter
 
-from caravel import app, model
+from caravel import app, model, utils
 from caravel.controllers import forms
 
 from google.appengine.api import users
@@ -15,6 +15,8 @@ from google.appengine.api import users
 import uuid
 import datetime
 import math
+
+TOR_DETECTOR = utils.TorDetector()
 
 # Allow Listings in route URLs.
 class ListingConverter(BaseConverter):
@@ -54,6 +56,10 @@ def login_url():
 @app.template_global()
 def logout_url():
     return users.create_logout_url(request.url.encode("utf-8"))
+
+@app.template_global()
+def is_from_tor():
+    return TOR_DETECTOR.is_tor_exit_node(request.remote_addr)
 
 @app.context_processor
 def inject_globals():
@@ -137,6 +143,9 @@ def show_listing(listing):
 
     form = forms.InquiryForm()
     if form.validate_on_submit():
+        if is_from_tor():
+            abort(403)
+
         inquiry = model.UnapprovedInquiry(listing=listing.key)
         form.populate_obj(inquiry)
         inquiry.put()
@@ -150,6 +159,9 @@ def edit_listing(listing):
     """
     Edits a listing.
     """
+
+    if is_from_tor():
+        abort(403)
 
     form = forms.EditListingForm(obj=listing)
 
@@ -166,6 +178,9 @@ def new_listing():
     """
     Creates or removes a listing.
     """
+
+    if is_from_tor():
+        abort(403)
 
     form = forms.NewListingForm()
 
