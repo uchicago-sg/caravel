@@ -31,6 +31,7 @@ from flask_wtf.csrf import CsrfProtect
 CsrfProtect(app)
 
 # Imported for side effects:
+from caravel import app, model, utils
 from caravel.storage import config #, photos
 from caravel.controllers import listings, api, moderation
-from caravel.daemons import migration, delete_old_photos
+from caravel.daemons import migration, delete_old_photos, nag_moderators

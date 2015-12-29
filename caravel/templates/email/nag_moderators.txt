@@ -1,0 +1,16 @@
+Greetings,
+
+Please visit {{ url_for("moderation_view", _external=True) }} to approve things.
+
+{% if inquiries -%}
+Inquiries ({{ inquiries|count }}):
+{%- for inquiry in inquiries %}
+  {{ inquiry.listing.get().title }} ({{ inquiry.principal.email }})
+{% endfor -%}
+{%- endif %}
+{%- if listings -%}
+Listings ({{ listings|count }}):
+{%- for listing in listings %}
+  {{ listing.title }} ({{ listing.principal.email }})
+{% endfor -%}
+{%- endif -%}
