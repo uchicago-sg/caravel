@@ -1,7 +1,7 @@
-appengine-sdk==1.9.28.post0
-PyYAML==3.11
-nose2==0.5.0
+appengine-sdk>=1.9.28.post0
+PyYAML>=3.11
+nose2>=0.5.0
 webob
-Pillow==2.9.0
+Pillow>=2.9.0
 coverage
 coveralls

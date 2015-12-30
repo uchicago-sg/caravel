@@ -23,3 +23,11 @@ handlers:
 builtins:
 - deferred: on
 - remote_api: on
+
+skip_files:
+- ^(.*/)?#.*#$
+- ^(.*/)?.*~$
+- ^(.*/)?.*\.py[co]$
+- ^(.*/)?.*/RCS/.*$
+- ^(.*/)?\..*$
+- ^/venv/.*$
