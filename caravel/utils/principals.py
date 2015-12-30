@@ -1,4 +1,5 @@
 import uuid
+import user_agents
 
 class Device(object):
     @classmethod
@@ -50,6 +51,16 @@ class Principal(object):
         """
 
         self.validated_by = reason
+
+    def explain(self):
+        """
+        Return a string explaining why this Principal is valid or not.
+        """
+
+        if self.auth_method in (self.GOOGLE_APPS, self.LEGACY):
+            return "Validated by {}".format(self.auth_method)
+        else:
+            return self.validated_by 
 
     def __repr__(self):
         """
