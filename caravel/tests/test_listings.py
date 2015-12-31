@@ -50,6 +50,26 @@ class TestListings(helper.CaravelTestCase):
         # Ensure that no emails have been sent.
         self.assertEqual(self.emails, [])
 
+        # Notify the moderators that something has happened.
+        self.get("/_internal/nag_moderators")
+
+        # Ensure that the moderators received the right email.
+        self.assertEqual(self.emails[0].to[0], "marketplace@lists.uchicago.edu")
+        self.assertEqual(self.emails[0].from_email,
+            "marketplace@lists.uchicago.edu")
+        self.assertEqual(self.emails[0].subject,
+            u"1 Inquiries, 0 Listings Pending")
+
+        self.assertEqual(self.emails[0].text,
+            u"Greetings,\n"
+            u"\n"
+            u"Please visit http://localhost/moderation to approve things.\n"
+            u"\n"
+            u"Inquiries (1):\n"
+            u"  Listing \u2606B (buyer@foo.com)\n"
+        )
+        self.emails.pop(0)
+
         # Approve the first listing.
         with self.google_apps_user("admin@uchicago.edu"):
             print self.post("/moderation", data={
