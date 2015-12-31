@@ -5,3 +5,7 @@ cron:
 - description: migrate database schema
   url: /_internal/migrate_schema
   schedule: every 10 minutes
+- description: nag moderators
+  url: /_internal/nag_moderators
+  schedule: every day 09:00
+  timezone: "America/Chicago"
