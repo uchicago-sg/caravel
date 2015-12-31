@@ -9,6 +9,7 @@ from werkzeug.routing import BaseConverter
 
 from caravel import app, model, utils
 from caravel.controllers import forms
+from caravel.controllers import custom_fields
 
 from google.appengine.api import users
 
@@ -149,7 +150,10 @@ def show_listing(listing):
         inquiry = model.UnapprovedInquiry(listing=listing.key)
         form.populate_obj(inquiry)
         inquiry.put()
-        flash("Your inquiry has been sent.")
+        if isinstance(inquiry, model.UnapprovedInquiry):
+            flash("Your inquiry has been recorded and is awaiting moderation.")
+        else:
+            flash("Your inquiry has been sent.")
         return redirect(url_for("show_listing", listing=listing))
 
     return render_template("listing_show.html", listing=listing, form=form)
@@ -163,12 +167,26 @@ def edit_listing(listing):
     if is_from_tor():
         abort(403)
 
-    form = forms.EditListingForm(obj=listing)
+    # FIXME: Clean up this logic. We intentionally don't want to expose the
+    # creator of a listing.
+    _principal, listing.principal = listing.principal, None 
+    try:
+        form = forms.EditListingForm(obj=listing)
+    finally:
+        listing.principal = _principal
+
+    # Ensure that we use the same principal for updates.
+    form.principal.validators[-1].principal = listing.principal
 
     if form.validate_on_submit():
+        listing = model.UnapprovedListing(id=listing.key.id(), version=11)
         form.populate_obj(listing)
         listing.put()
-        flash("Your listing has been created.")
+        if isinstance(listing, model.Listing):
+            flash("Your listing has been updated.")
+        else:
+            flash("Your edit is awaiting moderation. "
+                  "We'll email you when it is approved.")
         return redirect(url_for("show_listing", listing=listing))
 
     return render_template("listing_form.html", form=form)

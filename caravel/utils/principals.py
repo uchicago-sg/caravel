@@ -58,3 +58,30 @@ class Principal(object):
 
         return "Principal(email={!r}, device={!r}, auth_method={!r})".format(
             self.email, self.device, self.auth_method)
+
+    def can_act_as(self, other):
+        """
+        Returns True iff +self+ is allowed to act as +other+.
+
+        >>> d = Device("nonce", "user agent", "ip address")
+        >>> p1 = Principal("user1@domain", d, Principal.GOOGLE_APPS)
+        >>> p2 = Principal("user1@domain", d, Principal.EMAIL)
+        >>> p3 = Principal("user2@domain", d, Principal.LEGACY)
+        >>> p1.can_act_as(p2)
+        True
+        >>> p2.can_act_as(p1)
+        False
+        >>> p1.can_act_as(p3)
+        False
+        """
+
+        # Make sure it's mostly the same person.
+        if not isinstance(other, Principal) or self.email != other.email:
+            return False
+
+        # Make sure if they're using Apps, it's only a single email address.
+        if (other.auth_method == self.GOOGLE_APPS and
+            self.auth_method != self.GOOGLE_APPS):
+            return False
+
+        return True

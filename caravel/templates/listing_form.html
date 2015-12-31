@@ -11,6 +11,10 @@
       <div class="col-xs-12">
         <form class="form" method="post" role="form"
             enctype="multipart/form-data">
+          <p>BSD/Medicine/Medical School affiliates: if you are unable to sign
+             in with your CNetID, please enter your email in the box. Your
+             listing might not be posted immediately. We reserve the right to
+             remove listings at any time.</p>
           {{ form.hidden_tag() }}
           {{ wtf.form_errors(form, hiddens="only") }}
           {{ wtf.form_field(form.title) }}

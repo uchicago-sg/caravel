@@ -42,10 +42,10 @@ class TestListings(helper.CaravelTestCase):
 
         # Even so, ensure that it seems as though it got through.
         self.assertEqual(self.clean(self.get("/listing_b").data),
-            "New Listing Your inquiry has been sent. Listing \xe2\x98\x86B "
-            "apartments Posted 2d ago by [address hidden] ( sign in to view). "
-            "Price: $71.10 Body of \xe2\x98\x86B Contact Seller From Sign in "
-            "with CNetID or Message")
+            "New Listing Your inquiry has been recorded and is awaiting "
+            "moderation. Listing \xe2\x98\x86B apartments Posted 2d ago by "
+            "[address hidden] ( sign in to view). Price: $71.10 Body of "
+            "\xe2\x98\x86B Contact Seller From Sign in with CNetID or Message")
 
         # Ensure that no emails have been sent.
         self.assertEqual(self.emails, [])
@@ -154,26 +154,6 @@ class TestListings(helper.CaravelTestCase):
             u"Simply reply to this email if you'd like to get in contact. "
             u"Cheers, The Marketplace Team")
 
-    def test_new_listing_blocked(self):
-        # Try creating a new listing as an unauthenticated user.
-        self.post("/new", data={
-            "csrf_token": self.csrf_token("/new"),
-            "title": u"Title of \u2606D",
-            "body": u"Body of \u2606D",
-            "price": "3.441",
-            "principal": "seller-d@uchicago.edu",
-            "categories": "apartments",
-            "uploaded_photos-2-image":
-                ("caravel/tests/test-pattern.gif", "t.jpg")
-        })
-
-        # Ensure that no listing was created.
-        self.assertEqual(self.clean(self.get("/").data),
-            "New Listing Listing \xe2\x98\x86A $3.10 cars 5h ago Listing "
-            "\xe2\x98\x86B $71.10 apartments 2d ago")
-        self.assertEqual(self.emails, [])
-
-    @unittest.skip("Cannot post unauthenticated listings yet.")
     def test_new_listing(self):
         # Try creating a new listing as an unauthenticated user.
         self.post("/new", data={
@@ -237,6 +217,9 @@ class TestListings(helper.CaravelTestCase):
             '/_ah/gcs/test.appspot.com/listing-a-small',
             '/_ah/gcs/test.appspot.com/listing-b-small',
         ])
+
+    def test_edit_listing_with_cnetid(self):
+        pass
 
     def test_new_listing_with_cnetid(self):
         # Try creating a new listing as an authenticated user.
@@ -314,6 +297,46 @@ class TestListings(helper.CaravelTestCase):
             u"Cheers, "
             u"The Marketplace Team"
         )
+
+    def test_edit_listing(self):
+        # Try editing someone else's listing.
+        result = self.post("/listing_a/edit", data=dict(
+            csrf_token=self.csrf_token("/listing_a/edit"),
+            title=u"Title\u2606A",
+            body=u"Body\u2606A",
+            price="2.34",
+            principal="seller-a@uchicago.edu",
+            categories="cars",
+        )).data
+
+        self.assertEqual(self.clean(result),
+            "New Listing BSD/Medicine/Medical School affiliates: if you are "
+            "unable to sign in with your CNetID, please enter your email in "
+            "the box. Your listing might not be posted immediately. We reserve "
+            "the right to remove listings at any time. Title Seller Sign in "
+            "with CNetID or Please sign in with your CNetID. Categories "
+            "Apartments Subleases Appliances Bikes Books Cars Electronics "
+            "Employment Furniture Miscellaneous Services Wanted Price Body "
+            "Body\xe2\x98\x86A Image Image Image Image Image Cancel"
+        )
+
+        # Try editing our own listing.
+        with self.google_apps_user("seller-a@uchicago.edu"):
+            self.post("/listing_a/edit", data=dict(
+                csrf_token=self.csrf_token("/listing_a/edit"),
+                title=u"Title\u2606A",
+                body=u"Body\u2606A",
+                price="2.34",
+                principal="",
+                categories="cars",
+            ))
+
+            self.assertEqual(self.clean(self.get("/listing_a").data),
+                "New Listing Logged in as seller-a@uchicago.edu My Listings "
+                "Logout Your listing has been updated. Title\xe2\x98\x86A cars "
+                "Posted now by seller-a@uchicago.edu . Price: $2.34 "
+                "Body\xe2\x98\x86A Manage Listing Edit"
+            )
 
     @unittest.skip("Claim listing features disabled")
     def test_claim_listing(self):
