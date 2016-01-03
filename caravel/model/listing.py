@@ -22,7 +22,7 @@ class _Listing(CategoriesMixin, PhotosMixin, PrincipalMixin, TimeOrderMixin,
                SchemaMixin, PriceMixin, RateLimitMixin, ModeratedMixin,
                ndb.Model):
 
-    SCHEMA_VERSION = 11
+    SCHEMA_VERSION = 12
 
     title = ndb.StringProperty()
     body = ndb.TextProperty()
@@ -48,7 +48,8 @@ class Listing(SideEffectsMixin, FullTextMixin, _Listing):
         keywords = (
             self._tokenize("title", self.title) +
             self._tokenize("body", self.body) +
-            self._tokenize("category", " ".join(self.categories))
+            self._tokenize("category", " ".join(self.categories)) +
+            self._tokenize("seller", self.principal.email)
         )
         if self.price == 0:
             keywords.append("price:free")

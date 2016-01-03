@@ -32,6 +32,11 @@ body {
     color: white;
 }
 
+p.help {
+    font-size: 0.85em;
+    color: #222;
+}
+
 /* For search results */
 .float-to-inline-block {
     display:inline-block;

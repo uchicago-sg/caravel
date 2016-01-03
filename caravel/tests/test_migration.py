@@ -46,31 +46,32 @@ class TestListings(helper.CaravelTestCase):
         # Verify that gets now receive the correct version.
         listing = model.Listing.get_by_id("my-listing-name")
         self.assertEquals(listing.key.id(), "my-listing-name")
-        self.assertEquals(repr(listing.principal),
-                      "Principal("
-                      "email='jarcher@uchicago.edu', "
-                      "device=Device(nonce='autogen', user_agent='(unknown)',"
-                      " ip_address='0.0.0.0'), "
-                      "auth_method='LEGACY')")
+        self.assertEquals(
+            repr(
+                listing.principal), "Principal("
+            "email='jarcher@uchicago.edu', "
+            "device=Device(nonce='autogen', user_agent='(unknown)',"
+            " ip_address='0.0.0.0'), "
+            "auth_method='LEGACY')")
 
         self.assertEquals(listing.title, u"Legacy \xe2\x98\x86")
         self.assertEquals(listing.body, u"Body of Legacy \xe2\x98\x86")
         self.assertEquals(listing.price, 42.24)
         self.assertEquals(int((
-                            listing.posted_at -
-                            datetime.datetime.fromtimestamp(1450075938)
-                          ).total_seconds()), 0)
+            listing.posted_at -
+            datetime.datetime.fromtimestamp(1450075938)
+        ).total_seconds()), 0)
         self.assertEquals(listing.categories, ["furniture", "bikes"])
         self.assertEquals(listing.photos[0].path, "aa-bb")
         self.assertEquals(listing.photos[1].path, "cc-dd")
-        self.assertEquals(listing.version, 11)
+        self.assertEquals(listing.version, 12)
 
         # Trigger an update cronjob.
         self.get("/_internal/migrate_schema")
 
         # Verify that we have now changed on disk.
         listing = Listing.get_by_key_name("my-listing-name")
-        self.assertEquals(listing.version, 11)
+        self.assertEquals(listing.version, 12)
 
         # Verify that no emails were sent.
         self.assertEquals(self.emails, [])
