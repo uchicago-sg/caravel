@@ -11,7 +11,9 @@ from google.appengine.api import memcache, users
 from caravel import app, model, utils
 from caravel.storage import config
 
+
 class CaravelTestCase(unittest.TestCase):
+
     def setUp(self):
         # FIXME: Remove once everything else is TestCase-ified.
         db.delete(db.Query(keys_only=True))
@@ -91,6 +93,7 @@ class CaravelTestCase(unittest.TestCase):
         markup = re.sub(r'[ \t\r\n]+', ' ', markup)
         markup = re.sub(r'Marketplace is.*lists.uchicago.edu\. ', '', markup)
         markup = re.sub(r'(^.*UChicago Marketplace)|(&#169;.*$)', '', markup)
+        markup = re.sub(r'Please .* Update to Marketplace \. ', '', markup)
         return markup.strip()
 
     def extract_photos(self, markup):
@@ -111,6 +114,7 @@ class CaravelTestCase(unittest.TestCase):
     @contextmanager
     def google_apps_user(self, email, is_admin=True):
         class FakeUser():
+
             def email(self):
                 return email
 
@@ -123,7 +127,7 @@ class CaravelTestCase(unittest.TestCase):
         try:
             yield
         finally:
-            users.get_current_user = _current_user 
+            users.get_current_user = _current_user
             users.is_current_user_admin = _is_admin
 
     @contextmanager
