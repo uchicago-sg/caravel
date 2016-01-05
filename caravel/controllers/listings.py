@@ -67,7 +67,8 @@ def inject_globals():
     """Adds the categories and user info into the view."""
     return {'categories_list': model.Listing.CATEGORIES_LIST,
             'categories_dict': model.Listing.CATEGORIES_DICT,
-            'current_user': users.get_current_user()}
+            'current_user': users.get_current_user(),
+            'is_admin': users.is_current_user_admin()}
 
 # Display the time as "1s" etc.
 @app.template_filter("as_duration")
