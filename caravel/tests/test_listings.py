@@ -121,7 +121,8 @@ class TestListings(helper.CaravelTestCase):
                 "New Listing Logged in as visitor@uchicago.edu My Listings "
                 "Logout Your inquiry has been sent. Listing \xe2\x98\x86B "
                 "apartments Posted 2d ago by seller-b@uchicago.edu . Price: "
-                "$71.10 Body of \xe2\x98\x86B Contact Seller From "
+                "$71.10 Validated by GOOGLE_APPS. Originally posted by 1.2.3.4 "
+                "with mozilla. Body of \xe2\x98\x86B Contact Seller From "
                 "visitor@uchicago.edu ( Logout ) Message")
 
         # Verify that the proper email was sent.
@@ -239,6 +240,7 @@ class TestListings(helper.CaravelTestCase):
                 "New Listing Logged in as visitor@uchicago.edu My Listings "
                 "Logout Your listing has been created. Title of \xe2\x98\x86D "
                 "apartments Posted now by visitor@uchicago.edu . Price: $3.44 "
+                "Validated by GOOGLE_APPS. Originally posted by None with . "
                 "Body of \xe2\x98\x86D Manage Listing Edit")
 
         # Make sure the picture shows up.
@@ -334,7 +336,8 @@ class TestListings(helper.CaravelTestCase):
             self.assertEqual(self.clean(self.get("/listing_a").data),
                 "New Listing Logged in as seller-a@uchicago.edu My Listings "
                 "Logout Your listing has been updated. Title\xe2\x98\x86A cars "
-                "Posted now by seller-a@uchicago.edu . Price: $2.34 "
+                "Posted now by seller-a@uchicago.edu . Price: $2.34 Validated "
+                "by GOOGLE_APPS. Originally posted by None with . "
                 "Body\xe2\x98\x86A Manage Listing Edit"
             )
 

@@ -32,6 +32,13 @@
           {%- endif -%}.
           Price: <strong>{{ '${:,.2f}'.format(listing.price) }}</strong>
       </p>
+      {% if is_admin %}
+      <p class="alert alert-info">
+        {{ listing.principal.explain() }}. Originally posted by
+        {{ listing.principal.device.ip_address }} with 
+        {{ listing.principal.device.user_agent }}. 
+      </p>
+      {% endif %}
       <p style="white-space:pre-wrap">{{ listing.body }}</p>
     </div>
     {% if not is_from_tor() %}
