@@ -169,6 +169,11 @@ form .thumbnail {
     float: right;
 }
 
+.alert.alert-warning a {
+  color: black;
+  font-weight: bold;
+}  
+
 /* Custom header via media query */
 @media (min-width: 992px){
     .logo-brand-block{
