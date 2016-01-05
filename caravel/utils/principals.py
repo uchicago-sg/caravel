@@ -1,7 +1,9 @@
 import uuid
 import user_agents
 
+
 class Device(object):
+
     @classmethod
     def from_request(klass, request):
         return Device(
@@ -18,20 +20,29 @@ class Device(object):
         return "Device(nonce={!r}, user_agent={!r}, ip_address={!r})".format(
             self.nonce, self.user_agent, self.ip_address)
 
+
 class Principal(object):
     GOOGLE_APPS = "GOOGLE_APPS"
     EMAIL = "EMAIL"
     LEGACY = "LEGACY"
+
+    GOOGLE_APPS_DOMAIN = "uchicago.edu"
 
     def __init__(self, email, device, auth_method):
         if auth_method not in (self.GOOGLE_APPS, self.EMAIL, self.LEGACY):
             raise ValueError
 
         if not isinstance(email, basestring):
-            raise TypeError, email
+            raise TypeError(email)
 
         if not isinstance(device, Device):
-            raise TypeError, device
+            raise TypeError(device)
+
+        # HACK: This prevents badly-configured App Engine instances from
+        # letting everybody sign in to the site.
+        if (auth_method == self.GOOGLE_APPS and
+                not email.endswith(self.GOOGLE_APPS_DOMAIN)):
+            auth_method = self.EMAIL
 
         self.email, self.device, self.auth_method = email, device, auth_method
         self.validated_by = ""
@@ -43,7 +54,7 @@ class Principal(object):
         """
 
         return ((self.auth_method in (self.GOOGLE_APPS, self.LEGACY))
-                 or bool(self.validated_by))
+                or bool(self.validated_by))
 
     def validate(self, reason):
         """
@@ -75,9 +86,9 @@ class Principal(object):
         Returns True iff +self+ is allowed to act as +other+.
 
         >>> d = Device("nonce", "user agent", "ip address")
-        >>> p1 = Principal("user1@domain", d, Principal.GOOGLE_APPS)
-        >>> p2 = Principal("user1@domain", d, Principal.EMAIL)
-        >>> p3 = Principal("user2@domain", d, Principal.LEGACY)
+        >>> p1 = Principal("user1@uchicago.edu", d, Principal.GOOGLE_APPS)
+        >>> p2 = Principal("user1@uchicago.edu", d, Principal.EMAIL)
+        >>> p3 = Principal("user2@uchicago.edu", d, Principal.LEGACY)
         >>> p1.can_act_as(p2)
         True
         >>> p2.can_act_as(p1)
@@ -92,7 +103,7 @@ class Principal(object):
 
         # Make sure if they're using Apps, it's only a single email address.
         if (other.auth_method == self.GOOGLE_APPS and
-            self.auth_method != self.GOOGLE_APPS):
+                self.auth_method != self.GOOGLE_APPS):
             return False
 
         return True
