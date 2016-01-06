@@ -12,7 +12,9 @@ from werkzeug import FileStorage
 
 from caravel import model, utils
 
+
 class OnlyValid(object):
+
     """Validates that the credential is correct."""
 
     def __call__(self, form, field):
@@ -21,7 +23,9 @@ class OnlyValid(object):
         if not field.data or not field.data.valid:
             raise ValidationError("Invalid credential.")
 
+
 class MatchesPrincipal(threading.local):
+
     """Ensures that only the existing Principal is used."""
 
     def __init__(self):
@@ -41,7 +45,9 @@ class MatchesPrincipal(threading.local):
             else:
                 raise ValidationError("Please use the same account for edits.")
 
+
 class PrincipalField(wtforms.StringField):
+
     """A PrincipalField is one that represents an email address."""
 
     def __init__(self, label, **kwargs):
@@ -84,7 +90,7 @@ class PrincipalField(wtforms.StringField):
                 "{}"
             ).format(
                 users.get_current_user().email(),
-                users.create_logout_url(request.url),
+                users.create_logout_url(request.url.encode("utf-8")),
                 super(PrincipalField, self).__call__(**kwargs)
             )
 
@@ -105,9 +111,12 @@ class PrincipalField(wtforms.StringField):
             return Markup(
                 "<div><a href='{}' class='signin btn btn-success'>Sign in with "
                 "CNetID</a>{}</div>"
-            ).format(users.create_login_url(request.url), alternative)
+            ).format("/login", alternative)
+            # users.create_login_url(request.url)
+
 
 class PhotoField(wtforms.StringField):
+
     """A PhotoField represents a photo object stored in Cloud Storage."""
 
     def process_formdata(self, values):
@@ -139,7 +148,7 @@ class PhotoField(wtforms.StringField):
             return Markup("""
                 <div class="thumbnail">
                   {} <img src="{}"/>
-                  <div class="caption">                    
+                  <div class="caption">
                     <a class="btn btn-danger"
                        onclick="removeThumbnail(this, {!r})">Remove</a>
                   </div>

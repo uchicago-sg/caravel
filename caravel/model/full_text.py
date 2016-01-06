@@ -1,12 +1,21 @@
 from google.appengine.ext import ndb
 from google.appengine.api import memcache
 import json
+import itertools
 
 FTS = "fts:"
+
 
 def tokenize(value):
     """Parses the given string into words."""
     return value.lower().split() + [""]
+
+
+def grouper(iterable, n, fillvalue=None):
+    "Collect data into fixed-length chunks or blocks"
+    # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx
+    args = [iter(iterable)] * n
+    return itertools.izip_longest(fillvalue=fillvalue, *args)
 
 
 class FullTextMixin(ndb.Model):
@@ -40,9 +49,12 @@ class FullTextMixin(ndb.Model):
         memcache.set_multi(writeback, time=3600, key_prefix=FTS)
 
         # Elide potentially stale entries from the cache.
-        for candidate in ndb.get_multi([key for key in keys if key in matches]):
-            if candidate and set(words).issubset(set(candidate.keywords)):
-                yield candidate
+        keys = [key for key in keys if key in matches]
+
+        for keys in grouper(keys, n=12):
+            for entity in ndb.get_multi([key for key in keys if key]):
+                if entity and set(words).issubset(set(entity.keywords)):
+                    yield entity
 
     def _post_put_hook(self, future):
         """Clear the cache of entries maching these keywords."""

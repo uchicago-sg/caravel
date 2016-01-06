@@ -27,9 +27,9 @@
         {% for category in listing.categories %}
         <span class="label label-default">{{ category }}</span>
         {% endfor %}<br/>
-        {% if current_user %}
+        {# }{% if current_user %}
           <span class="label label-primary">{{ listing.principal.email }}</span>
-        {% endif %}
+        {% endif %} #}
         <span class="label label-info">{{
           listing.posted_at|as_duration }}</span>
       </p>

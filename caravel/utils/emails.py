@@ -5,15 +5,15 @@ Allows easy access to an SMTP server.
 import sendgrid
 import logging
 
-from caravel.utils import principals
-from caravel.storage import config
-
 SENDER = "Marketplace Team <marketplace@lists.uchicago.edu>"
+
 
 def send_mail(to, subject, html, text, reply_to=None, sender=SENDER):
     """
     Sends an email to the given principals.
     """
+
+    from caravel.utils import principals
 
     # Verify that we are not sending spam to people.
     if not (isinstance(to, principals.Principal) and to.valid):
@@ -23,7 +23,7 @@ def send_mail(to, subject, html, text, reply_to=None, sender=SENDER):
     if reply_to:
         if not (isinstance(reply_to, principals.Principal) and reply_to.valid):
             raise ValueError("{!r} has not consented to send email."
-                .format(reply_to))
+                             .format(reply_to))
 
     # Actually send the message to the user.
     _send_raw_mail(
@@ -35,8 +35,11 @@ def send_mail(to, subject, html, text, reply_to=None, sender=SENDER):
         sender=sender
     )
 
+
 def _send_raw_mail(to, subject, html, text, reply_to=None, sender=SENDER):
     logging.debug("SendMail(to={!r}, subject={!r})".format(to, subject))
+
+    from caravel.storage import config
 
     email = sendgrid.Mail()
     email.set_from(sender)

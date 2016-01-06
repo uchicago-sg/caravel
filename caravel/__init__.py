@@ -22,7 +22,7 @@ if "APPLICATION_ID" not in os.environ:
     testbed.activate()
     testbed.init_all_stubs()
     app.testing = True
-    
+
 # Ensure that the Recaptcha field is small.
 app.config["RECAPTCHA_DATA_ATTRS"] = {"size": "compact"}
 
@@ -31,7 +31,6 @@ from flask_wtf.csrf import CsrfProtect
 CsrfProtect(app)
 
 # Imported for side effects:
-from caravel import app, model, utils
-from caravel.storage import config #, photos
+from caravel.storage import config  # , photos
 from caravel.controllers import listings, api, moderation
 from caravel.daemons import migration, delete_old_photos, nag_moderators

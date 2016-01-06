@@ -1,14 +1,16 @@
 from google.appengine.ext import ndb
 from caravel.model import principal
 
+
 class ModeratedMixin(ndb.Model):
+
     """
     A ModeratedMixin allows an entity to change type once the approval property
     is true. If no approved() method is specified, the class defaults to using
     the .principal property.
-    
+
     >>> from google.appengine.ext import ndb
-    
+
     >>> class Parent(ndb.Model): pass
     >>> class A(Parent): pass
     >>> class B(ModeratedMixin, Parent):
@@ -16,11 +18,11 @@ class ModeratedMixin(ndb.Model):
     ...   def approved(self): return True
     ...
     >>> x = B()
-    >>> type(x)
-    B<>
+    >>> type(x).__name__
+    'B'
     >>> key = x.put()
-    >>> type(x)
-    A<>
+    >>> type(x).__name__
+    'A'
     """
 
     TYPE_ONCE_APPROVED = None

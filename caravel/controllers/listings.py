@@ -16,11 +16,15 @@ from google.appengine.api import users
 import uuid
 import datetime
 import math
+import itertools
 
 TOR_DETECTOR = utils.TorDetector()
 
 # Allow Listings in route URLs.
+
+
 class ListingConverter(BaseConverter):
+
     def to_python(self, value):
         listing = model.Listing.get_by_id(str(value))
         if not listing:
@@ -33,6 +37,8 @@ class ListingConverter(BaseConverter):
 app.url_map.converters['listing'] = ListingConverter
 
 # Allow modification of the search query in the template.
+
+
 @app.template_global()
 def modify_search(add=[], remove=[]):
     """Adds and removes the given words from the query, returning the new ?q."""
@@ -50,17 +56,21 @@ def modify_search(add=[], remove=[]):
 
     return " ".join(query)
 
+
 @app.template_global()
 def login_url():
-    return users.create_login_url(request.url.encode("utf-8"))
+    return "/login"  # users.create_login_url(request.url.encode("utf-8"))
+
 
 @app.template_global()
 def logout_url():
     return users.create_logout_url(request.url.encode("utf-8"))
 
+
 @app.template_global()
 def is_from_tor():
     return TOR_DETECTOR.is_tor_exit_node(request.remote_addr)
+
 
 @app.context_processor
 def inject_globals():
@@ -71,6 +81,8 @@ def inject_globals():
             'is_admin': users.is_current_user_admin()}
 
 # Display the time as "1s" etc.
+
+
 @app.template_filter("as_duration")
 def as_duration(absolute_time):
     """
@@ -108,10 +120,12 @@ def as_duration(absolute_time):
 
     return result
 
+
 @app.after_request
 def show_disclaimer(response):
     session["seen_disclaimer"] = True
     return response
+
 
 @app.route("/")
 def search_listings():
@@ -129,13 +143,15 @@ def search_listings():
     limit = 24
 
     # Compute the results matching that query.
-    listings = list(model.Listing.matching(query))[offset:offset + limit]
+    listings = list(itertools.islice(model.Listing.matching(query), offset,
+                                     offset + limit))
 
     # Render a chrome-less template for AJAH continuation.
     template = ("" if "continuation" not in request.args else "_continuation")
 
     return render_template("index{}.html".format(template),
-        listings=listings, view=view, query=query)
+                           listings=listings, view=view, query=query)
+
 
 @app.route("/<listing:listing>", methods=["GET", "POST"])
 def show_listing(listing):
@@ -159,6 +175,7 @@ def show_listing(listing):
 
     return render_template("listing_show.html", listing=listing, form=form)
 
+
 @app.route("/<listing:listing>/edit", methods=["GET", "POST"])
 def edit_listing(listing):
     """
@@ -170,7 +187,7 @@ def edit_listing(listing):
 
     # FIXME: Clean up this logic. We intentionally don't want to expose the
     # creator of a listing.
-    _principal, listing.principal = listing.principal, None 
+    _principal, listing.principal = listing.principal, None
     try:
         form = forms.EditListingForm(obj=listing)
     finally:
@@ -191,6 +208,7 @@ def edit_listing(listing):
         return redirect(url_for("show_listing", listing=listing))
 
     return render_template("listing_form.html", form=form)
+
 
 @app.route("/new", methods=["GET", "POST"])
 def new_listing():
@@ -218,10 +236,17 @@ def new_listing():
 
     return render_template("listing_form.html", form=form)
 
+
 @app.route("/about")
 def about():
     return render_template("about.html")
 
+
 @app.route("/help")
 def helppage():
     return render_template("help.html")
+
+
+@app.route("/login")
+def login_page():
+    return redirect("/")
