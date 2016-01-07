@@ -9,21 +9,27 @@ from caravel.model.priced import PriceMixin
 from caravel.model.principal import PrincipalMixin
 from caravel.model.side_effects import SideEffectsMixin
 from caravel.model.full_text import FullTextMixin
+from caravel.model.rate_limits import RateLimitMixin
+
 from caravel import utils
 
 import datetime
 import re
 from flask import render_template
 
+
 class _Listing(CategoriesMixin, PhotosMixin, PrincipalMixin, TimeOrderMixin,
-               SchemaMixin, PriceMixin, ModeratedMixin, ndb.Model):
+               SchemaMixin, PriceMixin, RateLimitMixin, ModeratedMixin,
+               ndb.Model):
 
     SCHEMA_VERSION = 11
 
     title = ndb.StringProperty()
     body = ndb.TextProperty()
 
+
 class Listing(SideEffectsMixin, FullTextMixin, _Listing):
+
     def side_effects(self):
         """
         Sends an email to the creator of this listing.
@@ -35,7 +41,7 @@ class Listing(SideEffectsMixin, FullTextMixin, _Listing):
             html=render_template("email/listing_verified.html", listing=self),
             text=render_template("email/listing_verified.txt", listing=self)
         )
-    
+
     def _keywords(self):
         """Generates keywords for this listing."""
 
@@ -48,8 +54,11 @@ class Listing(SideEffectsMixin, FullTextMixin, _Listing):
             keywords.append("price:free")
         return keywords
 
+
 class UnapprovedListing(_Listing):
+    MAX_DAILY_LIMIT = 4
     TYPE_ONCE_APPROVED = Listing
+
 
 @Listing.migration(to_version=11)
 def to_ndb_schema(listing):
@@ -72,7 +81,7 @@ def to_ndb_schema(listing):
         listing.posted_at = datetime.datetime(month=9, day=15, year=2015)
 
     listing.categories = [re.sub(r'^category:', '', x) for x in
-                             listing.categories]
+                          listing.categories]
 
     listing.photos = [
         Photo(re.sub(r'-large$', '', p.path)) for p in listing.photos]
