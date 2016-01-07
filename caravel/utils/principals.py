@@ -71,7 +71,7 @@ class Principal(object):
         if self.auth_method in (self.GOOGLE_APPS, self.LEGACY):
             return "Validated by {}".format(self.auth_method)
         else:
-            return self.validated_by 
+            return self.validated_by
 
     def __repr__(self):
         """
