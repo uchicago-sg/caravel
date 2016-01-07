@@ -313,10 +313,10 @@ class TestListings(helper.CaravelTestCase):
 
         self.assertEqual(self.clean(result),
             "New Listing Title Seller Sign in with CNetID or Please sign in "
-            "with your CNetID. BSD/Medicine/Medical School affiliates: if you are "
-            "unable to sign in with your CNetID, please enter your email in "
-            "the box. Your listing might not be posted immediately. We reserve "
-            "the right to remove listings at any time. Categories "
+            "with your CNetID. BSD/Medicine/Medical School affiliates: if "
+            "you are unable to sign in with your CNetID, please enter your "
+            "email in the box. Your listing might not be posted immediately. "
+            "We reserve the right to remove listings at any time. Categories "
             "Apartments Subleases Appliances Bikes Books Cars Electronics "
             "Employment Furniture Miscellaneous Services Wanted Price Body "
             "Body\xe2\x98\x86A Image Image Image Image Image Cancel"
