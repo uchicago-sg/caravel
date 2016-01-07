@@ -18,7 +18,7 @@
       </tr>
     </thead>
     {% for inquiry in inquiries %}
-    <tr>
+    <tr {% if inquiry.denial %}class="danger"{% endif %}>
       <td>{{ user_agent(inquiry.principal.device.user_agent) }}</td>
       <td>{{ inquiry.principal.device.ip_address }}</td>
       <td>{{ inquiry.principal.email }}</td>
@@ -27,7 +27,13 @@
           {{ inquiry.listing.get().title }}</td>
       <td>{{ inquiry.message }}</td>
       <td><a data-approve="{{ inquiry.key.urlsafe() }}"
-             class="btn btn-success">Approve</a></td>
+             class="btn btn-success">Approve</a>
+          {% if not inquiry.denial %}
+            <a data-deny="{{ inquiry.key.urlsafe() }}"
+               class="btn btn-danger">Deny</a>
+          {% else %}
+            <p><strong>{{ inquiry.denial }}</strong></p>
+          {% endif %}
     </tr>
     {% endfor %}
   </table>
@@ -44,15 +50,46 @@
       </tr>
     </thead>
     {% for listing in listings %}
-    <tr>
+    <tr {% if listing.denial %}class="danger"{% endif %}>
       <td>{{ user_agent(listing.principal.device.user_agent) }}</td>
       <td>{{ listing.principal.device.ip_address }}</td>
       <td>{{ listing.principal.email }}</td>
-      <td>{{ listing.title }}</td>
-      <td>{{ listing.body }}</td>
+      <td>{{ listing.title }}
+          {% if listing.key_once_approved().get() %}
+          <p><em>was {{ listing.key_once_approved().get().title }}</em></p>
+          {% endif %}
+      </td>
+      <td>{{ listing.body }}
+        {% if listing.key_once_approved().get() %}
+        <p><em>was<em><br/> {{ listing.key_once_approved().get().body }}</p>
+        {% endif %}
+        <div>
+          {% for photo in listing.photos %}
+          <a href="{{ photo.public_url('large') }}"
+             class="thumbnail" style="width:100px">
+            <img src="{{ photo.public_url('large') }}"/>
+          </a>
+          {% endfor %}
+        </div>
+      </td>
       <td><a data-approve="{{ listing.key.urlsafe() }}"
-             class="btn btn-success">Approve</a></td>
+             class="btn btn-success">Approve</a>
+          {% if not listing.denial %}
+            <a data-deny="{{ listing.key.urlsafe() }}"
+               class="btn btn-danger">Deny</a>
+          {% else %}
+            <p><strong>{{ listing.denial }}</strong></p>
+          {% endif %}
+      </td>
     </tr>
+    {% if listing.photos %}
+    <tr>
+      <td colspan="6">
+        Photos:
+      
+      </td>
+    </tr>
+    {% endif %}
     {% endfor %}
   </table>
   <script type="text/javascript">

@@ -27,6 +27,8 @@ class ModeratedMixin(ndb.Model):
 
     TYPE_ONCE_APPROVED = None
 
+    denial = ndb.StringProperty()
+
     def _pre_put_hook(self):
         """
         Changes the type of this class if self.approved() is true.
@@ -72,3 +74,20 @@ class ModeratedMixin(ndb.Model):
 
         self.principal.validate(reason)
         assert self.approved()
+
+    def deny(self, reason):
+        """
+        Override to decide what denial means.
+        """
+
+        self.denial = reason
+
+    def key_once_approved(self):
+        """
+        Returns the key of the entity that will be overritten if this one is
+        approved.
+        """
+
+        flat = list(self.key.flat())
+        flat[-2] = str(self.TYPE_ONCE_APPROVED.__name__)
+        return ndb.Key(flat=flat)
