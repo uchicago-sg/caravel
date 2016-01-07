@@ -1,17 +1,19 @@
 from google.appengine.ext import ndb
 
+
 class SchemaMixin(ndb.Expando):
+
     """
     A SchemaMixin tracks changes to the schema of an entity.
-    
+
     >>> class F(SchemaMixin):
     ...   SCHEMA_VERSION = 1
     >>> x = F()
-    
+
     >>> @F.migration(to_version=2)
     ... def bump(ent): print "bumping version for " + ent.__class__.__name__
     >>> F.SCHEMA_VERSION = 2
-    
+
     >>> y = x.put().get()
     bumping version for F
     >>> y.version
@@ -62,4 +64,3 @@ class SchemaMixin(ndb.Expando):
             entity.version = 0
         entity.run_migrations()
         return entity
-
