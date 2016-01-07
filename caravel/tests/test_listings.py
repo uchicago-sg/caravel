@@ -14,6 +14,12 @@ class TestListings(helper.CaravelTestCase):
             "New Listing Listing \xe2\x98\x86A $3.10 cars 5h ago Listing "
             "\xe2\x98\x86B $71.10 apartments 2d ago")
 
+        # View listings in list view
+        self.assertEqual(self.clean(self.get("/?v=ls").data),
+            "New Listing Images? Title Price Category Yes Listing "
+            "\xe2\x98\x86A $3.10 cars Yes Listing \xe2\x98\x86B $71.10 "
+            "apartments")
+
         # Listings at an offset.
         self.assertEqual(self.clean(self.get("/?offset=1").data),
             "New Listing Listing \xe2\x98\x86B $71.10 apartments 2d ago")
