@@ -94,7 +94,8 @@ class CaravelTestCase(unittest.TestCase):
         markup = re.sub(r'Marketplace is.*lists.uchicago.edu\. ', '', markup)
         markup = re.sub(r'(^.*UChicago Marketplace)|(&#169;.*$)', '', markup)
         markup = re.sub(r'Please .* Update to Marketplace \. ', '', markup)
-	markup = re.sub(r'tip: .*? listings ', '', markup)
+        markup = re.sub(r'tip: .*? listings ', '', markup)
+        markup = re.sub(r'Alumni/BSD.*?any time\. ', '', markup)
         return markup.strip()
 
     def extract_photos(self, markup):

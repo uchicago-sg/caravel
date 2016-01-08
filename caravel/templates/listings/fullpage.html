@@ -23,14 +23,14 @@
           <span class="label label-default">{{ category }}</span>
         {% endfor %}
       </p>
-      <p>Posted <strong>{{ listing.posted_at|as_duration }}</strong>
-          by {% if current_user %}
+      <p>Posted <strong>{{ listing.posted_at|as_duration }}</strong>.
+          {# by {% if current_user %}
             <a href="{{ url_for('search_listings',
                           q=listing.principal.email) }}">
               {{ listing.principal.email }}</a>
           {%- else -%}
             [address hidden] (<a href="{{ login_url() }}">sign in</a> to view)
-          {%- endif -%}.
+          {%- endif -%}. #}
           Price: <strong>{{ '${:,.2f}'.format(listing.price) }}</strong>
       </p>
       {% if is_admin %}
