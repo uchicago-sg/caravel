@@ -31,9 +31,6 @@ from flask_wtf.csrf import CsrfProtect
 CsrfProtect(app)
 
 # Imported for side effects:
-import caravel.model
-import caravel.utils
-import caravel.storage.config
 import caravel.controllers.listings
 import caravel.controllers.api
 import caravel.controllers.moderation
