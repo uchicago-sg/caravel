@@ -5,8 +5,6 @@ Allows easy access to an SMTP server.
 import sendgrid
 import logging
 
-from caravel.utils import principals
-
 SENDER = "Marketplace Team <marketplace@lists.uchicago.edu>"
 
 
@@ -14,6 +12,8 @@ def send_mail(to, subject, html, text, reply_to=None, sender=SENDER):
     """
     Sends an email to the given principals.
     """
+
+    from caravel.utils import principals
 
     # Verify that we are not sending spam to people.
     if not (isinstance(to, principals.Principal) and to.valid):
