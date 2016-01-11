@@ -25,7 +25,8 @@
       </p>
       <p>Posted <strong>{{ listing.posted_at|as_duration }}</strong>
           by {% if current_user %}
-            <a href="mailto:{{ listing.principal.email }}">
+            <a href="{{ url_for('search_listings',
+                          q=listing.principal.email) }}">
               {{ listing.principal.email }}</a>
           {%- else -%}
             [address hidden] (<a href="{{ login_url() }}">sign in</a> to view)
