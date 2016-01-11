@@ -16,6 +16,7 @@ from google.appengine.api import users
 import uuid
 import datetime
 import math
+import itertools
 
 TOR_DETECTOR = utils.TorDetector()
 
@@ -130,13 +131,15 @@ def search_listings():
     limit = 24
 
     # Compute the results matching that query.
-    listings = list(model.Listing.matching(query))[offset:offset + limit]
+    listings = list(itertools.islice(model.Listing.matching(query), offset,
+                                     offset + limit))
 
     # Render a chrome-less template for AJAH continuation.
     template = ("" if "continuation" not in request.args else "_continuation")
 
     return render_template("index{}.html".format(template),
-        listings=listings, view=view, query=query)
+                           listings=listings, view=view, query=query)
+
 
 @app.route("/<listing:listing>", methods=["GET", "POST"])
 def show_listing(listing):
