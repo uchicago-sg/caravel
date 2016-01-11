@@ -84,7 +84,7 @@ class PrincipalField(wtforms.StringField):
                 "{}"
             ).format(
                 users.get_current_user().email(),
-                users.create_logout_url(request.url),
+                users.create_logout_url(request.url.encode("utf-8")),
                 super(PrincipalField, self).__call__(**kwargs)
             )
 
@@ -105,7 +105,9 @@ class PrincipalField(wtforms.StringField):
             return Markup(
                 "<div><a href='{}' class='signin btn btn-success'>Sign in with "
                 "CNetID</a>{}</div>"
-            ).format(users.create_login_url(request.url), alternative)
+            ).format("/login", alternative)
+            # users.create_login_url(request.url)
+
 
 class PhotoField(wtforms.StringField):
     """A PhotoField represents a photo object stored in Cloud Storage."""

@@ -2,7 +2,7 @@
 Listings are placed by sellers when they want to sell things.
 """
 
-import uuid, time, calendar
+import uuid, time, calendar, itertools
 
 from flask import render_template, request, abort, redirect, url_for, session
 from flask import flash, g, jsonify
@@ -57,15 +57,16 @@ def api_all_listings():
     limit = int(request.args.get("limit", "100"))
     if limit < 0:
         limit = 0
-    if limit > 100:
-        limit = 100
+    if limit > 1000:
+        limit = 1000
 
     # Provide a burst limit on search queries.
-    if dos.rate_limit("api_search:{}".format(request.remote_addr), 40, 60):
+    if dos.rate_limit("api_search:{}".format(request.remote_addr), 10, 60):
         abort(403)
 
     # Compute the results matching that query.
-    listings = list(model.Listing.matching(query))[offset:offset + limit]
+    listings = list(itertools.islice(model.Listing.matching(query), offset,
+                                     offset + limit))
 
     # Display only whitelisted properties as JSON.
     externalized = [_externalize(listing) for listing in listings]

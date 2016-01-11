@@ -16,6 +16,10 @@ handlers:
   script: caravel.app
   login: admin
   secure: always
+- url: /login.*
+  script: caravel.app
+  login: required
+  secure: always
 - url: /.*
   script: caravel.app
   secure: always
@@ -30,4 +34,4 @@ skip_files:
 - ^(.*/)?.*\.py[co]$
 - ^(.*/)?.*/RCS/.*$
 - ^(.*/)?\..*$
-- ^/venv/.*$
+- ^.*venv.*$
