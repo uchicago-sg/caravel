@@ -5,9 +5,10 @@ import itertools
 
 FTS = "fts:"
 
+
 def tokenize(value):
     """Parses the given string into words."""
-    return value.lower().split() + [""]
+    return value.lower().split()
 
 
 def grouper(iterable, n, fillvalue=None):
@@ -27,6 +28,11 @@ class FullTextMixin(ndb.Model):
 
         # Check contents of cache.
         words = tokenize(query)
+        if not words:
+            for item in klass.query().order(-klass.posted_at):
+                yield item
+            return
+
         results = memcache.get_multi(words, key_prefix=FTS)
         matches = None
         in_order = None
