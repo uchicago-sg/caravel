@@ -33,6 +33,12 @@
           {%- endif -%}. #}
           Price: <strong>{{ '${:,.2f}'.format(listing.price) }}</strong>
       </p>
+      {% if listing.sold %}
+      <p class="alert alert-warning">
+        This listing was sold, preventing it from showing up in searches
+        and blocking future inquiries.
+      </p>
+      {% endif %}
       {% if is_admin %}
       <p class="alert alert-info">
         {{ listing.principal.explain() }}. Originally posted by
@@ -44,23 +50,30 @@
     </div>
     {% if not is_from_tor() %}
     <div class="col-md-3">
-    {% if current_user and listing.principal.email == current_user.email() %}
+    {% if current_user and listing.principal.email == current_user.email() or is_admin %}
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title">Manage Listing</h3>
+          <h3 class="panel-title">
+            Manage Listing</h3>
         </div>
-        <form class="panel-body" method="post" action="{{
-                                  url_for('edit_listing', listing=listing) }}">
+        <form class="panel-body" method="post"
+          action="{{ url_for('publish_listing', listing=listing) }}">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
           <a class="btn btn-default"
                 href="{{ url_for('edit_listing', listing=listing) }}">
             Edit</a>
-          {# <input type="submit" class="btn btn-danger"
-              name="unpublish" value="Unpublish"/> #}
-        </div>
+          {% if listing.sold %}
+            <button type="submit" class="btn btn-success"
+                name="sold" value="false">Mark as Unsold</button>
+          {% else %}
+            <button type="submit" class="btn btn-success"
+                name="sold" value="true">Mark as Sold</button>
+          {% endif %}
+        </form>
       </div>
      
-    {% else %}
+    {% endif %}
+    {% if not listing.sold %}
       <div class="panel panel-default">
         <div class="panel-heading">
           <h3 class="panel-title">Contact Seller</h3>
@@ -92,8 +105,8 @@
           #}
         {% endif %}
         </div>
+    {% endif %}
       </div>
-    {% endif %}
-    {% endif %}
+    {% endif %} {# is_from_tor() #}
   </div>
 </div>

@@ -1,0 +1,73 @@
+New Listing
+Logged in as
+seller-a@uchicago.edu
+My Listings
+Logout
+Listing ☆A
+cars
+Posted 5h ago .
+Price: $3.10
+This listing was sold, preventing it from showing up in searches
+and blocking future inquiries.
+Validated by GOOGLE_APPS. Originally posted by
+1.2.3.4 with
+mozilla.
+Body of ☆A
+Manage Listing
+Edit
+Mark as Unsold
+---
+New Listing
+Logged in as
+seller-a@uchicago.edu
+My Listings
+Logout
+Listing ☆B
+$71.10
+apartments
+2d ago
+---
+New Listing
+Logged in as
+seller-a@uchicago.edu
+My Listings
+Logout
+Listing ☆B
+$71.10
+apartments
+2d ago
+---
+New Listing
+Logged in as
+seller-a@uchicago.edu
+My Listings
+Logout
+Listing ☆A
+cars
+Posted 5h ago .
+Price: $3.10
+Validated by GOOGLE_APPS. Originally posted by
+1.2.3.4 with
+mozilla.
+Body of ☆A
+Manage Listing
+Edit
+Mark as Sold
+Contact Seller
+From
+seller-a@uchicago.edu ( Logout )
+Message
+---
+New Listing
+Logged in as
+seller-a@uchicago.edu
+My Listings
+Logout
+Listing ☆A
+$3.10
+cars
+5h ago
+Listing ☆B
+$71.10
+apartments
+2d ago

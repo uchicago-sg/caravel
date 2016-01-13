@@ -1,0 +1,33 @@
+New Listing
+Your inquiry has been recorded and is awaiting moderation.
+Listing ☆B
+apartments
+Posted 2d ago .
+Price: $71.10
+Body of ☆B
+Contact Seller
+From
+Sign in with CNetID or
+Message
+---
+Greetings,
+Please visit http://localhost/moderation to approve things.
+Inquiries (1):
+Listing ☆B (buyer@foo.com)
+---
+Hello again!
+We've received a new inquiry for Listing ☆B:
+Buyer: buyer@foo.com
+message☆ goes here
+Simply reply to this email if you'd like to get in contact.
+Cheers,
+The Marketplace Team
+---
+Marketplace
+Hello again!
+We've received a new inquiry for Listing ☆B:
+Buyer: buyer@foo.com
+message☆ goes here
+Simply reply to this email if you'd like to get in contact.
+Cheers,
+The Marketplace Team

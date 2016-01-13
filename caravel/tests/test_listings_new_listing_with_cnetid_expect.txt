@@ -1,0 +1,56 @@
+New Listing
+Logged in as
+visitor@uchicago.edu
+My Listings
+Logout
+Your listing has been created.
+Title of ☆D
+apartments
+Posted now .
+Price: $3.44
+Validated by GOOGLE_APPS. Originally posted by
+None with
+.
+Body of ☆D
+Manage Listing
+Edit
+Mark as Sold
+Contact Seller
+From
+visitor@uchicago.edu ( Logout )
+Message
+---
+New Listing
+Title of ☆D
+$3.44
+apartments
+now
+Listing ☆A
+$3.10
+cars
+5h ago
+Listing ☆B
+$71.10
+apartments
+2d ago
+---
+Hello there, and welcome to Marketplace!
+Your listing has been created. Please click the link below to edit it.
+http://localhost/ZZ-ZZ-ZZ
+Your listing is published. Any interest expressed through the "Contact Seller"
+form will come as a follow-up to this message. Users with CNetIDs can also
+contact you directly.
+Cheers,
+The Marketplace Team
+---
+Marketplace
+Hello there, and welcome to Marketplace!
+Your listing has been created. Please click the button
+below to edit it.
+Edit "Title of ☆D"
+Your listing is published. Any
+interest expressed through the "Contact Seller" form will come as a
+follow-up to this message. Users with CNetIDs can also contact you
+directly.
+Cheers,
+The Marketplace Team

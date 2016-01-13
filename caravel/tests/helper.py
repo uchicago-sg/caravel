@@ -3,6 +3,8 @@ import datetime
 import re
 import uuid
 import time
+import sys
+import os
 from contextlib import contextmanager
 
 from google.appengine.ext import db
@@ -12,7 +14,72 @@ from caravel import app, model, utils
 from caravel.storage import config
 
 
-class CaravelTestCase(unittest.TestCase):
+class OutOfContextLiteralsMixin(unittest.TestCase):
+
+    """
+    Uses an outside file to store long string literals.
+    """
+
+    def assertLongString(self, x, _=None):
+        """
+        Asserts that the given long string is at it should be.
+        """
+
+        x = self.clean(x)
+        if isinstance(x, unicode):
+            x = x.encode('utf-8')
+
+        if self.generating_asserts:
+            self.expectations.append(x)
+        else:
+            self.assertEquals(x.split("\n"),
+                              self.expectations.pop(0).split("\n"))
+
+    def setUp(self):
+        """
+        Loads the expectations for this TestCase.
+        """
+
+        base = sys.modules[self.__class__.__module__].__file__
+        base = re.sub(r'.[^.]+$', '', base)
+        method_name = re.sub(r'^test_', '', self.id().split('.')[-1])
+
+        self.expect_file = '{}_{}_expect.txt'.format(base, method_name)
+        try:
+            self.expectations = open(self.expect_file).read().split("\n---\n")
+        except:
+            self.expectations, self.generating_asserts = [], True
+        else:
+            self.generating_asserts = False
+
+    def tearDown(self):
+        """
+        Saves the expectations into the asserts file.
+        """
+
+        if self.generating_asserts:
+            with open(self.expect_file, "w") as fp:
+                fp.write("\n---\n".join(self.expectations))
+
+    def clean(self, markup):
+        """
+        De-HTML-ifies the given string so that it can be read in a text file.
+        """
+
+        if not isinstance(markup, basestring):
+            raise ValueError("{!r} is not a basestring".format(markup))
+
+        markup = re.sub(r'<script.*?/script>', ' ', markup, flags=re.DOTALL)
+        markup = re.sub(r'<!--.*-->', '', markup, flags=re.DOTALL)
+        markup = re.sub(r'<[^>]+>', ' ', markup)
+        markup = re.sub(r'[ \t]+', ' ', markup)
+        markup = "\n".join(l.strip() for l in markup.split("\n") if l.strip())
+        markup = re.sub(r'Marketplace is.*lists\.uchicago\.edu\.\n', '',
+                        markup, flags=re.DOTALL)
+        return markup
+
+
+class CaravelTestCase(OutOfContextLiteralsMixin, unittest.TestCase):
 
     def setUp(self):
         # FIXME: Remove once everything else is TestCase-ified.
@@ -75,6 +142,9 @@ class CaravelTestCase(unittest.TestCase):
         # Allow very large diffs.
         self.maxDiff = None
 
+        # Look up static expectations.
+        super(CaravelTestCase, self).setUp()
+
     def tearDown(self):
         # Clear database.
         db.delete(db.Query(keys_only=True))
@@ -85,17 +155,22 @@ class CaravelTestCase(unittest.TestCase):
         config.send_grid_client.send = self._send
         # slack.send_chat = self._send_chat
 
+        super(CaravelTestCase, self).tearDown()
+
     # Test helper functions.
     def clean(self, markup):
-        markup = re.sub(r'<script.*?/script>', ' ', markup, flags=re.DOTALL)
-        markup = re.sub(r'<!--.*-->', '', markup, flags=re.DOTALL)
-        markup = re.sub(r'<[^>]+>', ' ', markup)
-        markup = re.sub(r'[ \t\r\n]+', ' ', markup)
-        markup = re.sub(r'Marketplace is.*lists.uchicago.edu\. ', '', markup)
-        markup = re.sub(r'(^.*UChicago Marketplace)|(&#169;.*$)', '', markup)
-        markup = re.sub(r'Please .* Update to Marketplace \. ', '', markup)
-        markup = re.sub(r'tip: .*? listings ', '', markup)
-        markup = re.sub(r'Alumni/BSD.*?any time\. ', '', markup)
+        """
+        Add certain Marketplace-specific filters.
+        """
+
+        markup = super(CaravelTestCase, self).clean(markup)
+        markup = re.sub(r'(^.*UChicago Marketplace)|(&#169;.*$)', '', markup,
+                        flags=re.DOTALL)
+        markup = re.sub(r'Please .* Update to Marketplace \.\n', '', markup,
+                        flags=re.DOTALL)
+        markup = re.sub(r'tip: .*? listings\n', '', markup, flags=re.DOTALL)
+        markup = re.sub(r'Alumni/BSD.*?any time\. ', '', markup,
+                        flags=re.DOTALL)
         return markup.strip()
 
     def extract_photos(self, markup):

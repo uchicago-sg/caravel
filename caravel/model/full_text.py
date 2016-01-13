@@ -30,7 +30,8 @@ class FullTextMixin(ndb.Model):
         words = tokenize(query)
         if not words:
             for item in klass.query().order(-klass.posted_at):
-                yield item
+                if item._keywords():
+                    yield item
             return
 
         results = memcache.get_multi(words, key_prefix=FTS)
@@ -79,3 +80,5 @@ class FullTextMixin(ndb.Model):
 
     def _keywords(self):
         """Override to decide what keywords to use for this entity."""
+
+        return []
