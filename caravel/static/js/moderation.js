@@ -5,7 +5,7 @@
  */
 
 var enableModeration = function(csrfToken) {
-    var buttons = document.querySelectorAll("[data-approve]");
+    var buttons = document.querySelectorAll("[data-approve],[data-deny]");
     
     [].forEach.call(buttons, function(elem) {
         elem.addEventListener("click", function() {
@@ -22,7 +22,8 @@ var enableModeration = function(csrfToken) {
             xhr.setRequestHeader("Content-type",
                     "application/x-www-form-urlencoded");
             xhr.send("csrf_token=" + encodeURIComponent(csrfToken)
-                     + "&approve=" + this_.getAttribute("data-approve"));
+                     + "&approve=" + (this_.getAttribute("data-approve") || "")
+                     + "&deny=" + (this_.getAttribute("data-deny") || ""));
         });
     });
 }

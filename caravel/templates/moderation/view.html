@@ -27,7 +27,9 @@
           {{ inquiry.listing.get().title }}</td>
       <td>{{ inquiry.message }}</td>
       <td><a data-approve="{{ inquiry.key.urlsafe() }}"
-             class="btn btn-success">Approve</a></td>
+             class="btn btn-success">Approve</a>
+          <a data-deny="{{ inquiry.key.urlsafe() }}"
+             class="btn btn-danger">Deny</a></td>
     </tr>
     {% endfor %}
   </table>
@@ -51,7 +53,9 @@
       <td>{{ listing.title }}</td>
       <td>{{ listing.body }}</td>
       <td><a data-approve="{{ listing.key.urlsafe() }}"
-             class="btn btn-success">Approve</a></td>
+             class="btn btn-success">Approve</a>
+          <a data-deny="{{ listing.key.urlsafe() }}"
+             class="btn btn-danger">Deny</a></td>
     </tr>
     {% endfor %}
   </table>
