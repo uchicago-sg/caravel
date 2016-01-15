@@ -254,16 +254,6 @@ def new_listing():
     return render_template("listing_form.html", form=form)
 
 
-@app.route("/about")
-def about():
-    return render_template("about.html")
-
-
-@app.route("/help")
-def helppage():
-    return render_template("help.html")
-
-
 @app.route("/login")
 def login_page():
     return redirect("/")
