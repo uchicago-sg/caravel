@@ -12,27 +12,16 @@ class TestListings(helper.CaravelTestCase):
 
     def test_search(self):
         # View all listings, in order.
-        self.assertEqual(
-            self.clean(
-                self.get("/").data),
-            "New Listing Listing \xe2\x98\x86A $3.10 cars 5h ago Listing "
-            "\xe2\x98\x86B $71.10 apartments 2d ago")
+        self.assertLongString(self.get("/").data)
 
         # View listings in list view
-        self.assertEqual(self.clean(self.get("/?v=ls").data),
-            "New Listing Images? Title Price Category Yes Listing "
-            "\xe2\x98\x86A $3.10 cars Yes Listing \xe2\x98\x86B $71.10 "
-            "apartments")
+        self.assertLongString(self.get("/?v=ls").data)
 
         # Listings at an offset.
-        self.assertEqual(
-            self.clean(
-                self.get("/?offset=1").data),
-            "New Listing Listing \xe2\x98\x86B $71.10 apartments 2d ago")
+        self.assertLongString(self.get("/?offset=1").data)
 
         # Just a subset of listings.
-        self.assertEqual(self.clean(self.get("/?q=body+%E2%98%86a").data),
-                         "New Listing Listing \xe2\x98\x86A $3.10 cars 5h ago")
+        self.assertLongString(self.get("/?q=body+%E2%98%86a").data)
 
         # Make sure links work.
         self.assertIn("/listing_a", self.get("/?q=body+%E2%98%86a").data)
@@ -53,13 +42,7 @@ class TestListings(helper.CaravelTestCase):
         })
 
         # Even so, ensure that it seems as though it got through.
-        self.assertEqual(
-            self.clean(
-                self.get("/listing_b").data),
-            "New Listing Your inquiry has been recorded and is awaiting "
-            "moderation. Listing \xe2\x98\x86B apartments Posted 2d ago . "
-            "Price: $71.10 Body of "
-            "\xe2\x98\x86B Contact Seller From Sign in with CNetID or Message")
+        self.assertLongString(self.get("/listing_b").data)
 
         # Ensure that no emails have been sent.
         self.assertEqual(self.emails, [])
@@ -76,14 +59,7 @@ class TestListings(helper.CaravelTestCase):
         self.assertEqual(self.emails[0].subject,
                          u"1 Inquiries, 0 Listings Pending")
 
-        self.assertEqual(
-            self.emails[0].text,
-            u"Greetings,\n"
-            u"\n"
-            u"Please visit http://localhost/moderation to approve things.\n"
-            u"\n"
-            u"Inquiries (1):\n"
-            u"  Listing \u2606B (buyer@foo.com)\n")
+        self.assertLongString(self.emails[0].text)
         self.emails.pop(0)
 
         # Approve the first listing.
@@ -102,28 +78,10 @@ class TestListings(helper.CaravelTestCase):
                          u"Re: Marketplace Listing \"Listing \u2606B\"")
 
         # Verify that the right message text was sent.
-        self.assertEqual(
-            self.emails[0].text,
-            u"Hello again!\n\n"
-            u"We've received a new inquiry for Listing \u2606B:\n\n"
-            u"  Buyer: buyer@foo.com\n"
-            u"  \n"
-            u"  message\u2606 goes here\n\n"
-            u"Simply reply to this email if you'd like to get in contact.\n\n"
-            u"Cheers,\n"
-            u"The Marketplace Team")
+        self.assertLongString(self.emails[0].text)
 
         # Verify that the right messge HTML was sent.
-        self.assertEqual(
-            self.clean(
-                self.emails[0].html),
-            u"Marketplace "
-            u"Hello again! "
-            u"We've received a new inquiry for Listing \u2606B: "
-            u"Buyer: buyer@foo.com "
-            u"message\u2606 goes here "
-            u"Simply reply to this email if you'd like to get in contact. "
-            u"Cheers, The Marketplace Team")
+        self.assertLongString(self.emails[0].html)
 
     def test_post_inquiry_with_cnetid(self):
         # Submit an inquiry.
@@ -135,15 +93,7 @@ class TestListings(helper.CaravelTestCase):
             })
 
             # Ensure that we display a helpful message.
-            self.assertEqual(
-                self.clean(
-                    self.get("/listing_b").data),
-                "New Listing Logged in as visitor@uchicago.edu My Listings "
-                "Logout Your inquiry has been sent. Listing \xe2\x98\x86B "
-                "apartments Posted 2d ago . Price: "
-                "$71.10 Validated by GOOGLE_APPS. Originally posted by 1.2.3.4 "
-                "with mozilla. Body of \xe2\x98\x86B Contact Seller From "
-                "visitor@uchicago.edu ( Logout ) Message")
+            self.assertLongString(self.get("/listing_b").data)
 
         # Verify that the proper email was sent.
         self.assertEqual(self.emails[0].to[0], "seller-b@uchicago.edu")
@@ -154,28 +104,10 @@ class TestListings(helper.CaravelTestCase):
                          u"Re: Marketplace Listing \"Listing \u2606B\"")
 
         # Verify that the right message text was sent.
-        self.assertEqual(
-            self.emails[0].text,
-            u"Hello again!\n\n"
-            u"We've received a new inquiry for Listing \u2606B:\n\n"
-            u"  Buyer: visitor@uchicago.edu\n"
-            u"  \n"
-            u"  message\u2606 goes here\n\n"
-            u"Simply reply to this email if you'd like to get in contact.\n\n"
-            u"Cheers,\n"
-            u"The Marketplace Team")
+        self.assertLongString(self.emails[0].text)
 
         # Verify that the right messge HTML was sent.
-        self.assertEqual(
-            self.clean(
-                self.emails[0].html),
-            u"Marketplace "
-            u"Hello again! "
-            u"We've received a new inquiry for Listing \u2606B: "
-            u"Buyer: visitor@uchicago.edu "
-            u"message\u2606 goes here "
-            u"Simply reply to this email if you'd like to get in contact. "
-            u"Cheers, The Marketplace Team")
+        self.assertLongString(self.emails[0].html)
 
     def test_new_listing(self):
         # Try creating a new listing as an unauthenticated user.
@@ -191,20 +123,10 @@ class TestListings(helper.CaravelTestCase):
         })
 
         # Ensure that we get a message indicating that it does not exist.
-        self.assertEqual(
-            self.clean(
-                self.get("/").data),
-            "New Listing Your listing is awaiting moderation. We&#39;ll email "
-            "you when it&#39;s up. Listing \xe2\x98\x86A $3.10 cars 5h ago "
-            "Listing \xe2\x98\x86B $71.10 apartments 2d ago")
+        self.assertLongString(self.get("/").data)
 
         # Ensure that the listing does not exist yet.
-        self.assertEqual(
-            self.clean(
-                self.get("/ZZ-ZZ-ZZ").data),
-            "404 Not Found Not Found The requested URL was not found on the "
-            "server. If you entered the URL manually please check your "
-            "spelling and try again.")
+        self.assertLongString(self.get("/ZZ-ZZ-ZZ").data)
 
         # Ensure that no emails have been sent.
         self.assertEqual(self.emails, [])
@@ -217,12 +139,7 @@ class TestListings(helper.CaravelTestCase):
             })
 
         # Listing is now published.
-        self.assertEqual(
-            self.clean(
-                self.get("/ZZ-ZZ-ZZ").data),
-            "New Listing Title of \xe2\x98\x86D apartments Posted now . "
-            "Price: $3.44 Body of "
-            "\xe2\x98\x86D Contact Seller From Sign in with CNetID or Message")
+        self.assertLongString(self.get("/ZZ-ZZ-ZZ").data)
 
         # Make sure the picture shows up.
         photos = self.extract_photos(self.get("/ZZ-ZZ-ZZ").data)
@@ -233,12 +150,7 @@ class TestListings(helper.CaravelTestCase):
         ])
 
         # Listing shows up in searches.
-        self.assertEqual(
-            self.clean(
-                self.get("/").data),
-            "New Listing Title of \xe2\x98\x86D $3.44 apartments now Listing "
-            "\xe2\x98\x86A $3.10 cars 5h ago Listing \xe2\x98\x86B $71.10 "
-            "apartments 2d ago")
+        self.assertLongString(self.get("/").data)
 
         # Verify that this listing has a photo.
         photos = self.extract_photos(self.get("/").data)
@@ -266,14 +178,7 @@ class TestListings(helper.CaravelTestCase):
             })
 
             # Listing is now published.
-            self.assertEqual(
-                self.clean(
-                    self.get("/ZZ-ZZ-ZZ").data),
-                "New Listing Logged in as visitor@uchicago.edu My Listings "
-                "Logout Your listing has been created. Title of \xe2\x98\x86D "
-                "apartments Posted now . Price: $3.44 "
-                "Validated by GOOGLE_APPS. Originally posted by None with . "
-                "Body of \xe2\x98\x86D Manage Listing Edit")
+            self.assertLongString(self.get("/ZZ-ZZ-ZZ").data)
 
         # Make sure the picture shows up.
         photos = self.extract_photos(self.get("/ZZ-ZZ-ZZ").data)
@@ -284,12 +189,7 @@ class TestListings(helper.CaravelTestCase):
         ])
 
         # Listing shows up in searches.
-        self.assertEqual(
-            self.clean(
-                self.get("/").data),
-            "New Listing Title of \xe2\x98\x86D $3.44 apartments now Listing "
-            "\xe2\x98\x86A $3.10 cars 5h ago Listing \xe2\x98\x86B $71.10 "
-            "apartments 2d ago")
+        self.assertLongString(self.get("/").data)
 
         # Verify that this listing has a photo.
         photos = self.extract_photos(self.get("/").data)
@@ -308,49 +208,21 @@ class TestListings(helper.CaravelTestCase):
                          u"Marketplace Listing \"Title of \u2606D\"")
 
         # Verify that the right message text was sent.
-        self.assertEqual(
-            self.emails[0].text,
-            u"Hello there, and welcome to Marketplace!\n\n"
-            u"Your listing has been created. Please click the link below to "
-            u"edit it.\n\n"
-            u"  http://localhost/ZZ-ZZ-ZZ\n\n"
-            u"Your listing is published. Any interest expressed through the "
-            u"\"Contact Seller\"\nform will come as a follow-up to this "
-            u"message. Users with CNetIDs can also\ncontact you directly.\n\n"
-            u"Cheers,\n"
-            u"The Marketplace Team")
+        self.assertLongString(self.emails[0].text)
 
         # Verify that the right messge HTML was sent.
-        self.assertEqual(
-            self.clean(
-                self.emails[0].html), u"Marketplace "
-            u"Hello there, and welcome to Marketplace! "
-            u"Your listing has been created. Please click the button below to "
-            u"edit it. "
-            u"Edit \"Title of \u2606D\" "
-            u"Your listing is published. Any interest expressed through the "
-            u"\"Contact Seller\" form will come as a follow-up to this "
-            u"message. Users with CNetIDs can also contact you directly. "
-            u"Cheers, "
-            u"The Marketplace Team")
+        self.assertLongString(self.emails[0].html)
 
     def test_edit_listing(self):
         # Try editing someone else's listing.
-        result = self.post("/listing_a/edit", data=dict(
+        self.assertLongString(self.post("/listing_a/edit", data=dict(
             csrf_token=self.csrf_token("/listing_a/edit"),
             title=u"Title\u2606A",
             body=u"Body\u2606A",
             price="2.34",
             principal="seller-a@uchicago.edu",
             categories="cars",
-        )).data
-
-        self.assertEqual(
-            self.clean(result), "New Listing Title Seller Sign in "
-            "with CNetID or Please sign in with your CNetID. Categories "
-            "Apartments Subleases Appliances Bikes Books Cars Electronics "
-            "Employment Furniture Miscellaneous Services Wanted Price Body "
-            "Body\xe2\x98\x86A Image Image Image Image Image Cancel")
+        )).data)
 
         # Try editing our own listing.
         with self.google_apps_user("seller-a@uchicago.edu"):
@@ -363,70 +235,31 @@ class TestListings(helper.CaravelTestCase):
                 categories="cars",
             ))
 
-            self.assertEqual(
-                self.clean(
-                    self.get("/listing_a").data),
-                "New Listing Logged in as seller-a@uchicago.edu My Listings "
-                "Logout Your listing has been updated. Title\xe2\x98\x86A cars "
-                "Posted now . Price: $2.34 Validated "
-                "by GOOGLE_APPS. Originally posted by None with . "
-                "Body\xe2\x98\x86A Manage Listing Edit")
+            self.assertLongString(self.get("/listing_a").data)
 
-    @unittest.skip("Claim listing features disabled")
-    def test_claim_listing(self):
-        # View a listing and click "Claim"
-        result = self.post("/listing_a/claim", data=dict(
-            csrf_token=self.csrf_token("/listing_a")
-        ))
+    def test_publish_listing(self):
+        with self.google_apps_user("seller-a@uchicago.edu"):
+            # Try marking a listing as sold.
+            self.post("/listing_a/publish", data=dict(
+                csrf_token=self.csrf_token("/listing_a"),
+                sold="true"
+            ))
 
-        # Ensure that the flash shows up.
-        self.assertEqual(
-            self.clean(
-                self.get("/listing_a").data),
-            "New Listing We&#39;ve emailed you a link to edit this listing. "
-            "Listing \xe2\x98\x86A Cars $3.10 Body of \xe2\x98\x86A Contact "
-            "Seller Email Sign in with CNetID or Message")
+            # Listing is now sold.
+            self.assertLongString(self.get("/listing_a").data)
 
-        # Ensure that the message is as we expect.
-        self.assertEqual(self.emails[0].to[0], "seller-a@uchicago.edu")
-        self.assertEqual(self.emails[0].from_email,
-                         "marketplace@lists.uchicago.edu")
-        self.assertEqual(self.emails[0].subject,
-                         u"Marketplace Listing \"Listing \u2606A\"")
+            # Listing is no longer visible in searches.
+            self.assertLongString(self.get("/").data)
+            self.assertLongString(self.get("/?q=listing").data)
 
-        # Verify the textual contents of the message.
-        self.assertEqual(
-            self.emails[0].text,
-            u"Hello there, and welcome to Marketplace!\n\n"
-            u"Your listing has been created. Please click the link below "
-            u"to edit it.\n\n"
-            u"  http://localhost/listing_a?key=a_key\n\n"
-            u"Important: you'll need to click this link at least once for "
-            u"your listing to\nbe viewable by others -- this is to protect "
-            u"against spam.\n\nIf you didn't create this listing, you can "
-            u"safely ignore this email. It was\ncreated by None; please "
-            u"contact us if anything seems\nstrange.\n\n"
-            u"Cheers,\n"
-            u"The Marketplace Team")
+            # Try unmarking a listing as sold.
+            self.post("/listing_a/publish", data=dict(
+                csrf_token=self.csrf_token("/listing_a/edit"),
+                sold="false"
+            ))
 
-        # Verify that the email looks fine.
-        self.assertEqual(
-            self.clean(
-                self.emails[0].html),
-            u"Welcome to Marketplace Marketplace Hello there, and welcome to "
-            u"Marketplace! Your listing has been created. Please click the "
-            u"button below to edit it. Edit \"Listing \u2606A\" Important: "
-            u"you'll need to click this link at least once for your "
-            u"listing to be viewable by others &mdash; this is to protect "
-            u"against spam. If you didn't create this listing, you can "
-            u"safely ignore this email. "
-            u"It was created by None; please contact us if anything seems "
-            u"strange. Cheers, The Marketplace Team")
+            # Listing is no longer sold.
+            self.assertLongString(self.get("/listing_a").data)
 
-        # Verify that we were sent a chat message.
-        self.assertEqual(self.chats, [{
-            "icon_url": u"/_ah/gcs/test.appspot.com/listing-a-small",
-            "text": ("Posted by seller-a@uchicago.edu "
-                     "(<http://localhost/listing_a?key=a_key|approve>)"),
-            "username": u"Listing \u2606A"
-        }])
+            # Listing is visible again in searches.
+            self.assertLongString(self.get("/").data)

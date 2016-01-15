@@ -10,6 +10,7 @@ from caravel.model.principal import PrincipalMixin
 from caravel.model.side_effects import SideEffectsMixin
 from caravel.model.full_text import FullTextMixin
 from caravel.model.rate_limits import RateLimitMixin
+from caravel.model.sellable import SellableMixin
 
 from caravel import utils
 
@@ -20,7 +21,7 @@ from flask import render_template
 
 class _Listing(CategoriesMixin, PhotosMixin, PrincipalMixin, TimeOrderMixin,
                SchemaMixin, PriceMixin, RateLimitMixin, ModeratedMixin,
-               ndb.Model):
+               SellableMixin, FullTextMixin, ndb.Model):
 
     SCHEMA_VERSION = 12
 
@@ -28,7 +29,7 @@ class _Listing(CategoriesMixin, PhotosMixin, PrincipalMixin, TimeOrderMixin,
     body = ndb.TextProperty()
 
 
-class Listing(SideEffectsMixin, FullTextMixin, _Listing):
+class Listing(SideEffectsMixin, _Listing):
 
     def side_effects(self):
         """
@@ -44,6 +45,9 @@ class Listing(SideEffectsMixin, FullTextMixin, _Listing):
 
     def _keywords(self):
         """Generates keywords for this listing."""
+
+        if self.sold:
+            return []
 
         keywords = (
             self._tokenize("title", self.title) +

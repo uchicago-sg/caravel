@@ -8,6 +8,4 @@ else
 	source venv/bin/activate
 fi
 
-coverage run --source=caravel $(which nose2) --log-capture \
-	--plugin nose2.plugins.doctests --with-doctest
-coverage report
+dev_appserver.py .
