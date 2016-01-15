@@ -182,7 +182,10 @@ def publish_listing(listing):
     Edits a listing.
     """
 
-    if is_from_tor():
+    if is_from_tor() or not users.get_current_user():
+        abort(403)
+
+    if listing.principal.email != users.get_current_user().email():
         abort(403)
 
     listing = model.UnapprovedListing(id=listing.key.id(), **listing.__dict__)
