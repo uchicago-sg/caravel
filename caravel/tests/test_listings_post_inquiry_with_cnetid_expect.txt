@@ -8,11 +8,11 @@ Listing ☆B
 apartments
 Posted 2d ago .
 Price: $71.10
-Validated by GOOGLE_APPS. Originally posted by
+fixture for unit test. Originally posted by
 1.2.3.4 with
 mozilla.
 Body of ☆B
-Manage Listing
+Suggest Changes
 Edit
 Mark as Sold
 Contact Seller

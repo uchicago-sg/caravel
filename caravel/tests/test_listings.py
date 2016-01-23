@@ -62,7 +62,7 @@ class TestListings(helper.CaravelTestCase):
         self.assertLongString(self.emails[0].text)
         self.emails.pop(0)
 
-        # Approve the first listing.
+        # Approve the first inquiry.
         with self.google_apps_user("admin@uchicago.edu"):
             print self.post("/moderation", data={
                 "csrf_token": self.ajax_csrf_token("/moderation"),
@@ -238,7 +238,52 @@ class TestListings(helper.CaravelTestCase):
             self.assertLongString(self.get("/listing_a").data)
 
     def test_publish_listing(self):
-        with self.google_apps_user("seller-a@uchicago.edu"):
+        self.post("/listing_b/publish", data=dict(
+            csrf_token=self.csrf_token("/listing_b"),
+            sold="true"
+        ))
+
+        # Listing is not yet sold.
+        self.assertLongString(self.get("/listing_b").data)
+
+        # Approve the edit.
+        with self.google_apps_user("admin@uchicago.edu"):
+            self.post("/moderation", data={
+                "csrf_token": self.ajax_csrf_token("/moderation"),
+                "approve": model.UnapprovedListing.query().get().key.urlsafe(),
+            }).data
+
+        # The listing is sold now!
+        self.assertLongString(self.get("/listing_b").data)
+
+        # Listing is no longer visible in searches.
+        self.assertLongString(self.get("/").data)
+        self.assertLongString(self.get("/?q=listing").data)
+
+        # Try unmarking a listing as sold.
+        self.post("/listing_b/publish", data=dict(
+            csrf_token=self.csrf_token("/listing_b/edit"),
+            sold="false"
+        ))
+
+        # Listing is still sold.
+        self.assertLongString(self.get("/listing_b").data)
+
+        # Approve the edit.
+        with self.google_apps_user("admin@uchicago.edu"):
+            self.post("/moderation", data={
+                "csrf_token": self.ajax_csrf_token("/moderation"),
+                "approve": model.UnapprovedListing.query().get().key.urlsafe(),
+            }).data
+
+        # Listing is no longer sold.
+        self.assertLongString(self.get("/listing_b").data)
+
+        # Listing is visible again in searches.
+        self.assertLongString(self.get("/").data)
+
+    def test_publish_listing_with_cnetid(self):
+        with self.google_apps_user("seller-b@uchicago.edu"):
             # Try marking a listing as sold.
             self.post("/listing_a/publish", data=dict(
                 csrf_token=self.csrf_token("/listing_a"),

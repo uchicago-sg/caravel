@@ -17,6 +17,7 @@ import uuid
 import datetime
 import math
 import itertools
+from google.appengine.ext import ndb
 
 TOR_DETECTOR = utils.TorDetector()
 
@@ -182,17 +183,30 @@ def publish_listing(listing):
     Edits a listing.
     """
 
-    if is_from_tor() or not users.get_current_user():
+    if is_from_tor():
         abort(403)
 
-    if listing.principal.email != users.get_current_user().email():
+    requester = utils.Principal.from_request(request,
+                                             email=listing.principal.email)
+
+    if not requester.can_act_as(listing.principal):
         abort(403)
 
-    listing = model.UnapprovedListing(id=listing.key.id(), **listing.__dict__)
-    listing.sold = (request.form.get("sold") == "true")
-    listing.put()
+    fields = listing.to_dict()
 
-    if not isinstance(listing, model.Listing):
+    new_listing = model.UnapprovedListing(id=listing.key.id())
+    for key, value in listing.to_dict().items():
+        try:
+            setattr(new_listing, key, value)
+        except ndb.ComputedPropertyError:
+            pass
+
+    new_listing.sold = (request.form.get("sold") == "true")
+    new_listing.principal = requester
+
+    new_listing.put()
+
+    if not isinstance(new_listing, model.Listing):
         flash("Your edit is awaiting moderation. "
               "We'll email you when it is approved.")
     return redirect(url_for("show_listing", listing=listing))
