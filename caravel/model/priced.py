@@ -1,6 +1,8 @@
 from google.appengine.ext import ndb
 
+
 class FixedPoint(ndb.IntegerProperty):
+
     def _validate(self, value):
         int(value)
 
@@ -10,10 +12,12 @@ class FixedPoint(ndb.IntegerProperty):
     def _from_base_type(self, value):
         return value / 100.
 
+
 class PriceMixin(ndb.Model):
+
     """
     The PriceMixin adds a price to the given entity.
-    
+
     >>> class D(PriceMixin): pass
     >>> x = D()
     >>> x.price = 3.234444
@@ -22,4 +26,4 @@ class PriceMixin(ndb.Model):
     3.23
     """
 
-    price = FixedPoint()
+    price = FixedPoint(default=0)

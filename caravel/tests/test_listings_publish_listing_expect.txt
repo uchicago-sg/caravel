@@ -18,8 +18,8 @@ Listing ☆B
 apartments
 Posted 2d ago .
 Price: $71.10
-This listing was sold, preventing it from showing up in searches
-and blocking future inquiries.
+" Listing ☆B " has been sold,
+preventing it from showing up in searches and blocking future inquiries.
 Body of ☆B
 Suggest Changes
 Edit
@@ -43,8 +43,8 @@ Listing ☆B
 apartments
 Posted 2d ago .
 Price: $71.10
-This listing was sold, preventing it from showing up in searches
-and blocking future inquiries.
+" Listing ☆B " has been sold,
+preventing it from showing up in searches and blocking future inquiries.
 Body of ☆B
 Suggest Changes
 Edit

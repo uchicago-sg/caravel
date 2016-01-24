@@ -35,8 +35,14 @@
       </p>
       {% if listing.sold %}
       <p class="alert alert-warning">
-        This listing was sold, preventing it from showing up in searches
-        and blocking future inquiries.
+        "<strong>{{ listing.title }}</strong>" has been sold,
+        preventing it from showing up in searches and blocking future inquiries.
+      </p>
+      {% elif listing.old %}
+      <p class="alert alert-warning">
+        "<strong>{{ listing.title }}</strong>" was posted more than 30 days ago,
+        so it does not show up in searches, and will not receive inquiries.
+        It has likely already been sold.
       </p>
       {% endif %}
       {% if is_admin %}
@@ -106,7 +112,7 @@
     </div>
     
     {% endif %}
-    {% if not listing.sold %}
+    {% if not listing.sold and not listing.old %}
       <div class="panel panel-default">
         <div class="panel-heading">
           <h3 class="panel-title">Contact Seller</h3>

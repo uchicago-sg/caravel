@@ -5,6 +5,7 @@ The migration daemon pulls the latest listings from the old site.
 from google.appengine.ext import ndb
 from caravel import app, model
 import itertools
+import datetime
 
 
 def grouper(iterable, n, fillvalue=None):
@@ -16,8 +17,12 @@ def grouper(iterable, n, fillvalue=None):
 
 @app.route("/_internal/migrate_schema")
 def migrate_schema():
+    horizon = datetime.datetime.now() - model.Listing.MARK_AS_OLD_AFTER
+
     q = model.Listing.query(
-        model.Listing.version < model.Listing.SCHEMA_VERSION)
+        (model.Listing.version < model.Listing.SCHEMA_VERSION) or
+        (model.Listing.posted_at <= horizon and
+         model.Listing.keywords >= ""))
 
     for entities in grouper(itertools.islice(q, 0, 1000), 100):
         ndb.put_multi([entity for entity in entities if entity])
