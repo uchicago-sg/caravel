@@ -9,23 +9,22 @@
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>User Agent</th>
-        <th>IP</th>
-        <th>Email</th>
+        <th>Device</th>
         <th>Listing</th>
         <th>Message</th>
+        <th>Email</th>
         <th>Moderation</th>
       </tr>
     </thead>
     {% for inquiry in inquiries %}
     <tr>
-      <td>{{ user_agent(inquiry.principal.device.user_agent) }}</td>
-      <td>{{ inquiry.principal.device.ip_address }}</td>
-      <td>{{ inquiry.principal.email }}</td>
+      <td>{{ user_agent(inquiry.principal.device.user_agent) }}<br/>
+          {{ inquiry.principal.device.ip_address }}</td>
       <td><a href="{{ url_for('show_listing',
             listing=inquiry.listing.get()) }}">
           {{ inquiry.listing.get().title }}</td>
       <td>{{ inquiry.message }}</td>
+      <td>{{ inquiry.principal.email }}</td>
       <td><a data-approve="{{ inquiry.key.urlsafe() }}"
              class="btn btn-success">Approve</a>
           <a data-deny="{{ inquiry.key.urlsafe() }}"
@@ -37,11 +36,10 @@
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>User Agent</th>
-        <th>IP</th>
-        <th>Email</th>
+        <th>Device</th>
         <th>Title</th>
         <th>Body</th>
+        <th>Email</th>
         <th>Moderation</th>
       </tr>
     </thead>
@@ -49,9 +47,9 @@
     <tr>
       <td>{{ user_agent(listing.principal.device.user_agent) }}</td>
       <td>{{ listing.principal.device.ip_address }}</td>
-      <td>{{ listing.principal.email }}</td>
       <td>{{ listing.title }}</td>
       <td>{{ listing.body }}</td>
+      <td>{{ listing.principal.email }}</td>
       <td><a data-approve="{{ listing.key.urlsafe() }}"
              class="btn btn-success">Approve</a>
           <a data-deny="{{ listing.key.urlsafe() }}"
