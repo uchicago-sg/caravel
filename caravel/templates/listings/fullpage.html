@@ -50,11 +50,11 @@
     </div>
     {% if not is_from_tor() %}
     <div class="col-md-3">
-    {% if current_user and listing.principal.email == current_user.email() or is_admin %}
+    
+    {% if current_user and listing.principal.email == current_user.email() %}
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title">
-            Manage Listing</h3>
+          <h3 class="panel-title">Manage Listing</h3>
         </div>
         <form class="panel-body" method="post"
           action="{{ url_for('publish_listing', listing=listing) }}">
@@ -71,7 +71,40 @@
           {% endif %}
         </form>
       </div>
-     
+    {% elif listing.principal.auth_method == "GOOGLE_APPS" and not current_user %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Manage Listing</h3>
+      </div>
+      <div class="panel-body">
+        <a class="btn btn-success" href="{{ login_url() }}">
+          Sign in with CNetID
+        </a> to edit.
+      </div>
+    </div>
+    {% elif listing.principal.auth_method != "GOOGLE_APPS" %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Suggest Changes</h3>
+      </div>
+      <form class="panel-body" method="post"
+        action="{{ url_for('publish_listing', listing=listing) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <a class="btn btn-default"
+              href="{{ url_for('edit_listing', listing=listing) }}">
+          Edit</a>
+        {% if listing.sold %}
+          <button type="submit" class="btn btn-success"
+              name="sold" value="false">Mark as Unsold</button>
+        {% else %}
+          <button type="submit" class="btn btn-success"
+              name="sold" value="true">Mark as Sold</button>
+        {% endif %}
+      </form>
+    </div>
+    
     {% endif %}
     {% if not listing.sold %}
       <div class="panel panel-default">

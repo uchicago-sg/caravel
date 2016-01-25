@@ -125,12 +125,15 @@ class CaravelTestCase(OutOfContextLiteralsMixin, unittest.TestCase):
             id="listing_a")
         self.listing_a.put()
 
+        seller_b = utils.Principal("seller-b@uchicago.edu", device,
+                                   utils.Principal.EMAIL)
+        seller_b.validated_by = "fixture for unit test"
+
         self.listing_b = model.Listing(
             title=u"Listing \u2606B",
             body=u"Body of \u2606B",
             posted_at=datetime.datetime.now() - datetime.timedelta(hours=24),
-            principal=utils.Principal("seller-b@uchicago.edu", device,
-                                      utils.Principal.GOOGLE_APPS),
+            principal=seller_b,
             price=71.10,
             run_trigger=True,
             version=11,

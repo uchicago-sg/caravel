@@ -12,7 +12,9 @@ from werkzeug import FileStorage
 
 from caravel import model, utils
 
+
 class OnlyValid(object):
+
     """Validates that the credential is correct."""
 
     def __call__(self, form, field):
@@ -21,7 +23,9 @@ class OnlyValid(object):
         if not field.data or not field.data.valid:
             raise ValidationError("Invalid credential.")
 
+
 class MatchesPrincipal(threading.local):
+
     """Ensures that only the existing Principal is used."""
 
     def __init__(self):
@@ -41,7 +45,9 @@ class MatchesPrincipal(threading.local):
             else:
                 raise ValidationError("Please use the same account for edits.")
 
+
 class PrincipalField(wtforms.StringField):
+
     """A PrincipalField is one that represents an email address."""
 
     def __init__(self, label, **kwargs):
@@ -58,15 +64,10 @@ class PrincipalField(wtforms.StringField):
     def process_formdata(self, values):
         """Overrides the value sent in the form if asked."""
 
-        device = utils.Device.from_request(request)
-        user = users.get_current_user()
-        if user:
-            self.data = utils.Principal(user.email(), device, "GOOGLE_APPS")
-        elif ((not self.requires_validation) and values and
-              re.match(r'^[^@]+@[^@]+$', values[0])):
-            self.data = utils.Principal(values[0], device, "EMAIL")
-        else:
-            self.data = None
+        email = None
+        if not self.requires_validation and values:
+            email = values[0]
+        self.data = utils.Principal.from_request(request, email)
 
     def _value(self):
         """Returns the user for this user."""
@@ -110,6 +111,7 @@ class PrincipalField(wtforms.StringField):
 
 
 class PhotoField(wtforms.StringField):
+
     """A PhotoField represents a photo object stored in Cloud Storage."""
 
     def process_formdata(self, values):
@@ -141,7 +143,7 @@ class PhotoField(wtforms.StringField):
             return Markup("""
                 <div class="thumbnail">
                   {} <img src="{}"/>
-                  <div class="caption">                    
+                  <div class="caption">
                     <a class="btn btn-danger"
                        onclick="removeThumbnail(this, {!r})">Remove</a>
                   </div>

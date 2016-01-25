@@ -1,5 +1,6 @@
 import uuid
 import user_agents
+import re
 
 
 class Device(object):
@@ -27,6 +28,23 @@ class Principal(object):
     LEGACY = "LEGACY"
 
     GOOGLE_APPS_DOMAIN = "uchicago.edu"
+
+    @classmethod
+    def from_request(klass, request, email=None):
+        from google.appengine.api import users
+
+        if users.get_current_user():
+            return Principal(
+                users.get_current_user().email(),
+                Device.from_request(request),
+                klass.GOOGLE_APPS
+            )
+        elif email and re.match(r'^[^@]+@[^@]+$', email):
+            return Principal(
+                email,
+                Device.from_request(request),
+                klass.EMAIL
+            )
 
     def __init__(self, email, device, auth_method):
         if auth_method not in (self.GOOGLE_APPS, self.EMAIL, self.LEGACY):
