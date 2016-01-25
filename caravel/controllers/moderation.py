@@ -14,6 +14,11 @@ def user_agent(user_agent):
     return str(user_agents.parse(user_agent))
 
 
+def email_order(entity):
+    user, domain = entity.principal.email.split("@")
+    return (domain, user)
+
+
 @app.route("/moderation", methods=["GET", "POST"])
 def moderation_view():
     """
@@ -47,6 +52,9 @@ def moderation_view():
 
     inquiries = model.UnapprovedInquiry().query().fetch(100)
     listings = model.UnapprovedListing().query().fetch(100)
+
+    inquiries.sort(key=email_order)
+    listings.sort(key=email_order)
 
     return render_template("moderation/view.html",
                            inquiries=inquiries,

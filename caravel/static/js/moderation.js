@@ -11,12 +11,10 @@ var enableModeration = function(csrfToken) {
         elem.addEventListener("click", function() {
             var this_ = this, xhr = new XMLHttpRequest;
             xhr.open("POST", "/moderation", true);
-            this_.parentNode.parentNode.style.opacity = 0.5;
+            this_.parentNode.parentNode.remove();
             xhr.onreadystatechange = function() {
                 if (xhr.status >= 200 && xhr.status < 300) {
-                    this_.parentNode.parentNode.remove();
-                } else {
-                    console.error("XHR FAILED");
+                    window.alert("XHR FAILED");
                 }
             };
             xhr.setRequestHeader("Content-type",
