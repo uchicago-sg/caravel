@@ -12,5 +12,8 @@ class TimeOrderMixin(ndb.Model):
 
     @property
     def old(self):
-        horizon = datetime.datetime.now() - self.MARK_AS_OLD_AFTER
-        return (self.posted_at <= horizon)
+        return self.age >= self.MARK_AS_OLD_AFTER
+
+    @property
+    def age(self):
+        return datetime.datetime.now() - self.posted_at

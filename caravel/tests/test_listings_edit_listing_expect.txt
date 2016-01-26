@@ -34,7 +34,8 @@ None with
 Body☆A
 Manage Listing
 Edit
-Mark as Sold
+Available
+Sold
 Contact Seller
 From
 seller-a@uchicago.edu ( Logout )

@@ -273,3 +273,7 @@ form .thumbnail {
 .help-page-shorter{
     height:10em;
 }
+
+.inline-form {
+    display: inline;
+}

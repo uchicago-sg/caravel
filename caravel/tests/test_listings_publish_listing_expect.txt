@@ -7,7 +7,8 @@ Price: $71.10
 Body of ☆B
 Suggest Changes
 Edit
-Mark as Sold
+Available
+Sold
 Contact Seller
 From
 Sign in with CNetID or
@@ -23,7 +24,8 @@ preventing it from showing up in searches and blocking future inquiries.
 Body of ☆B
 Suggest Changes
 Edit
-Mark as Unsold
+Available
+Sold
 ---
 New Listing
 Listing ☆A
@@ -48,7 +50,8 @@ preventing it from showing up in searches and blocking future inquiries.
 Body of ☆B
 Suggest Changes
 Edit
-Mark as Unsold
+Available
+Sold
 ---
 New Listing
 Listing ☆B
@@ -58,7 +61,8 @@ Price: $71.10
 Body of ☆B
 Suggest Changes
 Edit
-Mark as Sold
+Available
+Sold
 Contact Seller
 From
 Sign in with CNetID or

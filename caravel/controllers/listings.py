@@ -183,7 +183,7 @@ def show_listing(listing):
 @app.route("/<listing:listing>/publish", methods=["POST"])
 def publish_listing(listing):
     """
-    Edits a listing.
+    Marks a listing as being published.
     """
 
     if is_from_tor():
@@ -199,6 +199,33 @@ def publish_listing(listing):
     new_listing.take_values_from(listing)
     new_listing.principal = requester
     new_listing.sold = (request.form.get("sold") == "true")
+    new_listing.put()
+
+    if not isinstance(new_listing, model.Listing):
+        flash("Your edit is awaiting moderation. "
+              "We'll email you when it is approved.")
+    return redirect(url_for("show_listing", listing=new_listing))
+
+
+@app.route("/<listing:listing>/bump", methods=["POST"])
+def bump_listing(listing):
+    """
+    Moves a listing to the top of the home page.
+    """
+
+    if is_from_tor():
+        abort(403)
+
+    requester = utils.Principal.from_request(request,
+                                             email=listing.principal.email)
+
+    if not requester.can_act_as(listing.principal) or not listing.can_bump:
+        abort(403)
+
+    new_listing = model.UnapprovedListing(id=listing.key.id())
+    new_listing.take_values_from(listing)
+    new_listing.principal = requester
+    new_listing.posted_at = datetime.datetime.now()
     new_listing.put()
 
     if not isinstance(new_listing, model.Listing):

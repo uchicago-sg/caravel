@@ -14,7 +14,8 @@ None with
 Body of ☆D
 Manage Listing
 Edit
-Mark as Sold
+Available
+Sold
 Contact Seller
 From
 visitor@uchicago.edu ( Logout )

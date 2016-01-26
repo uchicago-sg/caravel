@@ -330,3 +330,21 @@ class TestListings(helper.CaravelTestCase):
         self.listing_a.put()
 
         self.assertLongString(self.get("/listing_a").data)
+
+    def test_bump_listing(self):
+        # Test the can_bump property.
+        self.assertFalse(self.listing_a.can_bump)
+        self.listing_a.posted_at -= datetime.timedelta(days=10)
+        self.listing_a.put()
+        self.assertTrue(self.listing_a.can_bump)
+
+        # Try to bump a listing.
+        self.assertLongString(self.get("/listing_a").data)
+        with self.google_apps_user("seller-a@uchicago.edu"):
+            self.post("/listing_a/bump", data={
+                "csrf_token": self.csrf_token("/listing_a/edit"),
+            })
+
+        self.listing_a = self.listing_a.key.get()
+        self.assertFalse(self.listing_a.can_bump)
+        self.assertTrue(self.listing_a.age <= datetime.timedelta(seconds=60))
