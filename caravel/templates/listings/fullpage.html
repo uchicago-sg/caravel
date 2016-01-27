@@ -34,10 +34,28 @@
           Price: <strong>{{ '${:,.2f}'.format(listing.price) }}</strong>
       </p>
       {% if listing.sold %}
-      <p class="alert alert-warning">
-        This listing was sold, preventing it from showing up in searches
-        and blocking future inquiries.
+      <p class="alert alert-danger">
+        "<strong>{{ listing.title }}</strong>" has been sold,
+        preventing it from showing up in searches and blocking future inquiries.
       </p>
+      {% elif listing.old %}
+      <p class="alert alert-danger">
+        "<strong>{{ listing.title }}</strong>" was posted more than 30 days ago,
+        so it does not show up in searches, and will not receive inquiries.
+        It has likely already been sold.
+      </p>
+      {% elif listing.can_bump and
+        (not current_user or listing.principal.email == current_user.email())
+      %}
+      <form class="alert alert-warning" method="post"
+            action="{{ url_for('bump_listing', listing=listing) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <p>"<strong>{{ listing.title }}</strong>" was posted more than 7 days
+        ago, which means it may have fallen off the front page.</p>
+        
+        <p><input type="submit" class="btn btn-warning"
+          value="Bump to top of front page"/></p>
+      </form>
       {% endif %}
       {% if is_admin %}
       <p class="alert alert-info">
@@ -56,20 +74,7 @@
         <div class="panel-heading">
           <h3 class="panel-title">Manage Listing</h3>
         </div>
-        <form class="panel-body" method="post"
-          action="{{ url_for('publish_listing', listing=listing) }}">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-          <a class="btn btn-default"
-                href="{{ url_for('edit_listing', listing=listing) }}">
-            Edit</a>
-          {% if listing.sold %}
-            <button type="submit" class="btn btn-success"
-                name="sold" value="false">Mark as Unsold</button>
-          {% else %}
-            <button type="submit" class="btn btn-success"
-                name="sold" value="true">Mark as Sold</button>
-          {% endif %}
-        </form>
+        {% include "listings/access_panel.html" %}
       </div>
     {% elif listing.principal.auth_method == "GOOGLE_APPS" and not current_user %}
     <div class="panel panel-default">
@@ -89,24 +94,10 @@
         <h3 class="panel-title">
           Suggest Changes</h3>
       </div>
-      <form class="panel-body" method="post"
-        action="{{ url_for('publish_listing', listing=listing) }}">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-        <a class="btn btn-default"
-              href="{{ url_for('edit_listing', listing=listing) }}">
-          Edit</a>
-        {% if listing.sold %}
-          <button type="submit" class="btn btn-success"
-              name="sold" value="false">Mark as Unsold</button>
-        {% else %}
-          <button type="submit" class="btn btn-success"
-              name="sold" value="true">Mark as Sold</button>
-        {% endif %}
-      </form>
+      {% include "listings/access_panel.html" %}
     </div>
-    
     {% endif %}
-    {% if not listing.sold %}
+    {% if not listing.sold and not listing.old %}
       <div class="panel panel-default">
         <div class="panel-heading">
           <h3 class="panel-title">Contact Seller</h3>

@@ -165,6 +165,9 @@ def show_listing(listing):
         if is_from_tor():
             abort(403)
 
+        if listing.sold or listing.old:
+            abort(403)
+
         inquiry = model.UnapprovedInquiry(listing=listing.key)
         form.populate_obj(inquiry)
         inquiry.put()
@@ -180,7 +183,7 @@ def show_listing(listing):
 @app.route("/<listing:listing>/publish", methods=["POST"])
 def publish_listing(listing):
     """
-    Edits a listing.
+    Marks a listing as being published.
     """
 
     if is_from_tor():
@@ -192,24 +195,43 @@ def publish_listing(listing):
     if not requester.can_act_as(listing.principal):
         abort(403)
 
-    fields = listing.to_dict()
-
     new_listing = model.UnapprovedListing(id=listing.key.id())
-    for key, value in listing.to_dict().items():
-        try:
-            setattr(new_listing, key, value)
-        except ndb.ComputedPropertyError:
-            pass
-
-    new_listing.sold = (request.form.get("sold") == "true")
+    new_listing.take_values_from(listing)
     new_listing.principal = requester
-
+    new_listing.sold = (request.form.get("sold") == "true")
     new_listing.put()
 
     if not isinstance(new_listing, model.Listing):
         flash("Your edit is awaiting moderation. "
               "We'll email you when it is approved.")
-    return redirect(url_for("show_listing", listing=listing))
+    return redirect(url_for("show_listing", listing=new_listing))
+
+
+@app.route("/<listing:listing>/bump", methods=["POST"])
+def bump_listing(listing):
+    """
+    Moves a listing to the top of the home page.
+    """
+
+    if is_from_tor():
+        abort(403)
+
+    requester = utils.Principal.from_request(request,
+                                             email=listing.principal.email)
+
+    if not requester.can_act_as(listing.principal) or not listing.can_bump:
+        abort(403)
+
+    new_listing = model.UnapprovedListing(id=listing.key.id())
+    new_listing.take_values_from(listing)
+    new_listing.principal = requester
+    new_listing.posted_at = datetime.datetime.now()
+    new_listing.put()
+
+    if not isinstance(new_listing, model.Listing):
+        flash("Your edit is awaiting moderation. "
+              "We'll email you when it is approved.")
+    return redirect(url_for("show_listing", listing=new_listing))
 
 
 @app.route("/<listing:listing>/edit", methods=["GET", "POST"])
@@ -233,13 +255,15 @@ def edit_listing(listing):
     form.principal.validators[-1].principal = listing.principal
 
     if form.validate_on_submit():
-        listing = model.UnapprovedListing(id=listing.key.id(), version=11)
-        form.populate_obj(listing)
-        listing.put()
-        if not isinstance(listing, model.Listing):
+        new_listing = model.UnapprovedListing(id=listing.key.id(), version=11)
+        new_listing.take_values_from(listing)
+        form.populate_obj(new_listing)
+        new_listing.put()
+
+        if not isinstance(new_listing, model.Listing):
             flash("Your edit is awaiting moderation. "
                   "We'll email you when it is approved.")
-        return redirect(url_for("show_listing", listing=listing))
+        return redirect(url_for("show_listing", listing=new_listing))
 
     return render_template("listing_form.html", form=form)
 
@@ -258,6 +282,7 @@ def new_listing():
     if form.validate_on_submit():
         listing = model.UnapprovedListing(id=str(uuid.uuid4()), version=11)
         form.populate_obj(listing)
+        listing.posted_at = datetime.datetime.now()
         listing.put()
 
         if isinstance(listing, model.Listing):

@@ -6,9 +6,25 @@ import unittest
 import StringIO
 import time
 import re
+import datetime
 
 
 class TestListings(helper.CaravelTestCase):
+
+    def test_indexing(self):
+        # Test normal indexing.
+        self.assertFalse(self.listing_a.old)
+        self.assertLongString("\n".join(sorted(self.listing_a.keywords)))
+
+        # Test that old listings are de-indexed.
+        self.listing_a.posted_at = datetime.datetime(2003, 2, 3)
+
+        self.assertTrue(self.listing_a.old)
+        self.assertEquals(self.listing_a.keywords, [])
+
+        # Test that sold listings are de-indexed.
+        self.listing_b.sold = True
+        self.assertEquals(self.listing_a.keywords, [])
 
     def test_search(self):
         # View all listings, in order.
@@ -308,3 +324,27 @@ class TestListings(helper.CaravelTestCase):
 
             # Listing is visible again in searches.
             self.assertLongString(self.get("/").data)
+
+    def test_old_listing(self):
+        self.listing_a.posted_at -= datetime.timedelta(days=60)
+        self.listing_a.put()
+
+        self.assertLongString(self.get("/listing_a").data)
+
+    def test_bump_listing(self):
+        # Test the can_bump property.
+        self.assertFalse(self.listing_a.can_bump)
+        self.listing_a.posted_at -= datetime.timedelta(days=10)
+        self.listing_a.put()
+        self.assertTrue(self.listing_a.can_bump)
+
+        # Try to bump a listing.
+        self.assertLongString(self.get("/listing_a").data)
+        with self.google_apps_user("seller-a@uchicago.edu"):
+            self.post("/listing_a/bump", data={
+                "csrf_token": self.csrf_token("/listing_a/edit"),
+            })
+
+        self.listing_a = self.listing_a.key.get()
+        self.assertFalse(self.listing_a.can_bump)
+        self.assertTrue(self.listing_a.age <= datetime.timedelta(seconds=60))

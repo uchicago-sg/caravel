@@ -20,7 +20,7 @@ def grouper(iterable, n, fillvalue=None):
 
 class FullTextMixin(ndb.Model):
     keywords = ndb.ComputedProperty(
-        lambda self: [""] + list(set(self._keywords())), repeated=True)
+        lambda self: list(set(self._keywords())), repeated=True)
 
     @classmethod
     def matching(klass, query, offset=0, limit=None):

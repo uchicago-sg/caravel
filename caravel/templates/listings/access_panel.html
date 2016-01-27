@@ -1,0 +1,20 @@
+<form method="post" class="panel-body"
+  action="{{ url_for('publish_listing', listing=listing) }}">  
+  <a class="btn btn-default"
+        href="{{ url_for('edit_listing', listing=listing) }}">
+    Edit</a>
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+  <div class="btn-group">
+  {% if listing.sold %}
+    <button type="submit" class="btn btn-default"
+        name="sold" value="false">Available</button>
+    <button type="submit" class="btn btn-danger"
+        disabled>Sold</button>
+  {% else %}
+    <button type="submit" class="btn btn-success"
+        disabled>Available</button>
+    <button type="submit" class="btn btn-default"
+        name="sold" value="true">Sold</button>
+  {% endif %}
+  </div>
+</form>

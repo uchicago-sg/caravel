@@ -2,7 +2,8 @@ from caravel.tests import helper
 from caravel import model
 
 import datetime
-from google.appengine.ext import db
+import time
+from google.appengine.ext import db, ndb
 
 
 class Listing(db.Expando):

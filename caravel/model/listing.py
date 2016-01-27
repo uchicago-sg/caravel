@@ -24,9 +24,14 @@ class _Listing(CategoriesMixin, PhotosMixin, PrincipalMixin, TimeOrderMixin,
                SellableMixin, FullTextMixin, ndb.Model):
 
     SCHEMA_VERSION = 12
+    MARK_AS_OLD_AFTER = datetime.timedelta(days=30)
 
     title = ndb.StringProperty()
     body = ndb.TextProperty()
+
+    @property
+    def can_bump(self):
+        return self.age >= datetime.timedelta(days=7)
 
 
 class Listing(SideEffectsMixin, _Listing):
@@ -46,7 +51,7 @@ class Listing(SideEffectsMixin, _Listing):
     def _keywords(self):
         """Generates keywords for this listing."""
 
-        if self.sold:
+        if self.sold or self.old:
             return []
 
         keywords = (
