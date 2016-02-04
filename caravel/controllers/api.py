@@ -2,7 +2,10 @@
 Listings are placed by sellers when they want to sell things.
 """
 
-import uuid, time, calendar, itertools
+import uuid
+import time
+import calendar
+import itertools
 
 from flask import render_template, request, abort, redirect, url_for, session
 from flask import flash, g, jsonify
@@ -10,32 +13,28 @@ from flask import flash, g, jsonify
 from caravel import app, model
 from caravel.storage import dos
 
+
 def _externalize(listing):
     """Returns a safe JSON blob representing the given listing."""
 
     return {
-        "jsonURL": url_for(
-            "api_one_listing", listing=listing, _external=True),
-        "htmlURL": url_for(
-            "show_listing", listing=listing, _external=True),
+        "jsonURL": url_for("api_one_listing", listing=listing, _external=True),
+        "htmlURL": url_for("show_listing", listing=listing, _external=True),
         "title": listing.title,
         "body": listing.body,
         "postingTime": calendar.timegm(listing.posted_at.timetuple()),
         "categories": [
             {
                 "name": category,
-                "URL": url_for("api_all_listings",
-                    q="category:{}".format(category), _external=True)
-            } for category in listing.categories
-        ],
+                "URL": url_for(
+                    "api_all_listings",
+                    q="category:{}".format(category),
+                    _external=True)} for category in listing.categories],
         "price": listing.price,
         "photos": [
-            {
-                "small": photo.public_url("small"),
-                "large": photo.public_url("large")
-            } for photo in listing.photos
-        ]
-    }
+            {"small": photo.public_url("small"),
+             "large": photo.public_url("large")} for photo in listing.photos]}
+
 
 @app.route("/api")
 @app.route("/api/v1")
@@ -43,6 +42,7 @@ def api_docs():
     """Bounce user to the documentation Doc."""
     return redirect("https://docs.google.com/document/d/"
                     "1uHTq_U0_v97KuHV1LElDp3hNwrcykaPrk61kT2Igti4/edit")
+
 
 @app.route("/api/v1/listings.json")
 def api_all_listings():
@@ -57,11 +57,12 @@ def api_all_listings():
     limit = int(request.args.get("limit", "100"))
     if limit < 0:
         limit = 0
-    if limit > 1000:
-        limit = 1000
+    if limit > 100:
+        limit = 100
 
     # Provide a burst limit on search queries.
-    if dos.rate_limit("api_search:{}".format(request.remote_addr), 10, 60):
+    if dos.rate_limit("api_search:{}".format(request.remote_addr), 10,
+                      3600 * 24):
         abort(403)
 
     # Compute the results matching that query.
@@ -74,10 +75,15 @@ def api_all_listings():
     pages = {}
     if len(listings) == limit:
         pages["nextURL"] = url_for("api_all_listings",
-            offset=offset + limit, _external=True)
+                                   offset=offset + limit, _external=True)
     if offset != 0:
-        pages["previousURL"] = url_for("api_all_listings",
-            offset=max(0, offset - limit), _external=True)
+        pages["previousURL"] = url_for(
+            "api_all_listings",
+            offset=max(
+                0,
+                offset -
+                limit),
+            _external=True)
 
     # Return JSON if requested.
     return jsonify(
@@ -86,6 +92,7 @@ def api_all_listings():
         limit=limit,
         **pages
     )
+
 
 @app.route("/api/v1/<listing:listing>.json")
 def api_one_listing(listing):
