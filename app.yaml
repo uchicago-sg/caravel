@@ -20,9 +20,6 @@ handlers:
   script: caravel.app
   login: required
   secure: always
-- url: /api/v1/.*
-  script: caravel.app
-  secure: always
 - url: /.*
   script: caravel.app
   secure: always
