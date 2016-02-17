@@ -13,8 +13,9 @@ var enableModeration = function(csrfToken) {
             xhr.open("POST", "/moderation", true);
             this_.parentNode.parentNode.remove();
             xhr.onreadystatechange = function() {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    window.alert("XHR FAILED");
+                if (xhr.readyState == 4) {
+                    if (xhr.status <= 200 || xhr.status > 300)
+                        window.alert("XHR FAILED");
                 }
             };
             xhr.setRequestHeader("Content-type",
