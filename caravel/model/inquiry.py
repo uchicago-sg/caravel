@@ -8,14 +8,37 @@ from caravel.model.temporal import TimeOrderMixin
 from caravel.model.principal import PrincipalMixin
 from caravel.model.side_effects import SideEffectsMixin
 from caravel.model.rate_limits import RateLimitMixin
+from caravel.model.replication import ReplicationMixin
+
 
 from flask import render_template
 
 
 class _Inquiry(TimeOrderMixin, PrincipalMixin, ModeratedMixin,
-               ndb.Model):
+               ReplicationMixin, ndb.Model):
+
+    REPLICATION_URL = "https://go-marketplace.appspot.com/inquiries"
+
     message = ndb.StringProperty()
     listing = ndb.KeyProperty(kind=listing.Listing)
+
+    def encode_for_replication(self):
+        """Flattens this Listing into a JSON dict."""
+
+        data = self.to_dict()
+        data["listing"] = self.listing.id()
+        data["sender"] = {
+            "email": self.principal.email,
+            "validated": (self.principal.auth_method == "GOOGLE_APPS")
+        }
+        data["moderated"] = (bool(self.principal.validated_by) or
+                             (self.principal.auth_method == "GOOGLE_APPS"))
+        del data["principal"]
+        del data["posted_at"]
+        if "run_trigger" in data:
+            del data["run_trigger"]
+
+        return data
 
 
 class Inquiry(SideEffectsMixin, _Inquiry):
