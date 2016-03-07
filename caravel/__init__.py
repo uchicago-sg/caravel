@@ -6,10 +6,12 @@ Please see README.md for details.
 import sys
 import os
 import logging
+import gae_mini_profiler.profiler
 sys.path.append(os.path.dirname(__file__) + "/../vendor")
 
 from flask import Flask
 app = Flask(__name__)
+app.wsgi_app = gae_mini_profiler.profiler.ProfilerWSGIMiddleware(app.wsgi_app)
 
 if "APPLICATION_ID" not in os.environ:
     os.environ["APPLICATION_ID"] = "dev~test"

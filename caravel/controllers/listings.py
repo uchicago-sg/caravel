@@ -12,6 +12,7 @@ from caravel.controllers import forms
 from caravel.controllers import custom_fields
 
 from google.appengine.api import users
+from gae_mini_profiler.templatetags import profiler_includes
 
 import uuid
 import datetime
@@ -79,7 +80,8 @@ def inject_globals():
     return {'categories_list': model.Listing.CATEGORIES_LIST,
             'categories_dict': model.Listing.CATEGORIES_DICT,
             'current_user': users.get_current_user(),
-            'is_admin': users.is_current_user_admin()}
+            'is_admin': users.is_current_user_admin(),
+            'profiler_includes': profiler_includes}
 
 # Display the time as "1s" etc.
 
