@@ -52,7 +52,7 @@ class FullTextMixin(ndb.Model):
             matches = (matches & set(keys)) if matches else set(keys)
 
         # Write back modified cache.
-        memcache.set_multi(writeback, time=3600, key_prefix=FTS)
+        memcache.set_multi(writeback, key_prefix=FTS, time=(3600*24*7))
 
         # Elide potentially stale entries from the cache.
         keys = [key for key in keys if key in matches]
