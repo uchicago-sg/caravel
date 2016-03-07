@@ -18,8 +18,17 @@ def grouper(iterable, n, fillvalue=None):
     return itertools.izip_longest(fillvalue=fillvalue, *args)
 
 
+class AvoidRereadingFromPBProperty(ndb.ComputedProperty):
+    """
+    Since ComputedPropertys are overwritten on writes anyway, we might as well
+    avoid the expensive desearlization process for reads.
+    """
+
+    def _deserialize(self, ent, property, depth=1): pass
+
+
 class FullTextMixin(ndb.Model):
-    keywords = ndb.ComputedProperty(
+    keywords = AvoidRereadingFromPBProperty(
         lambda self: list(set(self._keywords())), repeated=True)
 
     @classmethod
