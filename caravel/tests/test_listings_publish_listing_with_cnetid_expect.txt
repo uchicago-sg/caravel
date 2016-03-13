@@ -21,6 +21,8 @@ Logged in as
 seller-b@uchicago.edu
 My Listings
 Logout
+Using Marketplace does not require signing in. Please click the "New
+Listing" button above to sell something.
 Listing ☆A
 $3.10
 cars
@@ -35,6 +37,8 @@ Logged in as
 seller-b@uchicago.edu
 My Listings
 Logout
+Using Marketplace does not require signing in. Please click the "New
+Listing" button above to sell something.
 Listing ☆A
 $3.10
 cars
@@ -67,6 +71,8 @@ Logged in as
 seller-b@uchicago.edu
 My Listings
 Logout
+Using Marketplace does not require signing in. Please click the "New
+Listing" button above to sell something.
 Listing ☆A
 $3.10
 cars

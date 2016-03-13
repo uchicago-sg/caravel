@@ -1,4 +1,6 @@
 New Listing
+Using Marketplace does not require signing in. Please click the "New
+Listing" button above to sell something.
 Listing ☆A
 $3.10
 cars
@@ -9,6 +11,8 @@ apartments
 2d ago
 ---
 New Listing
+Using Marketplace does not require signing in. Please click the "New
+Listing" button above to sell something.
 Images?
 Title
 Price
@@ -23,12 +27,16 @@ $71.10
 apartments
 ---
 New Listing
+Using Marketplace does not require signing in. Please click the "New
+Listing" button above to sell something.
 Listing ☆B
 $71.10
 apartments
 2d ago
 ---
 New Listing
+Using Marketplace does not require signing in. Please click the "New
+Listing" button above to sell something.
 Listing ☆A
 $3.10
 cars

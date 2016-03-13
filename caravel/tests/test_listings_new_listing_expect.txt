@@ -1,5 +1,7 @@
 New Listing
 Your listing is awaiting moderation. We&#39;ll email you when it&#39;s up.
+Using Marketplace does not require signing in. Please click the "New
+Listing" button above to sell something.
 Listing ☆A
 $3.10
 cars
@@ -29,6 +31,8 @@ Sign in with CNetID or
 Message
 ---
 New Listing
+Using Marketplace does not require signing in. Please click the "New
+Listing" button above to sell something.
 Title of ☆D
 $3.44
 apartments
