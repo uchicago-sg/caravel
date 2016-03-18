@@ -22,6 +22,8 @@ visitor@uchicago.edu ( Logout )
 Message
 ---
 New Listing
+Using Marketplace does not require signing in. Please click the "New
+Listing" button above to sell something.
 Title of ☆D
 $3.44
 apartments
