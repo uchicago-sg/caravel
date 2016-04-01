@@ -64,7 +64,8 @@ class TestListings(helper.CaravelTestCase):
         self.assertEqual(self.emails, [])
 
         # Notify the moderators that something has happened.
-        self.get("/_internal/nag_moderators")
+        with self.google_apps_user("admin@uchicago.edu"):
+            self.get("/_internal/nag_moderators")
 
         # Ensure that the moderators received the right email.
         self.assertEqual(
