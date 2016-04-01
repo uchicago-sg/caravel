@@ -1,0 +1,36 @@
+<div class="panel panel-default" id="automod">
+  <div class="panel-heading">
+    <h3 class="panel-title">Automatic Moderation</h3>
+  </div>
+  <form class="panel-body" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <p class="form-group">
+      <input type="hidden" name="automod" id="automod-enabled"
+        value="{{ 'true' if config.enabled else 'false' }}"/>
+      <div class="btn-group">
+        {% if config.enabled %}
+        <button class="btn btn-success" disabled>Enable</a>
+        <button class="btn btn-default"
+           onclick="document.getElementById('automod-enabled').value = 'false';
+                    this.parentNode.parentNode.parentNode.submit();">Disable</a>
+        {% else %}
+        <button class="btn btn-default"
+           onclick="document.getElementById('automod-enabled').value = 'true';
+                    this.parentNode.parentNode.parentNode.submit();">Enable</a>
+        <button class="btn btn-danger" disabled>Disable</a>
+        {% endif %}
+      </div>
+    </p>
+    {% if config.enabled %}
+    <textarea class="form-control" name="blacklist"
+      rows="10" placeholder="blacklist (regexps)">{{ 
+          "\n".join(config.blacklist) }}</textarea>
+    <p class="form-group">
+      <label for="min-delay">Minimum Delay (m):</label>
+      <input id="min-delay" name="min_delay" type="number" class="form-control"
+        value="{{ config.min_delay }}"/>
+    </p>
+    <input type="submit" class="btn btn-success" value="Save"/>
+    {% endif %}
+  </div>
+</div>

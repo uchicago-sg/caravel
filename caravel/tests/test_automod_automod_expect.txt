@@ -1,0 +1,23 @@
+New Listing
+Logged in as
+admin@uchicago.edu
+My Listings
+Logout
+Title of ☆D
+apartments
+Posted now by
+marycole396@yahoo.com .
+Price: $3.44
+Body of ☆D
+Moderate Listing
+Approve
+Delete
+Automatic Moderation
+Enable
+Disable
+Inquiry: Listing ☆B
+Sent now by
+buyer@foo.com .
+Moderate Inquiry
+Approve
+Delete

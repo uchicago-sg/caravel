@@ -1,0 +1,46 @@
+New Listing
+Logged in as
+foo@uchicago.edu
+My Listings
+Logout
+Your listing is awaiting moderation. We&#39;ll email you when it&#39;s up.
+Title of ☆D
+apartments
+Posted now by
+seller-d@uchicago.edu .
+Price: $3.44
+Body of ☆D
+Moderate Listing
+Approve
+Delete
+Automatic Moderation
+Enable
+Disable
+Inquiry: Listing ☆B
+Sent now by
+buyer@foo.com .
+Moderate Inquiry
+Approve
+Delete
+---
+New Listing
+Logged in as
+foo@uchicago.edu
+My Listings
+Logout
+Inquiry: Listing ☆B
+Sent now by
+buyer@foo.com .
+Moderate Inquiry
+Approve
+Delete
+Automatic Moderation
+Enable
+Disable
+---
+New Listing
+Logged in as
+foo@uchicago.edu
+My Listings
+Logout
+All done!

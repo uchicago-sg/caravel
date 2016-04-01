@@ -9,3 +9,6 @@ cron:
   url: /_internal/nag_moderators
   schedule: every day 09:00
   timezone: "America/Chicago"
+- description: run automod
+  url: /_internal/automod
+  schedule: every 30 minutes 

@@ -134,6 +134,7 @@ def might_be_wrong_url():
         return redirect(request.url.replace(
             "hosted-caravel.appspot.com", "marketplace.appspot.com"))
 
+
 @app.route("/")
 def search_listings():
     """Display a list of listings that match the given query."""
@@ -176,6 +177,7 @@ def show_listing(listing):
 
         inquiry = model.UnapprovedInquiry(listing=listing.key)
         form.populate_obj(inquiry)
+        inquiry.posted_at = datetime.datetime.now()
         inquiry.put()
         if isinstance(inquiry, model.UnapprovedInquiry):
             flash("Your inquiry has been recorded and is awaiting moderation.")
