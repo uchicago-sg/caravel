@@ -5,9 +5,14 @@ This daemon automatically removes photos that are too old.
 from caravel import app, model, utils
 from caravel.utils import emails
 from flask import render_template
+from google.appengine.api import users
+
 
 @app.route('/_internal/nag_moderators')
 def nag_moderators():
+    if not users.is_current_user_admin():
+        return "???"
+
     listings = list(model.UnapprovedListing().query())
     inquiries = list(model.UnapprovedInquiry().query())
     pending = listings + inquiries
@@ -20,7 +25,7 @@ def nag_moderators():
         subject="{} Inquiries, {} Listings Pending".format(
             len(inquiries), len(listings)),
         text=render_template("email/nag_moderators.txt",
-            listings=listings, inquiries=inquiries),
+                             listings=listings, inquiries=inquiries),
         html=None
     )
 

@@ -12,10 +12,6 @@ handlers:
   script: caravel.app
   login: admin
   secure: always
-- url: /_internal/.*
-  script: caravel.app
-  login: admin
-  secure: always
 - url: /login.*
   script: caravel.app
   login: required

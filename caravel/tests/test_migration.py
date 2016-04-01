@@ -68,7 +68,8 @@ class TestListings(helper.CaravelTestCase):
         self.assertEquals(listing.version, 12)
 
         # Trigger an update cronjob.
-        self.get("/_internal/migrate_schema")
+        with self.google_apps_user("admin@uchicago.edu"):
+            self.get("/_internal/migrate_schema")
 
         # Verify that we have now changed on disk.
         listing = Listing.get_by_key_name("my-listing-name")
