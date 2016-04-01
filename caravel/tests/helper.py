@@ -4,7 +4,6 @@ import re
 import uuid
 import time
 import sys
-import urllib2
 import os
 from contextlib import contextmanager
 
@@ -95,10 +94,10 @@ class CaravelTestCase(OutOfContextLiteralsMixin, unittest.TestCase):
         sendgrid = config.send_grid_client
         self._send, sendgrid.send = sendgrid.send, self.emails.append
 
-        # Capture outgoing webhooks.
-        self.webhooks = []
-        self._urlopen = urllib2.urlopen
-        urllib2.urlopen = lambda url, body: self.webhooks.append((url, body))
+        # Capture outgoing Slack messages.
+        # self.chats = []
+        # self._send_chat = slack.send_chat
+        # slack.send_chat = lambda **kw: self.chats.append(kw)
 
         # Ensure that UUIDs are deterministic.
         self._uuid4 = uuid.uuid4
@@ -157,7 +156,7 @@ class CaravelTestCase(OutOfContextLiteralsMixin, unittest.TestCase):
         # Un-stub mocks.
         uuid.uuid4 = self._uuid4
         config.send_grid_client.send = self._send
-        urllib2.urlopen = self._urlopen
+        # slack.send_chat = self._send_chat
 
         super(CaravelTestCase, self).tearDown()
 
