@@ -11,7 +11,6 @@ from caravel.model.side_effects import SideEffectsMixin
 from caravel.model.full_text import FullTextMixin
 from caravel.model.rate_limits import RateLimitMixin
 from caravel.model.sellable import SellableMixin
-from caravel.model.replication import ReplicationMixin
 
 from caravel import utils
 
@@ -22,11 +21,10 @@ from flask import render_template
 
 class _Listing(CategoriesMixin, PhotosMixin, PrincipalMixin, TimeOrderMixin,
                SchemaMixin, PriceMixin, RateLimitMixin, ModeratedMixin,
-               SellableMixin, FullTextMixin, ReplicationMixin, ndb.Model):
+               SellableMixin, FullTextMixin, ndb.Model):
 
     SCHEMA_VERSION = 12
     MARK_AS_OLD_AFTER = datetime.timedelta(days=30)
-    REPLICATION_URL = "https://go-marketplace.appspot.com/listings"
 
     title = ndb.StringProperty()
     body = ndb.TextProperty()
@@ -34,32 +32,6 @@ class _Listing(CategoriesMixin, PhotosMixin, PrincipalMixin, TimeOrderMixin,
     @property
     def can_bump(self):
         return self.age >= datetime.timedelta(days=7)
-
-    def encode_for_replication(self):
-        """Flattens this Listing into a JSON dict."""
-
-        data = self.to_dict()
-        data["posted_at"] = data["posted_at"].isoformat()
-        data["photos"] = [{"small": photo.public_url("small"),
-                           "large": photo.public_url("large")}
-                          for photo in data["photos"]]
-        data["price"] = float(data["price"])
-        if "run_trigger" in data:
-            del data["run_trigger"]
-        del data["version"]
-        del data["burst_count"]
-        del data["daily_count"]
-        del data["keywords"]
-        del data["principal"]
-
-        data["seller"] = {
-            "email": self.principal.email,
-            "validated": (self.principal.auth_method == "GOOGLE_APPS")
-        }
-        data["moderated"] = (bool(self.principal.validated_by) or
-                             (self.principal.auth_method == "GOOGLE_APPS"))
-
-        return data
 
 
 class Listing(SideEffectsMixin, _Listing):
