@@ -38,5 +38,6 @@ app.config["RECAPTCHA_PRIVATE_KEY"] = lookup(
     "recaptcha_private_key",
     "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe")
 app.config["RECAPTCHA_DATA_ATTRS"] = {"size": "compact"}
+replication_key = lookup("replication_key", "~key~")
 
 Bootstrap(app)
