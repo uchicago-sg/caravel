@@ -277,3 +277,8 @@ form .thumbnail {
 .inline-form {
     display: inline;
 }
+
+/* moderation interface */
+.hide-after-first + .hide-after-first {
+    display: none;
+}

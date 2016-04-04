@@ -17,10 +17,11 @@ if "APPLICATION_ID" not in os.environ:
     # Hide all the App Engine cruft.
     logging.disable(logging.INFO)
 
-    from google.appengine.ext import testbed
+    from google.appengine.ext import testbed, ndb
     testbed = testbed.Testbed()
     testbed.activate()
     testbed.init_all_stubs()
+    ndb.get_context().set_cache_policy(False)
     app.testing = True
 
 # Ensure that the Recaptcha field is small.
