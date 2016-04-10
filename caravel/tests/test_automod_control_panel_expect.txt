@@ -13,6 +13,9 @@ Body of ☆D
 Moderate Listing
 Approve
 Delete
+1 of
+1 listings,
+plus 1 inquiries.
 Automatic Moderation
 Enable
 Disable
@@ -22,6 +25,8 @@ buyer@foo.com .
 Moderate Inquiry
 Approve
 Delete
+1 of
+1 inquiries.
 ---
 New Listing
 Logged in as
@@ -34,6 +39,8 @@ buyer@foo.com .
 Moderate Inquiry
 Approve
 Delete
+1 of
+1 inquiries.
 Automatic Moderation
 Enable
 Disable
@@ -44,3 +51,6 @@ foo@uchicago.edu
 My Listings
 Logout
 All done!
+Automatic Moderation
+Enable
+Disable

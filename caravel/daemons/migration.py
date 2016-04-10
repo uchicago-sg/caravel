@@ -18,9 +18,6 @@ def grouper(iterable, n, fillvalue=None):
 
 @app.route("/_internal/migrate_schema")
 def migrate_schema():
-    if not users.is_current_user_admin():
-        return "???"
-
     horizon = datetime.datetime.now() - model.Listing.MARK_AS_OLD_AFTER
 
     q = model.Listing.query(

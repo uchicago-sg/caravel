@@ -10,9 +10,6 @@ from google.appengine.api import users
 
 @app.route('/_internal/nag_moderators')
 def nag_moderators():
-    if not users.is_current_user_admin():
-        return "???"
-
     listings = list(model.UnapprovedListing().query())
     inquiries = list(model.UnapprovedInquiry().query())
     pending = listings + inquiries

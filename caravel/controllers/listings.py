@@ -130,7 +130,8 @@ def show_disclaimer(response):
 
 @app.before_request
 def might_be_wrong_url():
-    if request.host == "hosted-caravel.appspot.com":
+    if (request.host == "hosted-caravel.appspot.com" and
+            request.remote_addr != "0.1.0.1"):
         return redirect(request.url.replace(
             "hosted-caravel.appspot.com", "marketplace.appspot.com"))
 
