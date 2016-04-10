@@ -38,7 +38,8 @@ class FullTextMixin(ndb.Model):
         # Check contents of cache.
         words = tokenize(query)
         if not words:
-            for item in klass.query().order(-klass.posted_at):
+            for item in klass.query().order(-klass.posted_at).iter(
+                    batch_size=200):
                 if item._keywords():
                     yield item
             return
@@ -55,13 +56,14 @@ class FullTextMixin(ndb.Model):
                 keys = [ndb.Key(urlsafe=val) for val in urlsafe]
             else:
                 query = klass.query(klass.keywords == word)
-                keys = query.order(-klass.posted_at).fetch(keys_only=True)
+                keys = query.order(-klass.posted_at).fetch(keys_only=True,
+                                                           batch_size=1000)
                 writeback[word] = json.dumps([key.urlsafe() for key in keys])
 
             matches = (matches & set(keys)) if matches else set(keys)
 
         # Write back modified cache.
-        memcache.set_multi(writeback, key_prefix=FTS, time=(3600*24*7))
+        memcache.set_multi(writeback, key_prefix=FTS, time=(3600 * 24 * 7))
 
         # Elide potentially stale entries from the cache.
         keys = [key for key in keys if key in matches]
