@@ -91,9 +91,6 @@ def moderation_view():
 
 @app.route("/_internal/automod")
 def automod():
-    if not users.is_current_user_admin():
-        return "???"
-
     pending = itertools.chain(
         model.UnapprovedListing().query(),
         model.UnapprovedInquiry().query(),
