@@ -66,8 +66,8 @@ def api_all_listings():
         abort(403)
 
     # Compute the results matching that query.
-    listings = list(itertools.islice(model.Listing.matching(query), offset,
-                                     offset + limit))
+    results = model.Listing.matching(query, project=False)
+    listings = list(itertools.islice(results, offset, offset + limit))
 
     # Display only whitelisted properties as JSON.
     externalized = [_externalize(listing) for listing in listings]

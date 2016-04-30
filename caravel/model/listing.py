@@ -54,6 +54,9 @@ class Listing(SideEffectsMixin, _Listing):
         if self.sold or self.old:
             return []
 
+        if self._projection:
+            return self._values['keywords']
+
         keywords = (
             self._tokenize("title", self.title) +
             self._tokenize("body", self.body) +

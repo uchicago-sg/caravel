@@ -28,17 +28,40 @@ class AvoidRereadingFromPBProperty(ndb.ComputedProperty):
 
 
 class FullTextMixin(ndb.Model):
-    keywords = AvoidRereadingFromPBProperty(
+    # keywords = AvoidRereadingFromPBProperty(
+    #     lambda self: list(set(self._keywords())), repeated=True)
+
+    keywords = ndb.ComputedProperty(
         lambda self: list(set(self._keywords())), repeated=True)
 
     @classmethod
-    def matching(klass, query, offset=0, limit=None):
+    def matching(klass, query, offset=0, limit=None, project=True):
         """Returns entities matching the given search query."""
 
         # Check contents of cache.
         words = tokenize(query)
+        options = {}
+
+        # Limit the number of results returned.
+        if project:
+            options["projection"] = [
+                klass.title,
+                klass.keywords,
+                klass.categories,
+                klass.version,
+                klass.sold,
+                klass.posted_at,
+                klass.photos,
+                klass.price,
+            ]
+
         if not words:
-            for item in klass.query().order(-klass.posted_at):
+            q = klass.query().order(-klass.posted_at)
+            prev = None
+            for item in q.iter(**options):
+                if item.key.id() == prev:
+                    continue
+                prev = item.key.id()
                 if item._keywords():
                     yield item
             return
@@ -61,7 +84,7 @@ class FullTextMixin(ndb.Model):
             matches = (matches & set(keys)) if matches else set(keys)
 
         # Write back modified cache.
-        memcache.set_multi(writeback, key_prefix=FTS, time=(3600*24*7))
+        memcache.set_multi(writeback, key_prefix=FTS, time=(3600 * 24 * 7))
 
         # Elide potentially stale entries from the cache.
         keys = [key for key in keys if key in matches]

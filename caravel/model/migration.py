@@ -60,6 +60,8 @@ class SchemaMixin(ndb.Expando):
         Loads data coming from a protocol buffer (i.e. from Datastore).
         """
         entity = super(SchemaMixin, klass)._from_pb(*vargs, **kwargs)
+        if entity._projection:
+            return entity
         if not entity.version:
             entity.version = 0
         entity.run_migrations()
