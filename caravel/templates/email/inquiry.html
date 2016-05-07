@@ -18,7 +18,9 @@
       <td style="font: 18px Arial, sans-serif;
                  padding: 1em;">
           Hello again!<br/><br/>
-          We've received a new inquiry for {{ listing.title }}:
+          We've received a new inquiry for
+            <a href="{{ url_for('show_listing', listing=listing, _external=True)
+              }}" style="color:#39c;">{{ listing.title }}</a>:
       </td>
     </tr>
     <tr>
@@ -38,6 +40,11 @@
       <td style="font: 18px Arial, sans-serif;
                  padding: 1em;">
           Simply reply to this email if you'd like to get in contact.<br/>
+          <br/>
+          If you've already sold this item, visit the
+          <a href="{{ url_for('show_listing', listing=listing, _external=True)
+            }}" style="color:#39c;">listing page</a> and click the "Sold" button.
+            That will block future messages.<br/>
           <br/>
           Cheers,<br/>
           The Marketplace Team

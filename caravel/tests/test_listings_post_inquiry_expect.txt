@@ -24,14 +24,21 @@ We've received a new inquiry for Listing ☆B:
 Buyer: buyer@foo.com
 message☆ goes here
 Simply reply to this email if you'd like to get in contact.
+If you've already sold this item, visit the following page, and click the
+"Sold" button. That will block future messages.
+http://localhost/listing_b
 Cheers,
 The Marketplace Team
 ---
 Marketplace
 Hello again!
-We've received a new inquiry for Listing ☆B:
+We've received a new inquiry for
+Listing ☆B :
 Buyer: buyer@foo.com
 message☆ goes here
 Simply reply to this email if you'd like to get in contact.
+If you've already sold this item, visit the
+listing page and click the "Sold" button.
+That will block future messages.
 Cheers,
 The Marketplace Team

@@ -8,5 +8,10 @@ We've received a new inquiry for {{ listing.title }}:
 
 Simply reply to this email if you'd like to get in contact.
 
+If you've already sold this item, visit the following page, and click the
+"Sold" button. That will block future messages.
+
+  {{ url_for('show_listing', listing=listing, _external=True) }}
+
 Cheers,
 The Marketplace Team
