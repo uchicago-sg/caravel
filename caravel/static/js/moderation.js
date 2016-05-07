@@ -5,21 +5,37 @@
  */
 
 var enableModeration = function(csrfToken) {
-    var buttons = document.querySelectorAll("[data-approve],[data-deny]");
+    var buttons = document.querySelectorAll(
+      "[data-skip],[data-approve],[data-deny]");
     
+    var siblingWithChildren = function(x) {
+      do {
+        x = x.nextSibling;
+      } while (!x.childNodes);
+      return x;
+    };
+
     [].forEach.call(buttons, function(elem) {
         elem.addEventListener("click", function() {
-            var this_ = this, xhr = new XMLHttpRequest;
-            xhr.open("POST", "/moderation", true);
             var automod = document.getElementById("automod");
-            var container = this_.parentNode.parentNode.parentNode.parentNode;
-            var next = container.nextSibling.nextSibling.childNodes[5];
+            console.log(elem.outerHTML);
+            var container = elem.parentNode.parentNode.parentNode.parentNode;
+            var next = siblingWithChildren(container).childNodes[5];
             var anyMoreToModerate = !!next;
             if (anyMoreToModerate)
               next.appendChild(automod);
             container.remove();
 
-            this_.parentNode.parentNode.parentNode.parentNode.remove();
+            elem.parentNode.parentNode.parentNode.parentNode.remove();
+
+            if (elem.getAttribute("data-skip")) {
+              if (!anyMoreToModerate)
+                window.location.reload();
+            }
+
+            /* persist the change in moderation */
+            var xhr = new XMLHttpRequest;
+            xhr.open("POST", "/moderation", true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == 4) {
                     if (xhr.status < 200 || xhr.status >= 300)
@@ -31,8 +47,8 @@ var enableModeration = function(csrfToken) {
             xhr.setRequestHeader("Content-type",
                     "application/x-www-form-urlencoded");
             xhr.send("csrf_token=" + encodeURIComponent(csrfToken)
-                     + "&approve=" + (this_.getAttribute("data-approve") || "")
-                     + "&deny=" + (this_.getAttribute("data-deny") || ""));
+                     + "&approve=" + (elem.getAttribute("data-approve") || "")
+                     + "&deny=" + (elem.getAttribute("data-deny") || ""));
         });
     });
 }
