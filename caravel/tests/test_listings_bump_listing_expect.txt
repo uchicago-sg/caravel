@@ -1,4 +1,12 @@
 New Listing
+Select affiliation to sign in...
+BSD/Hospital Staff
+University Faculty/Staff
+Current Student
+Alumni
+Hyde Parker
+Other
+Enter email address (or cancel )
 Listing ☆A
 cars
 Posted 2w ago .
@@ -10,6 +18,8 @@ Manage Listing
 Sign in with CNetID
 to edit.
 Contact Seller
-From
+Affiliation
+(Select Affiliation...) BSD/Hospital Staff University Faculty/Staff Current Student Alumni Hyde Parker Other
+Email
 Sign in with CNetID or
 Message

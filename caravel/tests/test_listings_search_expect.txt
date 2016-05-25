@@ -1,4 +1,12 @@
 New Listing
+Select affiliation to sign in...
+BSD/Hospital Staff
+University Faculty/Staff
+Current Student
+Alumni
+Hyde Parker
+Other
+Enter email address (or cancel )
 Listing ☆A
 $3.10
 cars
@@ -9,6 +17,14 @@ apartments
 2d ago
 ---
 New Listing
+Select affiliation to sign in...
+BSD/Hospital Staff
+University Faculty/Staff
+Current Student
+Alumni
+Hyde Parker
+Other
+Enter email address (or cancel )
 Images?
 Title
 Price
@@ -23,12 +39,28 @@ $71.10
 apartments
 ---
 New Listing
+Select affiliation to sign in...
+BSD/Hospital Staff
+University Faculty/Staff
+Current Student
+Alumni
+Hyde Parker
+Other
+Enter email address (or cancel )
 Listing ☆B
 $71.10
 apartments
 2d ago
 ---
 New Listing
+Select affiliation to sign in...
+BSD/Hospital Staff
+University Faculty/Staff
+Current Student
+Alumni
+Hyde Parker
+Other
+Enter email address (or cancel )
 Listing ☆A
 $3.10
 cars

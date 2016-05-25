@@ -9,6 +9,7 @@ class TestAutomaticModeration(helper.CaravelTestCase):
         # Post a new listing.
         self.post("/listing_b", data={
             "principal": "buyer@foo.com",
+            "affiliation": "alumni",
             "message": u"message\u2606 goes here",
             "csrf_token": self.csrf_token("/listing_b"),
         })
@@ -20,6 +21,7 @@ class TestAutomaticModeration(helper.CaravelTestCase):
             "body": u"Body of \u2606D",
             "price": "3.441",
             "principal": "seller-d@uchicago.edu",
+            "affiliation": "osha_current_student",
             "categories": "apartments",
             "uploaded_photos-2-image":
                 ("caravel/tests/test-pattern.gif", "t.jpg")
@@ -48,6 +50,7 @@ class TestAutomaticModeration(helper.CaravelTestCase):
         # Post a new inqury.
         self.post("/listing_b", data={
             "principal": "buyer@foo.com",
+            "affiliation": "alumni",
             "message": u"message\u2606 goes here",
             "csrf_token": self.csrf_token("/listing_b"),
         })
@@ -59,6 +62,7 @@ class TestAutomaticModeration(helper.CaravelTestCase):
             "body": u"Body of \u2606D",
             "price": "3.441",
             "principal": "marycole396@yahoo.com",
+            "affiliation": "other",
             "categories": "apartments",
             "uploaded_photos-2-image":
                 ("caravel/tests/test-pattern.gif", "t.jpg")

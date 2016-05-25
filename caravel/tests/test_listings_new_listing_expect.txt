@@ -1,4 +1,8 @@
 New Listing
+Logged in as
+seller-d@uchicago.edu
+My Listings
+Logout
 Your listing is awaiting moderation. We&#39;ll email you when it&#39;s up.
 Listing ☆A
 $3.10
@@ -14,6 +18,10 @@ Not Found
 The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
 ---
 New Listing
+Logged in as
+seller-d@uchicago.edu
+My Listings
+Logout
 Title of ☆D
 apartments
 Posted now .
@@ -24,11 +32,17 @@ Edit
 Available
 Sold
 Contact Seller
-From
+Affiliation
+(Select Affiliation...) BSD/Hospital Staff University Faculty/Staff Current Student Alumni Hyde Parker Other
+Email
 Sign in with CNetID or
 Message
 ---
 New Listing
+Logged in as
+seller-d@uchicago.edu
+My Listings
+Logout
 Title of ☆D
 $3.44
 apartments

@@ -59,9 +59,11 @@
       {% endif %}
       {% if is_admin %}
       <p class="alert alert-info">
-        {{ listing.principal.explain() }}. Originally posted by
-        {{ listing.principal.device.ip_address }} with 
-        {{ listing.principal.device.user_agent }}. 
+        Poster is <a href="/?q={{listing.principal.email}}">
+          {{ listing.principal.email }}</a>, a {{ listing.affiliation }}
+        ({{ listing.principal.explain() }}). Originally posted by
+        <code>{{ listing.principal.device.ip_address }}</code> with
+        {{ listing.principal.device.user_agent }}.
       </p>
       {% endif %}
       <p style="white-space:pre-wrap">{{ listing.body }}</p>

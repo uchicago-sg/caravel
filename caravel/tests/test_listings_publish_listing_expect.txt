@@ -1,4 +1,12 @@
 New Listing
+Select affiliation to sign in...
+BSD/Hospital Staff
+University Faculty/Staff
+Current Student
+Alumni
+Hyde Parker
+Other
+Enter email address (or cancel )
 Your edit is awaiting moderation. We&#39;ll email you when it is approved.
 Listing ☆B
 apartments
@@ -10,11 +18,21 @@ Edit
 Available
 Sold
 Contact Seller
-From
+Affiliation
+(Select Affiliation...) BSD/Hospital Staff University Faculty/Staff Current Student Alumni Hyde Parker Other
+Email
 Sign in with CNetID or
 Message
 ---
 New Listing
+Select affiliation to sign in...
+BSD/Hospital Staff
+University Faculty/Staff
+Current Student
+Alumni
+Hyde Parker
+Other
+Enter email address (or cancel )
 Listing ☆B
 apartments
 Posted 2d ago .
@@ -28,18 +46,42 @@ Available
 Sold
 ---
 New Listing
+Select affiliation to sign in...
+BSD/Hospital Staff
+University Faculty/Staff
+Current Student
+Alumni
+Hyde Parker
+Other
+Enter email address (or cancel )
 Listing ☆A
 $3.10
 cars
 5h ago
 ---
 New Listing
+Select affiliation to sign in...
+BSD/Hospital Staff
+University Faculty/Staff
+Current Student
+Alumni
+Hyde Parker
+Other
+Enter email address (or cancel )
 Listing ☆A
 $3.10
 cars
 5h ago
 ---
 New Listing
+Select affiliation to sign in...
+BSD/Hospital Staff
+University Faculty/Staff
+Current Student
+Alumni
+Hyde Parker
+Other
+Enter email address (or cancel )
 Your edit is awaiting moderation. We&#39;ll email you when it is approved.
 Listing ☆B
 apartments
@@ -54,6 +96,14 @@ Available
 Sold
 ---
 New Listing
+Select affiliation to sign in...
+BSD/Hospital Staff
+University Faculty/Staff
+Current Student
+Alumni
+Hyde Parker
+Other
+Enter email address (or cancel )
 Listing ☆B
 apartments
 Posted 2d ago .
@@ -64,11 +114,21 @@ Edit
 Available
 Sold
 Contact Seller
-From
+Affiliation
+(Select Affiliation...) BSD/Hospital Staff University Faculty/Staff Current Student Alumni Hyde Parker Other
+Email
 Sign in with CNetID or
 Message
 ---
 New Listing
+Select affiliation to sign in...
+BSD/Hospital Staff
+University Faculty/Staff
+Current Student
+Alumni
+Hyde Parker
+Other
+Enter email address (or cancel )
 Listing ☆A
 $3.10
 cars

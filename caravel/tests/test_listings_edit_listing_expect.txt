@@ -1,4 +1,8 @@
 New Listing
+Logged in as
+seller-a@uchicago.edu
+My Listings
+Logout
 Title
 Seller
 Sign in with CNetID or
@@ -28,7 +32,9 @@ Title☆A
 cars
 Posted 5h ago .
 Price: $2.34
-Validated by GOOGLE_APPS. Originally posted by
+Poster is
+seller-a@uchicago.edu , a None
+(Validated by GOOGLE_APPS). Originally posted by
 None with
 .
 Body☆A
@@ -37,6 +43,8 @@ Edit
 Available
 Sold
 Contact Seller
-From
+Affiliation
+(Select Affiliation...) BSD/Hospital Staff University Faculty/Staff Current Student Alumni Hyde Parker Other
+Email
 seller-a@uchicago.edu ( Logout )
 Message

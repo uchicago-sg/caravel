@@ -17,6 +17,7 @@ import uuid
 import datetime
 import math
 import itertools
+import re
 from google.appengine.ext import ndb
 
 TOR_DETECTOR = utils.TorDetector()
@@ -60,7 +61,7 @@ def modify_search(add=[], remove=[]):
 
 @app.template_global()
 def login_url():
-    return "/login"  # users.create_login_url(request.url.encode("utf-8"))
+    return "/oshalogin"
 
 
 @app.template_global()
@@ -78,6 +79,7 @@ def inject_globals():
     """Adds the categories and user info into the view."""
     return {'categories_list': model.Listing.CATEGORIES_LIST,
             'categories_dict': model.Listing.CATEGORIES_DICT,
+            'affiliations': model.Listing.AFFILIATIONS,
             'current_user': users.get_current_user(),
             'is_admin': users.is_current_user_admin()}
 
@@ -305,6 +307,19 @@ def new_listing():
     return render_template("listing_form.html", form=form)
 
 
-@app.route("/login")
+@app.route("/oshalogin")
+@app.route("/nooshalogin")
 def login_page():
+    affiliation = request.args.get("affiliation", "")
+    email = request.args.get("email", "")
+
+    if affiliation not in dict(model.Listing.AFFILIATIONS):
+        affiliation = ""
+
+    if not re.match(r'^\S+@\S+$', email) or users.get_current_user():
+        email = ""
+
+    session["affiliation"] = affiliation
+    session["email"] = email
+
     return redirect("/")

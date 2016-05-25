@@ -7,12 +7,16 @@ Listing ☆A
 cars
 Posted 5h ago .
 Price: $3.10
-Validated by GOOGLE_APPS. Originally posted by
+Poster is
+seller-a@uchicago.edu , a None
+(Validated by GOOGLE_APPS). Originally posted by
 1.2.3.4 with
 mozilla.
 Body of ☆A
 Contact Seller
-From
+Affiliation
+(Select Affiliation...) BSD/Hospital Staff University Faculty/Staff Current Student Alumni Hyde Parker Other
+Email
 seller-b@uchicago.edu ( Logout )
 Message
 ---
@@ -53,12 +57,16 @@ Listing ☆A
 cars
 Posted 5h ago .
 Price: $3.10
-Validated by GOOGLE_APPS. Originally posted by
+Poster is
+seller-a@uchicago.edu , a None
+(Validated by GOOGLE_APPS). Originally posted by
 1.2.3.4 with
 mozilla.
 Body of ☆A
 Contact Seller
-From
+Affiliation
+(Select Affiliation...) BSD/Hospital Staff University Faculty/Staff Current Student Alumni Hyde Parker Other
+Email
 seller-b@uchicago.edu ( Logout )
 Message
 ---

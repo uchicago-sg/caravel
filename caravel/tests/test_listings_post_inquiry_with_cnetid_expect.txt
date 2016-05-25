@@ -8,7 +8,9 @@ Listing ☆B
 apartments
 Posted 2d ago .
 Price: $71.10
-fixture for unit test. Originally posted by
+Poster is
+seller-b@uchicago.edu , a None
+(fixture for unit test). Originally posted by
 1.2.3.4 with
 mozilla.
 Body of ☆B
@@ -17,7 +19,9 @@ Edit
 Available
 Sold
 Contact Seller
-From
+Affiliation
+(Select Affiliation...) BSD/Hospital Staff University Faculty/Staff Current Student Alumni Hyde Parker Other
+Email
 visitor@uchicago.edu ( Logout )
 Message
 ---

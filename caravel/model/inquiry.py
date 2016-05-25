@@ -8,12 +8,13 @@ from caravel.model.temporal import TimeOrderMixin
 from caravel.model.principal import PrincipalMixin
 from caravel.model.side_effects import SideEffectsMixin
 from caravel.model.rate_limits import RateLimitMixin
+from caravel.model.affiliation import AffiliationMixin
 
 from flask import render_template
 
 
 class _Inquiry(TimeOrderMixin, PrincipalMixin, ModeratedMixin,
-               ndb.Model):
+               AffiliationMixin, ndb.Model):
     message = ndb.StringProperty()
     listing = ndb.KeyProperty(kind=listing.Listing)
 

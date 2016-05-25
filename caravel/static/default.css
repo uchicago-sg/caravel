@@ -282,3 +282,18 @@ form .thumbnail {
 .hide-after-first + .hide-after-first {
     display: none;
 }
+
+/* enter email box */
+.enter-email {
+    padding: 5px 10px;
+    white-space: nowrap;
+    display: none;
+}
+
+.entering-email .enter-email {
+    display: block;
+}
+
+.entering-email li:not(.enter-email) {
+    display: none;
+}

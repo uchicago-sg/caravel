@@ -11,6 +11,8 @@ from caravel.model.side_effects import SideEffectsMixin
 from caravel.model.full_text import FullTextMixin
 from caravel.model.rate_limits import RateLimitMixin
 from caravel.model.sellable import SellableMixin
+from caravel.model.affiliation import AffiliationMixin
+
 
 from caravel import utils
 
@@ -21,7 +23,7 @@ from flask import render_template
 
 class _Listing(CategoriesMixin, PhotosMixin, PrincipalMixin, TimeOrderMixin,
                SchemaMixin, PriceMixin, RateLimitMixin, ModeratedMixin,
-               SellableMixin, FullTextMixin, ndb.Model):
+               SellableMixin, FullTextMixin, AffiliationMixin, ndb.Model):
 
     SCHEMA_VERSION = 12
     MARK_AS_OLD_AFTER = datetime.timedelta(days=30)
