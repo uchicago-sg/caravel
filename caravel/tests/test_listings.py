@@ -1,12 +1,14 @@
 from caravel.storage import config
 from caravel.tests import helper
 from caravel import model
+from caravel.model import utils
 
 import unittest
 import StringIO
 import time
 import re
 import datetime
+import json
 
 
 class TestListings(helper.CaravelTestCase):
@@ -353,3 +355,27 @@ class TestListings(helper.CaravelTestCase):
         self.listing_a = self.listing_a.key.get()
         self.assertFalse(self.listing_a.can_bump)
         self.assertTrue(self.listing_a.age <= datetime.timedelta(seconds=60))
+
+    def test_cache(self):
+        # Warm the cache.
+        self.get("/")
+        self.get("/listing_a")
+        self.get("/favicon.ico")
+        self.get("/apartments.atom")
+
+        # Make sure future reads do not hit the database.
+        before = utils.cache_stats()
+        for i in xrange(20):
+            self.get("/")
+            self.get("/listing_a")
+            self.get("/favicon.ico")
+            self.get("/apartments.atom")
+        after = utils.cache_stats()
+
+        self.assertEquals(before["invalidations"], after["invalidations"])
+        self.assertEquals(before["misses"], after["misses"])
+        self.assertGreaterEqual(after["hits"] - before["hits"], 20)
+
+        self.assertEqual(
+            json.loads(self.get("/_internal/cache").data), after
+        )

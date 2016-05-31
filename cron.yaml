@@ -4,7 +4,7 @@ cron:
   schedule: every 24 hours
 - description: migrate database schema
   url: /_internal/migrate_schema
-  schedule: every 20 minutes
+  schedule: every 2 hours
 - description: nag moderators
   url: /_internal/nag_moderators
   schedule: every day 09:00
