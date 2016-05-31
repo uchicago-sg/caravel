@@ -20,7 +20,7 @@ Available
 Sold
 Contact Seller
 Affiliation
-(Select Affiliation...) BSD/Hospital Staff University Faculty/Staff Current Student Alumni Hyde Parker Other
+(Select Affiliation...) BSD/Hospital BFI/Booth University (Non-BSD) Faculty/Staff University (Non-BSD) Student Alumni Hyde Parker Other
 Email
 visitor@uchicago.edu ( Logout )
 Message

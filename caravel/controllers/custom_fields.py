@@ -135,7 +135,7 @@ class PrincipalField(wtforms.StringField):
 
             return Markup(
                 "<div><a href='{}' class='signin btn btn-success'>Sign in with "
-                "CNetID</a>{}</div>"
+                "Google Apps</a>{}</div>"
             ).format("/oshalogin", alternative)
             # users.create_login_url(request.url)
 

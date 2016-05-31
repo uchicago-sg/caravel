@@ -15,7 +15,7 @@ mozilla.
 Body of ☆A
 Contact Seller
 Affiliation
-(Select Affiliation...) BSD/Hospital Staff University Faculty/Staff Current Student Alumni Hyde Parker Other
+(Select Affiliation...) BSD/Hospital BFI/Booth University (Non-BSD) Faculty/Staff University (Non-BSD) Student Alumni Hyde Parker Other
 Email
 seller-b@uchicago.edu ( Logout )
 Message
@@ -65,7 +65,7 @@ mozilla.
 Body of ☆A
 Contact Seller
 Affiliation
-(Select Affiliation...) BSD/Hospital Staff University Faculty/Staff Current Student Alumni Hyde Parker Other
+(Select Affiliation...) BSD/Hospital BFI/Booth University (Non-BSD) Faculty/Staff University (Non-BSD) Student Alumni Hyde Parker Other
 Email
 seller-b@uchicago.edu ( Logout )
 Message

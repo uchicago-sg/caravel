@@ -1,12 +1,16 @@
 New Listing
 Select affiliation to sign in...
-BSD/Hospital Staff
-University Faculty/Staff
-Current Student
+BSD/Hospital
+BFI/Booth
+University (Non-BSD) Faculty/Staff
+University (Non-BSD) Student
 Alumni
 Hyde Parker
 Other
 Enter email address (or cancel )
+Sign in with Google Apps
+If you see "Google Apps - Invalid Email,"
+go back and try "Affiliation: Other."
 Listing ☆A
 cars
 Posted 9w ago .
@@ -16,5 +20,5 @@ so it does not show up in searches, and will not receive inquiries.
 It has likely already been sold.
 Body of ☆A
 Manage Listing
-Sign in with CNetID
+Sign in with Google Apps
 to edit.

@@ -51,9 +51,10 @@ class AffiliationMixin(ndb.Model):
     _aff = None
 
     AFFILIATIONS = [
-        ("bsd_hospital", "BSD/Hospital Staff"),
-        ("osha_faculty_staff", "University Faculty/Staff"),
-        ("osha_current_student", "Current Student"),
+        ("bsd_hospital", "BSD/Hospital"),
+        ("bfi_booth", "BFI/Booth"),
+        ("osha_faculty_staff", "University (Non-BSD) Faculty/Staff"),
+        ("osha_current_student", "University (Non-BSD) Student"),
         ("alumni", "Alumni"),
         ("hyde_parker", "Hyde Parker"),
         ("other", "Other")

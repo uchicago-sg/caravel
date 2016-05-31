@@ -307,11 +307,12 @@ def new_listing():
     return render_template("listing_form.html", form=form)
 
 
-@app.route("/oshalogin")
-@app.route("/nooshalogin")
+@app.route("/oshalogin", methods=["GET", "POST"])
+@app.route("/nooshalogin", methods=["GET", "POST"])
 def login_page():
-    affiliation = request.args.get("affiliation", "")
-    email = request.args.get("email", "")
+    affiliation = request.form.get("affiliation", "")
+    affiliation = request.args.get("affiliation", affiliation)
+    email = request.args.get("email", request.form.get("email", ""))
 
     if affiliation not in dict(model.Listing.AFFILIATIONS):
         affiliation = ""

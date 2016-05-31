@@ -5,7 +5,7 @@ My Listings
 Logout
 Title
 Seller
-Sign in with CNetID or
+Sign in with Google Apps or
 Please sign in with your CNetID.
 Alumni/BSD/Medicine/Medical School affiliates: if you are unable
 to sign in with your CNetID, please enter your email in the box.
@@ -44,7 +44,7 @@ Available
 Sold
 Contact Seller
 Affiliation
-(Select Affiliation...) BSD/Hospital Staff University Faculty/Staff Current Student Alumni Hyde Parker Other
+(Select Affiliation...) BSD/Hospital BFI/Booth University (Non-BSD) Faculty/Staff University (Non-BSD) Student Alumni Hyde Parker Other
 Email
 seller-a@uchicago.edu ( Logout )
 Message

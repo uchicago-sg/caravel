@@ -112,18 +112,37 @@
           <form method="post" action="/nooshalogin">
             <input type="hidden" name="affiliation" value=""/>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-            Enter email address (or <a id="cancel">cancel</a>)<br/>
+            Enter email address (or <a class="cancel">cancel</a>)<br/>
             <input class="form-control" style="width:200px;display:inline-block;"
                    placeholder="email@address.com" type="email" name="email"/>
-            <input type="submit" class="btn btn-primary" value="Login"/>
+            <input type="submit" class="btn btn-success" value="Sign in with Email"/>
           </form>
+        </li>
+        <li class="apps-warning">
+          <div>
+            <a class="btn btn-success">Sign in with Google Apps</a><br/>
+            <small>
+              If you see "Google Apps - Invalid Email,"<br/>
+              <a class="cancel">go back</a> and try "Affiliation: Other."
+            </small>
+          </div>
         </li>
       </ul>
     </div>
     <script>
       $("#signin-dropdown li>a").click(function (e) {
         var val = this.getAttribute("data-value");
-        if (!val.startsWith("osha_")) {
+        if (val.startsWith("osha_")) {
+          // Switch to "enter CNetID" mode.
+          $(this).closest(".btn-group").addClass("warn-google-apps");
+
+          // Save the input href.
+          $(".apps-warning a", $(this).closest("ul")).attr("href", this.href);
+
+          e.preventDefault();
+          return false;
+
+        } else {
           // Switch to "enter email" mode.
           $(this).closest(".btn-group").addClass("entering-email");
 
@@ -141,9 +160,11 @@
         }
       });
 
-      $("#signin-dropdown #cancel").click(function(e) {
-        $(this).closest(".btn-group").removeClass("entering-email");
-        console.log($(this).closest(".btn-group")[0]);
+      $("#signin-dropdown .cancel").click(function(e) {
+        var btn = $(this).closest(".btn-group")
+        btn.removeClass("entering-email");
+        btn.removeClass("warn-google-apps");
+
         e.preventDefault();
         return false;
       });
