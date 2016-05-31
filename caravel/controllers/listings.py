@@ -3,7 +3,7 @@ Listings are placed by sellers when they want to sell things.
 """
 
 from flask import render_template, request, abort, redirect, url_for, session
-from flask import flash
+from flask import flash, jsonify
 
 from werkzeug.routing import BaseConverter
 
@@ -277,6 +277,11 @@ def edit_listing(listing):
         return redirect(url_for("show_listing", listing=new_listing))
 
     return render_template("listing_form.html", form=form)
+
+
+@app.route("/_internal/cache", methods=["GET"])
+def cache_info():
+    return jsonify(model.utils.cache_stats())
 
 
 @app.route("/new", methods=["GET", "POST"])
