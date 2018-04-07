@@ -6,7 +6,7 @@ Please see README.md for details.
 import sys
 import os
 import logging
-sys.path.append(os.path.dirname(__file__) + "/../vendor")
+sys.path[:0] = [os.path.dirname(__file__) + "/../vendor"]
 
 from flask import Flask
 app = Flask(__name__)

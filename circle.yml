@@ -8,11 +8,3 @@ test:
   override:
     - coverage run --source=caravel $(which nose2) --log-capture --plugin nose2.plugins.doctests --with-doctest
     - coveralls || true
-
-deployment:
-  app_engine:
-    branch: /.*/
-    commands:
-      - rm venv
-      - ~/google_appengine/appcfg.py update . -A caravel-code-reviews --version=$(git rev-parse --abbrev-ref HEAD) --oauth2_refresh_token=$OAUTH2_REFRESH_TOKEN
-      - if [ "$(git rev-parse --abbrev-ref HEAD)" = "master" ]; then ~/google_appengine/appcfg.py update . --version=$(git rev-parse --abbrev-ref HEAD) --oauth2_refresh_token=$OAUTH2_REFRESH_TOKEN; fi
