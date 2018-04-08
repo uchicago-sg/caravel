@@ -3,8 +3,14 @@ dependencies:
     - curl -o ~/google_appengine_1.9.25.zip https://storage.googleapis.com/appengine-sdks/featured/google_appengine_1.9.25.zip
     - unzip -q -d ~ ~/google_appengine_1.9.25.zip
     - pip install -r requirements_dev.txt
+    - wget https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+    - chmod +x ./test-reporter-latest-linux-amd64
 
 test:
   override:
+    - ./test-reporter-latest-linux-amd64 before-build
     - coverage run --source=caravel $(which nose2) --log-capture --plugin nose2.plugins.doctests --with-doctest
     - coveralls || true
+    - coverage xml
+    - ./test-reporter-latest-linux-amd64 after-build -t coverage.py
+
